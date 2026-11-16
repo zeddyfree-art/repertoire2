@@ -148,7 +148,7 @@ export function AuditView() {
   const storedIssues = Object.values(rep.engine).filter((f) => f.loss >= engOpts.threshold).length;
 
   return (
-    <div className="audit-grid">
+    <div className="audit-grid studio-audit-grid">
       <div className="card">
         <div className="section stack" style={{ gap: 8 }}>
           <div className="row">
