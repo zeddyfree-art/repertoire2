@@ -3399,3 +3399,9 @@ h1, h2 { letter-spacing: -.025em; }
 }
 /* Override legacy OS-only dark component rules when light is explicitly selected. */
 :root[data-theme="light"] { scrollbar-color: #b9b3a6 #f5f2eb; }
+
+/* Keep native dropdown options readable in both appearance modes. */
+:root[data-theme='dark'] select option,
+:root[data-theme='dark'] select optgroup { color: #f0f1e9; background: #202a28; }
+:root[data-theme='light'] select option,
+:root[data-theme='light'] select optgroup { color: #242b27; background: #fffdf8; }
