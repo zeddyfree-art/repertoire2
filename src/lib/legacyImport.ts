@@ -130,6 +130,9 @@ export function mergeLegacyData(current: AppData, snapshot: LegacySnapshot, incl
   const importedRepIds = new Set(repertoires.map((r) => r.id));
   const allProfiles = [...current.profiles, ...profiles];
   const allRepertoires = [...current.repertoires, ...repertoires];
+  // After an explicit import, show the imported study immediately, even when v2
+  // already has another active player; never overwrite their records.
+  const firstImported = repertoires.find((r) => r.id === snapshot.data.activeRepId) ?? repertoires[0];
   const mistakes = includeHistory
     ? (snapshot.data.mistakes ?? []).filter((m) =>
       !mistakesIds.has(m.id) && allProfiles.some((p) => p.id === m.profileId),
@@ -147,10 +150,10 @@ export function mergeLegacyData(current: AppData, snapshot: LegacySnapshot, incl
       ...Object.fromEntries(Object.entries(snapshot.data.checks ?? {}).filter(([id]) => importedRepIds.has(id))),
     },
     deleted,
-    activeProfileId: current.activeProfileId ?? (
+    activeProfileId: firstImported?.profileId ?? current.activeProfileId ?? (
       allProfiles.some((p) => p.id === snapshot.data.activeProfileId) ? snapshot.data.activeProfileId : allProfiles[0]?.id ?? null
     ),
-    activeRepId: current.activeRepId ?? (
+    activeRepId: firstImported?.id ?? current.activeRepId ?? (
       allRepertoires.some((r) => r.id === snapshot.data.activeRepId) ? snapshot.data.activeRepId : allRepertoires[0]?.id ?? null
     ),
   };
