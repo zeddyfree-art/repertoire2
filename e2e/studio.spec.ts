@@ -5,6 +5,8 @@ const SAMPLE = '1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4 *';
 
 test('Warm Studio dashboard shows live repertoire board, actions, and no horizontal overflow', async ({ page }) => {
   await start(page, { name: 'Scotch', pgn: SAMPLE });
+  // Creating a repertoire opens Build; return to Home to inspect the dashboard.
+  await page.locator('nav.nav button[title="Home"]').click();
   await expect(page.locator('.studio-dashboard')).toBeVisible();
   await expect(page.locator('.studio-training-hero')).toBeVisible();
   await expect(page.locator('.studio-featured-card cg-board')).toBeVisible();
@@ -34,6 +36,9 @@ test('Warm Studio remembers manual dark/light preference and does not alter the 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   const choice = await page.evaluate(() => localStorage.getItem('repertoire2-appearance'));
   expect(choice).toBe('light');
+  // The player profile is stored asynchronously in IndexedDB.
+  await expect(page.locator('.save-indicator')).toContainText('Saved');
+  await page.waitForTimeout(1000);
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(page.getByRole('combobox', { name: 'Appearance' })).toHaveValue('light');
