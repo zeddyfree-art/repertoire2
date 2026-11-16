@@ -34,7 +34,7 @@ export const BOARD_THEMES = {
 
 export type BoardThemeName = keyof typeof BOARD_THEMES;
 
-const KEY = 'board-theme';
+const KEY = 'repertoire2-board-theme';
 
 export function boardThemeName(): BoardThemeName {
   try {

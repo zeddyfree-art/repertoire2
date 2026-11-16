@@ -26,7 +26,7 @@ export const useMaia = create<{ status: Status; progress: number; error: string 
   error: null,
 }));
 
-const store = typeof indexedDB !== 'undefined' ? createStore('repertoire-models', 'models') : undefined;
+const store = typeof indexedDB !== 'undefined' ? createStore('repertoire2-models', 'models') : undefined;
 
 let worker: Worker | null = null;
 let ready: Promise<void> | null = null;

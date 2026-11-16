@@ -164,7 +164,7 @@ export const EMPTY_DATA: AppData = {
 
 export const PROFILE_COLORS = ['#2f7dd1', '#d1542f', '#2fa56b', '#a24fd1', '#d1a02f', '#d12f7d'];
 
-const dataStore = typeof indexedDB !== 'undefined' ? createStore('repertoire-data', 'app') : undefined;
+const dataStore = typeof indexedDB !== 'undefined' ? createStore('repertoire2-data', 'app') : undefined;
 
 let toastSeq = 0;
 

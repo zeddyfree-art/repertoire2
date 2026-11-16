@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Repertoire — chess opening trainer",
-  "short_name": "Repertoire",
+  "name": "Repertoire 2 — chess opening trainer",
+  "short_name": "Repertoire 2",
   "description": "Build, check and train your chess opening repertoire: Lichess database, engine checks, spaced repetition and a human-like practice opponent.",
   "start_url": "./",
   "scope": "./",
