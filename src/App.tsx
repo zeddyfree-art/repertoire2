@@ -7,6 +7,7 @@ import { BuildView } from './components/BuildView';
 import { AnalysisPill, GamesView } from './components/GamesView';
 import { HomeView, NewRepertoireDialog } from './components/HomeView';
 import { WorkspaceHeader } from './components/WorkspaceHeader';
+import { LegacyImportPrompt } from './components/LegacyImport';
 import { Icon, type IconName } from './components/Icon';
 import { PlayView } from './components/PlayView';
 import { SaveIndicator, SyncBanner, UpdateBanner } from './components/SaveIndicator';
@@ -73,7 +74,7 @@ export function App() {
 
   if (!loaded) return null;
   if (!hasProfiles) {
-    if (view !== 'about') return <Onboarding />;
+    if (view !== 'about') return <><Onboarding /><LegacyImportPrompt /></>;
     return (
       <div className="app">
         <main>
@@ -115,6 +116,7 @@ export function App() {
       </main>
       <Footer />
       <WhatsNew />
+      <LegacyImportPrompt />
       {toast && (
         <div className="toast" role="status">
           <span>{toast.message}</span>
