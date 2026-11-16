@@ -1,0 +1,150 @@
+/* Warm Studio workspaces: Build, Train and Tree.
+ * Visual enhancements are scoped to active workspace views;
+ * chess logic, shortcuts, data and import/export are not modified.
+ */
+.studio-workspace { width: 100%; min-width: 0; display: flex; flex-direction: column; gap: 22px; padding-bottom: 25px; }
+.studio-workspace-header {
+  position: relative;
+  display: flex; justify-content: space-between; align-items: center; gap: 18px;
+  padding: 19px 22px 21px; min-height: 124px;
+  border: 1px solid var(--border); border-radius: 20px;
+  background: radial-gradient(ellipse at 95% 20%, rgba(179,163,117,.13),transparent 40%),var(--surface);
+  box-shadow: var(--shadow);
+}
+.studio-workspace-heading { min-width: 0; }
+.studio-workspace-eyebrow { font-size: 10px; font-weight: 780; letter-spacing: .14em; color: var(--studio-gold); margin-bottom: 7px; }
+.studio-workspace-header h1 {
+  margin: 0 0 7px; font: 700 clamp(26px,2.7vw,37px)/1.12 Georgia,'Times New Roman',serif;
+  letter-spacing: -.03em; color: var(--text);
+}
+.studio-workspace-header p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.studio-workspace-meta { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 9px; min-width: 0; }
+.studio-workspace-chip, .studio-workspace-count {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--border); border-radius: 999px; padding: 9px 12px;
+  color: var(--text); background: var(--surface-2); font-size: 12px; max-width: 240px;
+}
+.studio-workspace-chip b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 650; }
+.studio-workspace-chip > span { color: var(--accent); font-size: 17px; }
+.studio-workspace-count { color: var(--muted); }
+.studio-back-home {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 9px 12px; color: var(--text); background: var(--surface);
+  font-size: 12px; font-weight: 650;
+}
+.studio-back-home:hover { background: var(--accent-soft); color: var(--accent); }
+
+/* Builder: the board feels like the primary instrument; working panels are calm and scannable. */
+.studio-workspace-build .build { gap: 24px; align-items: start; min-width: 0; }
+.studio-workspace-build .board-area,
+.studio-workspace-train .board-area { padding: 10px; border: 1px solid var(--border); background: var(--surface); border-radius: 16px; box-shadow: var(--shadow); width: fit-content; max-width: 100%; }
+.studio-workspace-build .board-wrap .cg-wrap,
+.studio-workspace-train .board-wrap .cg-wrap { border-radius: 7px; }
+.studio-workspace-build .board-controls {
+  padding: 8px; gap: 6px; border: 1px solid var(--border); border-radius: 14px;
+  background: var(--surface); box-shadow: var(--shadow); flex-wrap: wrap; width: 100%;
+}
+.studio-workspace-build .board-controls .btn { min-width: 34px; }
+.studio-workspace-build .side-panel { gap: 17px; }
+.studio-workspace-build .side-panel > .card {
+  overflow: visible; background: var(--surface); box-shadow: var(--shadow);
+  border: 1px solid var(--border); border-radius: 17px;
+}
+.studio-workspace-build .pos-head { background: linear-gradient(140deg,var(--surface),var(--surface-2)); border-radius: 17px 17px 0 0; }
+.studio-workspace-build .opening-name { font-family: Georgia,'Times New Roman',serif; font-size: 17px; font-weight: 700; line-height: 1.3; }
+.studio-workspace-build .tabs { border-radius: 11px; background: var(--surface-2); padding: 4px; }
+.studio-workspace-build .tabs button { border-radius: 8px; }
+.studio-workspace-build .tabs button.on { background: var(--surface); box-shadow: 0 2px 5px rgba(33,39,28,.07); }
+.studio-workspace-build .rep-move { border-radius: 10px; }
+.studio-workspace-build .rep-move:hover { background: var(--accent-soft); }
+.studio-workspace-build .line-bar { border-radius: 12px; }
+.studio-workspace-build .line-move.current { color: var(--accent); font-weight: 750; }
+
+/* Training: focus on the position, with a strong but quiet session card. */
+.studio-workspace-train .today-card,
+.studio-workspace-train .train-panel > .card,
+.studio-workspace-train .train-choices,
+.studio-workspace-train .stack > .card {
+  border-radius: 17px;
+}
+.studio-workspace-train .today-card {
+  padding: 26px; border: 1px solid var(--border); background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.studio-workspace-train .today-card h2,
+.studio-workspace-train .stack > .card h2 {
+  font-family: Georgia,'Times New Roman',serif; letter-spacing: -.025em;
+}
+.studio-workspace-train .train-choices { gap: 12px; }
+.studio-workspace-train .train-choices > div {
+  padding: 16px; border: 1px solid var(--border); border-radius: 13px; background: var(--surface-2);
+}
+.studio-workspace-train .train-choices > div:hover { border-color: var(--accent); }
+.studio-workspace-train .train { gap: 21px; align-items: start; }
+.studio-workspace-train .train-panel > .card { border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow); }
+.studio-workspace-train .train-panel .big-count { font-family: Georgia,'Times New Roman',serif; font-size: 38px; }
+.studio-workspace-train .train-panel .feedback { border-radius: 12px; min-height: 82px; line-height: 1.5; }
+.studio-workspace-train .train-panel .feedback.info { background: var(--accent-soft); }
+.studio-workspace-train .train-panel .progress { height: 8px; }
+.studio-workspace-train .train-panel .btn.primary,
+.studio-workspace-train .today-card .btn.primary { border-radius: 999px; }
+
+/* Repertoire tree: an atlas of opening paths with a dedicated inspection column. */
+.studio-workspace-tree .tree-layout { gap: 20px; min-width: 0; }
+.studio-workspace-tree .tree-layout > .card,
+.studio-workspace-tree .tree-layout > .stack > .card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 17px; box-shadow: var(--shadow); overflow: hidden;
+}
+.studio-workspace-tree .tree-layout > .stack { gap: 15px; }
+.studio-workspace-tree .tree-scroll {
+  background: radial-gradient(circle at 32% 16%,var(--surface) 0%,var(--surface-2) 150%);
+  border-radius: 0 0 17px 17px;
+  min-height: 420px;
+}
+.studio-workspace-tree .tree-toolbar { padding: 13px 15px; gap: 8px; background: var(--surface); }
+.studio-workspace-tree .tree-toolbar .btn { border-radius: 9px; }
+.studio-workspace-tree .tree-svg .node rect { rx: 9px; stroke-width: 1.65; }
+.studio-workspace-tree .tree-svg .node.selected rect { stroke-width: 2.7; }
+.studio-workspace-tree .tree-svg .edge { stroke: var(--edge); }
+.studio-workspace-tree .tree-layout .mini-board { padding: 13px; }
+.studio-workspace-tree .tree-layout .mini-board .cg-wrap { border-radius: 8px; }
+.studio-workspace-tree .tree-layout .legend { line-height: 1.5; }
+
+@media (min-width: 1101px) {
+  .studio-workspace-build { --board: clamp(330px, min(calc(100vh - 240px), calc(100vw - 248px - 550px)), 680px); }
+  .studio-workspace-build .build { grid-template-columns: minmax(0,var(--board)) minmax(335px,1fr); }
+  .studio-workspace-train { --board: clamp(335px, min(calc(100vh - 245px), calc(100vw - 248px - 515px)), 665px); }
+  .studio-workspace-tree .tree-layout { grid-template-columns: minmax(0,1fr) minmax(290px,320px); }
+  .studio-workspace-tree .tree-scroll { height: clamp(480px,calc(100vh - 280px),830px); }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  .studio-workspace-build { --board: min(calc(100vh - 245px),calc(100vw - 470px),560px); }
+  .studio-workspace-build .build { grid-template-columns: minmax(0,var(--board)) minmax(300px,1fr); gap: 14px; }
+  .studio-workspace-train { --board: min(calc(100vh - 240px),calc(100vw - 500px),560px); }
+}
+@media (max-width: 900px) {
+  .studio-workspace { gap: 16px; }
+  .studio-workspace-header { padding: 17px; flex-direction: column; align-items: stretch; min-height: auto; }
+  .studio-workspace-header h1 { font-size: 29px; }
+  .studio-workspace-meta { justify-content: flex-start; }
+  .studio-workspace-build .build, .studio-workspace-train .train { grid-template-columns: minmax(0,1fr); }
+  .studio-workspace-build .board-area, .studio-workspace-train .board-area { margin: 0 auto; }
+  .studio-workspace-build .board-controls { max-width: 100%; }
+  .studio-workspace-tree .tree-layout { grid-template-columns: minmax(0,1fr); }
+  .studio-workspace-tree .tree-scroll { height: 58vh; min-height: 360px; }
+  .studio-workspace-train .today-card { padding: 18px; }
+}
+@media (max-width: 480px) {
+  .studio-workspace-header { padding: 16px; gap: 12px; }
+  .studio-workspace-header h1 { font-size: 27px; }
+  .studio-workspace-meta { gap: 6px; }
+  .studio-workspace-chip, .studio-workspace-count, .studio-back-home { padding: 7px 9px; font-size: 11px; }
+  .studio-workspace-build .board-area, .studio-workspace-train .board-area { padding: 4px; border-radius: 9px; }
+  .studio-workspace-build .side-panel > .card { border-radius: 13px; }
+  .studio-workspace-tree .tree-toolbar { padding: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .studio-workspace .btn, .studio-workspace .rep-move { transition: none; }
+}
