@@ -3405,3 +3405,80 @@ h1, h2 { letter-spacing: -.025em; }
 :root[data-theme='dark'] select optgroup { color: #f0f1e9; background: #202a28; }
 :root[data-theme='light'] select option,
 :root[data-theme='light'] select optgroup { color: #242b27; background: #fffdf8; }
+
+
+/* Warm Studio — first functional dashboard and desktop navigation pass. */
+@media (min-width: 1101px) {
+  .app { padding-left: 226px; }
+  .topbar { min-height: 76px; padding: 16px 28px; align-items: center; }
+  .topbar-left { gap: 12px; }
+  .topbar .brand {
+    position: fixed; left: 0; top: 0; z-index: 22;
+    width: 226px; height: 88px; padding: 0 24px;
+    background: var(--surface); border-right: 1px solid var(--border);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 24px; font-weight: 700;
+  }
+  .topbar .brand span { display: inline; }
+  .topbar .brand-mark { background: none; color: var(--accent); font-size: 32px; width: 34px; height: 34px; }
+  .topbar .nav {
+    position: fixed; z-index: 21; left: 0; top: 88px; bottom: 0;
+    width: 226px; padding: 14px 14px 90px;
+    display: flex; flex-direction: column; gap: 7px;
+    background: var(--surface); border-right: 1px solid var(--border);
+    overflow-y: auto;
+  }
+  .topbar .nav button {
+    width: 100%; height: 46px; padding: 0 15px; border-radius: 12px;
+    justify-content: flex-start; font-size: 14px;
+  }
+  .topbar .nav button span.label { display: inline; }
+  .topbar .nav button.on { background: var(--accent-soft); color: var(--accent); }
+  .topbar .nav button svg { flex: none; }
+  .topbar .rep-select { max-width: 320px; }
+  .app > main { max-width: 1620px; padding: 30px 34px; }
+  .app > .site-footer { margin-left: 0; }
+}
+.studio-home { max-width: 1400px; margin: 0 auto; }
+.studio-welcome {
+  min-height: 180px; position: relative; overflow: hidden;
+  display: flex; align-items: center;
+  padding: 24px 30px;
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 84% 35%, rgba(174,150,100,.17), transparent 38%), var(--surface);
+  border: 1px solid var(--border);
+}
+.studio-welcome-copy { position: relative; z-index: 1; }
+.studio-eyebrow { color: var(--due); font-size: 11px; font-weight: 800; letter-spacing: .14em; }
+.studio-welcome h1 {
+  margin: 8px 0; font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(30px, 3.6vw, 52px); font-weight: 700;
+  line-height: 1.13;
+}
+.studio-welcome p { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: clamp(16px, 1.7vw, 22px); color: var(--muted); }
+.studio-welcome-piece { position: absolute; right: 6%; top: -76px; font-size: 250px; color: var(--due); opacity: .17; line-height: 1; pointer-events: none; }
+.studio-today {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 26px 32px; border-radius: 20px;
+  color: #f8f5e9; background: linear-gradient(115deg, #39593d, #6d8662);
+  box-shadow: 0 10px 30px rgba(25,45,31,.10);
+}
+.studio-today .studio-eyebrow { color: #dfc78f; }
+.studio-today h2 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(26px, 2.8vw, 40px); margin: 8px 0; }
+.studio-today p { margin: 0; color: #f0f0e7; font-size: 15px; }
+.studio-start {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  border: 0; border-radius: 100px; padding: 15px 23px;
+  color: white; background: #263e2b; cursor: pointer; font-weight: 700; white-space: nowrap;
+}
+.studio-start:hover { background: #192d20; }
+.studio-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.studio-section-heading h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 25px; }
+.studio-section-heading span { color: var(--muted); font-size: 13px; }
+.studio-home .rep-card { border-radius: 17px; }
+@media (max-width: 700px) {
+  .studio-welcome { min-height: 150px; padding: 20px; }
+  .studio-welcome-piece { font-size: 165px; top: -32px; right: -14px; }
+  .studio-today { flex-direction: column; align-items: stretch; padding: 24px; }
+  .studio-start { width: 100%; }
+}
