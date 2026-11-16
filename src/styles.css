@@ -3482,3 +3482,35 @@ h1, h2 { letter-spacing: -.025em; }
   .studio-today { flex-direction: column; align-items: stretch; padding: 24px; }
   .studio-start { width: 100%; }
 }
+
+
+/* Warm Studio — refined repertoire library cards and calmer home composition. */
+.studio-welcome { min-height: 162px; }
+.studio-welcome h1 { margin-top: 0; }
+.studio-repertoire-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 335px), 1fr)); gap: 18px; }
+.studio-home .rep-card {
+  position: relative;
+  padding: 22px;
+  gap: 17px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.studio-home .rep-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(35,49,37,.11); }
+.studio-home .rep-card.active { outline: none; border-color: var(--accent); }
+.studio-home .rep-card .side-icon { width: 43px; height: 43px; border-radius: 13px; font-size: 27px; }
+.studio-home .rep-card .stat-row {
+  display: grid; grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 6px; padding: 14px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.studio-home .rep-card .stat { text-align: center; }
+.studio-home .rep-card .stat b { font-size: 23px; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; }
+.studio-home .rep-card .stat span { font-size: 11px; }
+.studio-repertoire-label { color: var(--due); letter-spacing: .12em; font-weight: 700; font-size: 10px; }
+.studio-repertoire-actions { margin-top: auto; padding-top: 3px; }
+.studio-repertoire-actions .btn { border-radius: 9px; }
+.studio-home .rep-card .progress { border-radius: 100px; overflow: hidden; }
+@media (max-width: 700px) {
+  .studio-home .rep-card { padding: 17px; }
+  .studio-repertoire-grid { grid-template-columns: minmax(0,1fr); }
+}

@@ -136,7 +136,6 @@ export function HomeView() {
     <div className="stack studio-home" style={{ gap: 20 }}>
       <section className="studio-welcome">
         <div className="studio-welcome-copy">
-          <div className="studio-eyebrow">YOUR CHESS STUDIO</div>
           <h1>Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {profile.name}.</h1>
           <p>Continue your training and grow your repertoire.</p>
         </div>
@@ -171,7 +170,7 @@ export function HomeView() {
         </button>
       </div>
 
-      <div className="home-grid">
+      <div className="home-grid studio-repertoire-grid">
         {summaries.map(({ rep, stats: st, srs }) => (
           <div
             key={rep.id}
@@ -226,6 +225,7 @@ export function HomeView() {
                 ]}
               />
             </div>
+            <div className="studio-repertoire-label">OPENING REPERTOIRE</div>
             <div className="stat-row">
               <div
                 className="stat"
@@ -256,7 +256,7 @@ export function HomeView() {
             <div className="progress" title={`${srs.learned} of ${srs.total} moves learned${rep.trainDepth ? ` (up to move ${rep.trainDepth})` : ''}`}>
               <div style={{ width: `${(srs.learned / Math.max(1, srs.total)) * 100}%` }} />
             </div>
-            <div className="row" onClick={(e) => e.stopPropagation()}>
+            <div className="row studio-repertoire-actions" onClick={(e) => e.stopPropagation()}>
               <button className="btn sm" onClick={() => open(rep.id, 'build')}>
                 <Icon name="board" size={14} /> Build
               </button>

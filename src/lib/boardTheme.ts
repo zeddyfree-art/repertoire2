@@ -16,6 +16,7 @@ export interface BoardTheme {
 }
 
 export const BOARD_THEMES = {
+  studio: { label: 'Warm Studio · Sage', light: '#f0ead8', dark: '#9ead88', lastMove: 'rgba(221, 183, 91, 0.48)' },
   brown: { label: 'Brown', light: '#f0d9b5', dark: '#b58863' },
   green: { label: 'Green', light: '#ebecd0', dark: '#739552' },
   blue: { label: 'Blue', light: '#dee3e6', dark: '#8ca2ad' },
@@ -39,9 +40,9 @@ const KEY = 'repertoire2-board-theme';
 export function boardThemeName(): BoardThemeName {
   try {
     const v = localStorage.getItem(KEY);
-    return v && v in BOARD_THEMES ? (v as BoardThemeName) : 'brown';
+    return v && v in BOARD_THEMES ? (v as BoardThemeName) : 'studio';
   } catch {
-    return 'brown';
+    return 'studio';
   }
 }
 
@@ -110,6 +111,6 @@ export function useBoardTheme(): BoardThemeName {
       return () => listeners.delete(l);
     },
     boardThemeName,
-    () => 'brown',
+    () => 'studio',
   );
 }
