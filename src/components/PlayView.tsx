@@ -64,7 +64,7 @@ export function levelName(level: number): string {
 
 function readPrefs(): Partial<{ level: number; mode: OpponentSettings['mode']; coach: boolean; hints: boolean; colours: boolean; tc: TimeControl; rated: boolean; random: boolean }> {
   try {
-    return JSON.parse(localStorage.getItem('play-prefs') ?? '{}');
+    return JSON.parse(localStorage.getItem('repertoire2-play-prefs') ?? '{}');
   } catch {
     return {};
   }
@@ -87,7 +87,7 @@ interface SavedGame {
 }
 type Resume = SavedGame & { arrivedAt: number };
 
-const CURRENT_KEY = 'play-current';
+const CURRENT_KEY = 'repertoire2-play-current';
 
 function readCurrent(profileId: string | null): Resume | null {
   try {
@@ -701,7 +701,7 @@ function PlaySetup({ onStart }: { onStart: (g: GameConfig) => void }) {
   useEffect(() => {
     // A level taken over from a game is not remembered as your usual choice.
     localStorage.setItem(
-      'play-prefs',
+      'repertoire2-play-prefs',
       JSON.stringify({ level: setup?.level ? (prefs.level ?? level) : level, mode, coach, hints, colours, tc, rated, random: color === 'random' }),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
