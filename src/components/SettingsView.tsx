@@ -83,8 +83,13 @@ export function SettingsView() {
   };
 
   return (
-    <div className="stack" style={{ maxWidth: 860, margin: '0 auto', gap: 16 }}>
-      <div className="card">
+    <div className="stack studio-settings-layout" style={{ gap: 18 }}>
+      <nav className="studio-settings-jumps" aria-label="Settings sections">
+        {([['players', 'Players'], ['appearance', 'Appearance'], ['sync', 'Cloud sync'], ['lichess', 'Lichess'], ['backup', 'Backups']] as const).map(([id, name]) => (
+          <button type="button" key={id} onClick={() => document.getElementById(`studio-settings-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>{name}</button>
+        ))}
+      </nav>
+      <div className="card" id="studio-settings-players">
         <div className="section row">
           <h2>Players</h2>
           <span className="spacer" />
@@ -121,10 +126,10 @@ export function SettingsView() {
         ))}
       </div>
 
-      <div className="card"><div className="section"><h2>Appearance</h2></div><div className="section stack"><label className="field"><span>Colour mode</span><select className="input" value={appearance} onChange={(e) => setAppearance(e.target.value as "auto" | "light" | "dark")}><option value="auto">Automatic — follow device</option><option value="light">Light — warm ivory</option><option value="dark">Dark — charcoal and sage</option></select></label><p className="help">This preference applies only to Repertoire 2. Your board colours remain independently configurable.</p></div></div>
-      <SyncCard onRestore={confirmRestore} />
+      <div className="card" id="studio-settings-appearance"><div className="section"><h2>Appearance</h2></div><div className="section stack"><label className="field"><span>Colour mode</span><select className="input" value={appearance} onChange={(e) => setAppearance(e.target.value as "auto" | "light" | "dark")}><option value="auto">Automatic — follow device</option><option value="light">Light — warm ivory</option><option value="dark">Dark — charcoal and sage</option></select></label><p className="help">This preference applies only to Repertoire 2. Your board colours remain independently configurable.</p></div></div>
+      <div id="studio-settings-sync"><SyncCard onRestore={confirmRestore} /></div>
 
-      <div className="card">
+      <div className="card" id="studio-settings-lichess">
         <div className="section">
           <h2>Lichess</h2>
         </div>
@@ -234,7 +239,7 @@ export function SettingsView() {
         </div>
       )}
 
-      <div className="card">
+      <div className="card" id="studio-settings-backup">
         <div className="section">
           <h2>Backup file</h2>
         </div>

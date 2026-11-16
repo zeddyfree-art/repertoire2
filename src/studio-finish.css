@@ -1,0 +1,294 @@
+/*
+ * Warm Studio — second design pass, November 2026.
+ * Presentation-only rules scoped to the view shell. No move generation, FSRS,
+ * sync, analysis, or PGN behaviour is altered here.
+ */
+
+/* A consistent hierarchy for the second half of the application */
+.studio-workspace-play,
+.studio-workspace-games,
+.studio-workspace-audit,
+.studio-workspace-settings { min-width: 0; }
+
+.studio-workspace-play .card,
+.studio-workspace-games .card,
+.studio-workspace-audit .card,
+.studio-workspace-settings .card,
+.studio-about .card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.studio-workspace-play .card h2,
+.studio-workspace-games .card h2,
+.studio-workspace-audit .card h2,
+.studio-workspace-settings .card h2,
+.studio-workspace-play .card h3,
+.studio-workspace-games .card h3,
+.studio-workspace-audit .card h3,
+.studio-workspace-settings .card h3,
+.studio-about h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: -.025em;
+}
+.studio-workspace-play .card h2,
+.studio-workspace-games .card h2,
+.studio-workspace-audit .card h2,
+.studio-workspace-settings .card h2 { font-size: clamp(20px,2vw,27px); }
+.studio-workspace-play .card h3,
+.studio-workspace-games .card h3,
+.studio-workspace-audit .card h3,
+.studio-workspace-settings .card h3 { font-size: 16px; text-transform: none; letter-spacing: -.01em; color: var(--text); }
+.studio-workspace-play .btn.primary,
+.studio-workspace-games .btn.primary,
+.studio-workspace-audit .btn.primary,
+.studio-workspace-settings .btn.primary { border-radius: 100px; padding-inline: 17px; }
+.studio-workspace-play .btn:not(.icon),
+.studio-workspace-games .btn:not(.icon),
+.studio-workspace-audit .btn:not(.icon),
+.studio-workspace-settings .btn:not(.icon) { min-height: 37px; }
+.studio-workspace-play .field > label:first-child,
+.studio-workspace-settings .field > label:first-child {
+  font-weight: 700; color: var(--text); letter-spacing: -.01em;
+}
+.studio-workspace-play input[type="range"],
+.studio-workspace-settings input[type="range"] { accent-color: var(--accent); }
+.studio-workspace-play input[type="checkbox"],
+.studio-workspace-play input[type="radio"],
+.studio-workspace-settings input[type="checkbox"] { accent-color: var(--accent); }
+.studio-workspace-play .chip,
+.studio-workspace-games .chip,
+.studio-workspace-audit .chip,
+.studio-workspace-settings .chip { border-radius: 100px; }
+.studio-workspace-play :is(.notice,.help),
+.studio-workspace-games :is(.notice,.help),
+.studio-workspace-audit :is(.notice,.help),
+.studio-workspace-settings :is(.notice,.help) { line-height: 1.55; }
+
+/* PLAY — configuration reads as a deliberate training choice. */
+.studio-play-setup {
+  width: 100%; max-width: 1210px; margin-inline: auto;
+  display: grid; grid-template-columns: minmax(0,1fr);
+  gap: 17px; align-items: start;
+}
+.studio-play-config {
+  border-radius: 21px !important;
+  padding: clamp(20px,2.4vw,33px) !important;
+}
+.studio-play-intro {
+  padding: 3px 0 14px;
+  border-bottom: 1px solid var(--border);
+}
+.studio-play-intro h2 { margin: 7px 0 !important; font-size: clamp(24px,2.7vw,34px) !important; }
+.studio-mini-kicker {
+  font-size: 11px; letter-spacing: .15em;
+  font-weight: 800; color: var(--studio-gold);
+}
+.studio-play-modes {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px;
+}
+.studio-play-modes > button {
+  display: flex; align-items: center; justify-content: flex-start; gap: 12px;
+  min-width: 0; min-height: 83px; text-align: left; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 14px;
+  background: var(--surface-2); padding: 14px;
+  color: var(--text); transition: border-color .18s, background .18s, box-shadow .18s;
+}
+.studio-play-modes > button svg { flex: none; color: var(--accent); }
+.studio-play-modes > button b { display: block; font-size: 14px; line-height: 1.3; }
+.studio-play-modes > button small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+.studio-play-modes > button.on {
+  background: var(--accent-soft); border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.studio-play-modes > button:disabled { opacity: .46; cursor: not-allowed; }
+.studio-play-config > .field { padding: 14px 0 2px; border-bottom: 1px solid var(--border); }
+.studio-play-config > .field:last-of-type { border-bottom: 0; }
+.studio-play-config > .field > .row:has(>.btn) { gap: 9px; }
+.studio-play-config > .field label.row:has(input[type="radio"]) {
+  padding: 11px 12px; border: 1px solid var(--border);
+  background: var(--surface); border-radius: 11px; margin-bottom: 5px;
+}
+.studio-play-config > .field label.row:has(input[type="radio"]:checked) {
+  background: var(--accent-soft); border-color: var(--accent);
+}
+.studio-play-config > .field label.row:has(input[type="checkbox"]) { padding-block: 5px; }
+.studio-play-config .range-scale { margin-bottom: 5px; }
+.studio-play-setup > .card:not(.studio-play-config) { min-width: 0; overflow: hidden; }
+.studio-workspace-play .rating-tiles .stat { border-radius: 12px; }
+.studio-workspace-play .rating-tile.on { border-color: var(--accent); background: var(--accent-soft); }
+.studio-workspace-play .game-row { border-radius: 10px; transition: background .15s; }
+.studio-workspace-play .game-row:hover { background: var(--surface-2); }
+.studio-workspace-play .train .board-area {
+  padding: 10px; border: 1px solid var(--border);
+  border-radius: 17px; background: var(--surface); box-shadow: var(--shadow);
+}
+.studio-workspace-play .train .board-area .cg-wrap { border-radius: 8px; }
+.studio-workspace-play .train-panel > .card,
+.studio-workspace-play .train > .card { border-radius: 17px; }
+
+/* GAMES — an editorial ledger instead of a raw list. */
+.studio-games-layout { width: 100%; max-width: 1280px; margin-inline: auto; gap: 18px; }
+.studio-games-library { padding: clamp(18px,2.4vw,30px) !important; }
+.studio-games-library > .row:first-child { padding-bottom: 14px; gap: 10px; }
+.studio-games-library > .row:first-child h2 { font-size: clamp(24px,2.5vw,32px); }
+.studio-games-kpis {
+  display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 11px;
+  margin: 0 0 9px;
+}
+.studio-games-kpis > div {
+  min-height: 91px; display: flex; flex-direction: column;
+  justify-content: center; gap: 6px; padding: 14px 15px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 13px;
+}
+.studio-games-kpis span { color: var(--muted); font-size: 10px; letter-spacing: .09em; font-weight: 750; }
+.studio-games-kpis strong { font: 700 29px/1 Georgia,'Times New Roman',serif; color: var(--text); }
+.studio-games-library .deck-tabs.view-tabs {
+  display: inline-flex; flex-wrap: wrap; padding: 4px; gap: 4px;
+  background: var(--surface-2); border-radius: 12px; align-self: flex-start;
+}
+.studio-games-library .deck-tabs.view-tabs button {
+  border-radius: 9px; min-height: 39px; padding-inline: 16px;
+}
+.studio-games-library .deck-tabs.view-tabs button.on {
+  background: var(--surface); box-shadow: 0 2px 8px rgba(38,43,35,.08);
+}
+.studio-games-library .filter-row { gap: 8px; flex-wrap: wrap; }
+.studio-games-library .filter-row > button.chip {
+  appearance: none; font: inherit; line-height: 1.3; cursor: pointer;
+}
+.studio-games-library .game-list { gap: 5px; }
+.studio-games-library .game-row {
+  display: flex; align-items: center;
+  min-height: 68px; border: 1px solid var(--border);
+  border-radius: 12px; padding: 13px 14px; gap: 12px;
+  background: var(--surface); text-align: left;
+}
+.studio-games-library .game-row:hover {
+  background: var(--accent-soft); border-color: var(--accent);
+}
+.studio-games-library .game-main { min-width: 0; }
+.studio-workspace-games .insights .card { border-radius: 17px; }
+.studio-workspace-games .insights-heading { font: 700 20px Georgia,serif; }
+.studio-workspace-games .review-head { padding: 22px; }
+.studio-workspace-games .review-title { font-family: Georgia,'Times New Roman',serif; }
+.studio-workspace-games .review-board .card,
+.studio-workspace-games .moment-card { border-radius: 17px; }
+.studio-workspace-games .review-moves { background: var(--surface); }
+
+/* CHECK — make the evaluation sources explicit and easy to scan. */
+.studio-workspace-audit .studio-audit-grid { gap: 18px; align-items: start; }
+.studio-audit-summary {
+  grid-column: 1 / -1;
+  display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px;
+}
+.studio-audit-fact {
+  min-width: 0; display: flex; flex-direction: column; gap: 6px;
+  padding: 18px 20px;
+  border: 1px solid var(--border); border-radius: 15px;
+  background: var(--surface); box-shadow: var(--shadow);
+}
+.studio-audit-fact span { color: var(--studio-gold); font-size: 10px; font-weight: 800; letter-spacing: .13em; }
+.studio-audit-fact strong { font: 700 30px/1 Georgia,serif; color: var(--text); }
+.studio-audit-fact small { color: var(--muted); font-size: 11px; }
+.studio-workspace-audit .audit-grid > .card { overflow: hidden; }
+.studio-workspace-audit .audit-grid > .card > .section:first-child {
+  padding: clamp(18px,2vw,28px);
+  background: radial-gradient(ellipse at 100% 0%,rgba(165,140,95,.08),transparent 60%);
+}
+.studio-workspace-audit .audit-grid h2 { font-size: clamp(20px,2.2vw,27px); }
+.studio-workspace-audit .audit-grid h2 + .help { margin-top: 4px; }
+.studio-workspace-audit .audit-grid .section .row > svg:first-child { color: var(--accent); flex: none; }
+.studio-workspace-audit .audit-grid .chip.on { background: var(--accent-soft); }
+
+/* SETTINGS — anchor navigation, wider breathing room and grouping. */
+.studio-settings-layout { width: 100%; max-width: 1190px; margin-inline: auto; min-width: 0; }
+.studio-settings-layout > .card,
+.studio-settings-layout > div[id="studio-settings-sync"] > .card { overflow: hidden; }
+.studio-settings-layout > :is(.card,div[id]) { scroll-margin-top: 90px; }
+.studio-settings-layout > .card > .section:first-child {
+  background: linear-gradient(105deg,var(--surface),var(--surface-2));
+  border-bottom: 1px solid var(--border);
+}
+.studio-settings-layout > .card > .section:first-child h2 { font-size: 22px; }
+.studio-settings-jumps {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 15px; padding: 10px; box-shadow: var(--shadow);
+}
+.studio-settings-jumps button {
+  border: 0; border-radius: 999px; padding: 11px 14px; min-height: 40px;
+  background: var(--surface-2); color: var(--text); font-weight: 650;
+  font-size: 12px; cursor: pointer;
+}
+.studio-settings-jumps button:hover { background: var(--accent-soft); color: var(--accent); }
+.studio-settings-layout .input { border-radius: 9px; max-width: 100%; }
+.studio-settings-layout .section { padding: clamp(14px,2vw,23px); }
+.studio-settings-layout .profile-editor { border-radius: 12px; }
+.studio-settings-layout .help { max-width: 85ch; }
+.studio-settings-layout .section .row.wrap { gap: 9px; }
+
+/* About and first run — the same typography and visual identity. */
+.studio-about { max-width: 1070px; margin-inline: auto; }
+.studio-about .about-head {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; padding: 19px; box-shadow: var(--shadow);
+}
+.studio-about .about-head h1 { font: 700 clamp(27px,3vw,40px)/1.15 Georgia,serif; }
+.studio-about .card > .section { padding: clamp(19px,2.7vw,30px); }
+.studio-about h2 { font-size: clamp(20px,2.2vw,27px); }
+.studio-onboarding {
+  background: radial-gradient(ellipse at 72% 10%,rgba(171,143,86,.11),transparent 42%),var(--bg);
+}
+.studio-onboarding > .card {
+  border: 1px solid var(--border); border-radius: 22px;
+  background: var(--surface); box-shadow: 0 18px 55px rgba(34,46,36,.09);
+  padding: clamp(22px,4vw,35px);
+}
+.studio-onboarding > .card h2 { font: 700 28px Georgia,'Times New Roman',serif; }
+.studio-onboarding .btn.primary { border-radius: 99px; }
+
+/* Mobile and middle widths keep controls discoverable. */
+@media (min-width: 1440px) {
+  .studio-play-setup {
+    grid-template-columns: minmax(0, 1.13fr) minmax(0, .87fr);
+    gap: 19px;
+  }
+  .studio-play-config { grid-column: 1; grid-row: 1 / span 3; }
+  .studio-play-setup > .card:not(.studio-play-config) { grid-column: 2; }
+  .studio-play-setup > .help { grid-column: 2; }
+}
+@media (max-width: 1100px) {
+  .studio-workspace :is(.review,.train,.audit-grid) { min-width: 0; }
+  .studio-games-kpis { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 700px) {
+  .studio-workspace-header { padding: 17px; }
+  .studio-play-config { padding: 18px !important; }
+  .studio-play-modes { gap: 8px; }
+  .studio-play-modes > button { gap: 8px; padding: 10px; min-height: 80px; }
+  .studio-play-modes > button b { font-size: 12px; }
+  .studio-play-modes > button small { font-size: 10px; }
+  .studio-play-modes > button svg { width: 16px; }
+  .studio-games-library { padding: 15px !important; }
+  .studio-games-library .game-row { padding: 11px 10px; }
+  .studio-audit-summary { gap: 8px; }
+  .studio-audit-fact { padding: 13px 11px; }
+  .studio-audit-fact strong { font-size: 25px; }
+  .studio-audit-fact span { font-size: 9px; }
+  .studio-audit-fact small { font-size: 10px; line-height: 1.35; }
+  .studio-settings-jumps { gap: 6px; }
+  .studio-settings-jumps button { padding: 9px 11px; min-height: 38px; font-size: 11px; }
+}
+@media (max-width: 385px) {
+  .studio-games-kpis { gap: 8px; }
+  .studio-games-kpis > div { padding: 11px; }
+  .studio-games-kpis span { font-size: 9px; }
+  .studio-audit-fact { padding: 11px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .studio-play-modes > button,
+  .studio-games-library .game-row { transition: none; }
+}

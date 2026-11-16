@@ -24,8 +24,8 @@ interface Prefs {
   max: number;
 }
 
-const prefsKey = (profileId: string) => `games-import-${profileId}`;
-const fetchedKey = (profileId: string) => `lichess-fetched-${profileId}`;
+const prefsKey = (profileId: string) => `repertoire2-games-import-${profileId}`;
+const fetchedKey = (profileId: string) => `repertoire2-lichess-fetched-${profileId}`;
 
 function markFetched(profileId: string, at: number) {
   try {

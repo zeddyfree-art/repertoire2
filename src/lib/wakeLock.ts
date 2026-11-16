@@ -2,7 +2,7 @@
 // screen locks or you switch apps; the analysis then carries on when you come back (finished games are kept).
 import { useAnalysisQueue } from './analyzer';
 
-const KEY = 'analysis-keep-awake';
+const KEY = 'repertoire2-analysis-keep-awake';
 
 interface WakeLockSentinelLike {
   release(): Promise<void>;

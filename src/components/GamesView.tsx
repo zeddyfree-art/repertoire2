@@ -65,12 +65,12 @@ function GamesList() {
   const [choosing, setChoosing] = useState(false);
   const [speed, setSpeed] = useState<GameSpeed | null>(null);
   const [limit, setLimit] = useState(60);
-  const [tab, setTabState] = useState<'games' | 'insights'>(() => (localStorage.getItem('games-tab') === 'insights' ? 'insights' : 'games'));
+  const [tab, setTabState] = useState<'games' | 'insights'>(() => (localStorage.getItem('repertoire2-games-tab') === 'insights' ? 'insights' : 'games'));
   const [fetching, setFetching] = useState(false);
   const setTab = (t: 'games' | 'insights') => {
     setTabState(t);
     try {
-      localStorage.setItem('games-tab', t);
+      localStorage.setItem('repertoire2-games-tab', t);
     } catch {
       /* ignore */
     }
@@ -97,10 +97,10 @@ function GamesList() {
   const current = queue.current ? all.games.find((g) => g.id === queue.current) : undefined;
 
   return (
-    <div style={{ maxWidth: 980, margin: '0 auto' }} className="stack">
-      <div className="card card-pad stack">
+    <div className="stack studio-games-layout">
+      <div className="card card-pad stack studio-games-library">
         <div className="row wrap">
-          <h2>Games</h2>
+          <h2>Game library</h2>
           <span className="muted">{profile.name}</span>
           <span className="spacer" />
           {profile.lichess && hasFetchedBefore(profile.id) && (
@@ -112,6 +112,14 @@ function GamesList() {
             <Icon name="download" size={16} /> Add games
           </button>
         </div>
+        {games.length > 0 && (
+          <div className="studio-games-kpis" aria-label="Your game statistics">
+            <div><span>IMPORTED GAMES</span><strong>{games.length}</strong></div>
+            <div><span>ANALYSED</span><strong>{games.filter((g) => !!g.analysis && !needsAnalysis(g)).length}</strong></div>
+            <div><span>READY TO ANALYSE</span><strong>{waiting}</strong></div>
+            <div><span>TRAINABLE MOMENTS</span><strong>{suggestions.length}</strong></div>
+          </div>
+        )}
         {games.length > 0 && (
           <div className="deck-tabs view-tabs" role="tablist">
             <button role="tab" aria-selected={tab === 'games'} className={tab === 'games' ? 'on' : ''} onClick={() => setTab('games')}>
@@ -143,13 +151,13 @@ function GamesList() {
             {tab === 'games' && <GameActions games={games} profileId={profile.id} suggestions={suggestions} onChoose={() => setChoosing(true)} />}
             {tab === 'games' && speeds.length > 1 && (
               <div className="filter-row">
-                <span className={`chip ${speed === null ? 'on' : ''}`} onClick={() => setSpeed(null)}>
+                <button type="button" aria-pressed={speed === null} className={`chip ${speed === null ? 'on' : ''}`} onClick={() => setSpeed(null)}>
                   All ({games.length})
-                </span>
+                </button>
                 {speeds.map((s) => (
-                  <span key={s} className={`chip ${speed === s ? 'on' : ''}`} onClick={() => setSpeed(s)}>
+                  <button type="button" key={s} aria-pressed={speed === s} className={`chip ${speed === s ? 'on' : ''}`} onClick={() => setSpeed(s)}>
                     {SPEED_NAMES[s]} ({games.filter((g) => g.speed === s).length})
-                  </span>
+                  </button>
                 ))}
               </div>
             )}

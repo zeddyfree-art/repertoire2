@@ -2,7 +2,7 @@ import { APP_VERSION, CHANGELOG, feedbackHref } from '../lib/changelog';
 import { useApp } from '../lib/store';
 import { Icon } from './Icon';
 
-const REPO = 'https://github.com/zeddyfree-art/chess';
+const REPO = 'https://github.com/zeddyfree-art/repertoire2';
 
 /** Why the app exists, what it does, how it works and how to make your own version. Also reachable before
  *  any player exists (from the first screen) and as a link: …/chess/#about. */
@@ -11,7 +11,7 @@ export function AboutView({ standalone = false }: { standalone?: boolean }) {
   const version = `${APP_VERSION} · ${__APP_COMMIT__ === 'local' ? `${__BUILD_DATE__} (local build)` : `${__BUILD_DATE__} · ${__APP_COMMIT__}`}`;
 
   return (
-    <article className="about">
+    <article className="about studio-about">
       {standalone && (
         <button className="btn ghost" onClick={() => setView('home')}>
           <Icon name="prev" size={16} /> Back
@@ -147,7 +147,7 @@ export function AboutView({ standalone = false }: { standalone?: boolean }) {
           </li>
           <li>
             In your fork, open <b>Actions</b> and enable the workflows, then <b>Settings → Pages → Source: GitHub Actions</b>. Every
-            change on the default branch is then tested and published at <code>https://&lt;your-name&gt;.github.io/chess/</code>.
+            change on the default branch is then tested and published at <code>https://&lt;your-name&gt;.github.io/repertoire2/</code>.
           </li>
           <li>
             Describe the change you want to an AI coding assistant such as Claude Code, which can work directly in your GitHub
