@@ -22,8 +22,21 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
   const active = repertoires.find((rep) => rep.id === activeId) ?? repertoires[0] ?? null;
   const frames = useMemo(() => active ? mainlinePreview(active) : [{ key: ROOT }], [active]);
   const [ply, setPly] = useState(0);
-  useEffect(() => { setPly(Math.min(6, frames.length - 1)); }, [active?.id, frames]);
+  const [autoplay, setAutoplay] = useState(false);
+  useEffect(() => {
+    setAutoplay(false);
+    setPly(Math.min(6, frames.length - 1));
+  }, [active?.id, frames]);
   const position = Math.min(ply, frames.length - 1);
+  useEffect(() => {
+    if (!autoplay) return;
+    if (position >= frames.length - 1) {
+      setAutoplay(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setPly((i) => Math.min(i + 1, frames.length - 1)), 950);
+    return () => window.clearTimeout(timer);
+  }, [autoplay, position, frames.length]);
   const frame = frames[position];
   const summary = useMemo(() => studioSummary(repertoires, plan.total), [repertoires, plan.total]);
   const recent = useMemo(() => recentlyPracticed(repertoires), [repertoires]);
@@ -104,9 +117,9 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
                 <h2>{active.name}</h2>
                 <p className="studio-move-caption" aria-live="polite">{position === 0 ? 'Starting position' : formatLine(frames.slice(1, position + 1).map((m) => m.san!))}</p>
                 <div className="studio-preview-nav" aria-label="Preview moves">
-                  <button aria-label="Previous move" title="Previous move" onClick={() => setPly((i) => Math.max(0, i - 1))} disabled={position === 0}><Icon name="prev"/></button>
-                  <button className="studio-preview-play" aria-label="Next move" title="Next move" onClick={() => setPly((i) => Math.min(frames.length - 1, i + 1))} disabled={position === frames.length - 1}><Icon name="play"/></button>
-                  <button aria-label="Next move in repertoire" title="Next move in repertoire" onClick={() => setPly((i) => Math.min(frames.length - 1, i + 1))} disabled={position === frames.length - 1}><Icon name="next"/></button>
+                  <button aria-label="Previous move" title="Previous move" onClick={() => { setAutoplay(false); setPly((i) => Math.max(0, i - 1)); }} disabled={position === 0}><Icon name="prev"/></button>
+                  <button className="studio-preview-play" aria-label={autoplay ? 'Pause line playback' : 'Play line'} title={autoplay ? 'Pause' : 'Play the main line'} aria-pressed={autoplay} onClick={() => { if (autoplay) setAutoplay(false); else { if (position >= frames.length - 1) setPly(0); setAutoplay(true); } }} disabled={frames.length <= 1}><Icon name={autoplay ? 'pause' : 'play'}/></button>
+                  <button aria-label="Next move in repertoire" title="Next move in repertoire" onClick={() => { setAutoplay(false); setPly((i) => Math.min(frames.length - 1, i + 1)); }} disabled={position === frames.length - 1}><Icon name="next"/></button>
                 </div>
                 <button className="studio-open-builder" onClick={() => onOpen(active.id, 'build')}><Icon name="board" size={17}/> Open in builder</button>
               </div>
