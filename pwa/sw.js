@@ -4,7 +4,7 @@
 //   background. Each published version gets its own cache, and older ones are removed.
 // - Not cached: version.json (how an open tab notices a new version), the Maia model (the app keeps it in its own
 //   database), and anything from other sites (Lichess, Google), which always goes to the network.
-const CACHE = 'repertoire-__BUILD__';
+const CACHE = 'repertoire2-__BUILD__';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', './manifest.webmanifest', './icon-192.png', '__PRECACHE__'])).then(() => self.skipWaiting()));
@@ -14,7 +14,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('repertoire-') && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('repertoire2-') && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
