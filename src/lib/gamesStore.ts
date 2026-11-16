@@ -23,7 +23,7 @@ interface GamesState {
   applyRemote(data: GamesData): void;
 }
 
-const idb = typeof indexedDB !== 'undefined' ? createStore('repertoire-data', 'app') : undefined;
+const idb = typeof indexedDB !== 'undefined' ? createStore('repertoire2-data', 'app') : undefined;
 
 export const useGames = create<GamesState>()((set, get) => ({
   loaded: false,
