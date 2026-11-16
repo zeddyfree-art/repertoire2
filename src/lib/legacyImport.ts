@@ -7,7 +7,6 @@
  * if it does not exist.
  */
 import type { GamesData } from './games';
-import { EMPTY_GAMES } from './games';
 import { useGames, flushGames } from './gamesStore';
 import type { AppData, Profile } from './store';
 import { flushLocal, useApp, useSaveState } from './store';
