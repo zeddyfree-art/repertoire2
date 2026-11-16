@@ -32,11 +32,11 @@ test('browser and installed app metadata point to new versioned icons', async ({
   await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', /manifest\.webmanifest\?v=brand2/);
   await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute('href', /apple-touch-icon-v2\.png/);
 
-  const response = await page.request.get('/manifest.webmanifest?v=brand2');
+  const response = await page.request.get('/manifest.webmanifest?v=brand3');
   expect(response.ok()).toBe(true);
   const manifest = await response.json();
   expect(manifest.icons.map((icon: { src: string }) => icon.src)).toEqual([
-    'icon-192-v2.png', 'icon-512-v2.png', 'icon-maskable-512-v2.png', 'brand-knight.svg',
+    'icon-192-v3.png', 'icon-512-v3.png', 'icon-maskable-512-v3.png', 'brand-knight.svg?v=brand3',
   ]);
   const svg = await page.request.get('/brand-knight.svg');
   expect(svg.ok()).toBe(true);
