@@ -307,3 +307,23 @@
 @media (prefers-reduced-motion: reduce) {
   .studio-training-button, .studio-home .rep-card { transition: none; }
 }
+
+
+/* The header uses the reference's light/dark icon-pill rather than a native select. */
+.studio-appearance-toggle {
+  display: inline-flex; align-items: center; gap: 1px; flex: none;
+  padding: 3px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface-2);
+}
+.studio-appearance-toggle button {
+  display: grid; place-items: center; flex: none;
+  width: 30px; height: 30px; padding: 0; border: 0;
+  border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer;
+}
+.studio-appearance-toggle button:hover { color: var(--text); }
+.studio-appearance-toggle button.on { background: var(--accent); color: #fff; }
+:root[data-theme="dark"] .studio-appearance-toggle button.on { color: #16271c; }
+@media (max-width: 600px) {
+  .studio-appearance-toggle { padding: 2px; }
+  .studio-appearance-toggle button { width: 27px; height: 27px; }
+}
