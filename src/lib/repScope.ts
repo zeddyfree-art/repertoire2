@@ -9,7 +9,7 @@ import { inPlay, type Repertoire } from './repertoire';
 export type RepScope = string;
 export const ALL_IN_PLAY: RepScope = 'in-play';
 
-const KEY = 'rep-scope';
+const KEY = 'repertoire2-rep-scope';
 
 function read(): Record<string, RepScope> {
   try {
