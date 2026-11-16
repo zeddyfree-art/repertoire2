@@ -28,14 +28,14 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - name: Render matching PWA and Apple icons from the new vector logo
+      - name: Render PWA and Apple icons from the actual generated laurel-knight artwork
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq --no-install-recommends librsvg2-bin
-          rsvg-convert -w 192 -h 192 -o dist/icon-192.png public/icon.svg
-          rsvg-convert -w 512 -h 512 -o dist/icon-512.png public/icon.svg
-          rsvg-convert -w 512 -h 512 -o dist/icon-maskable-512.png public/icon.svg
-          rsvg-convert -w 180 -h 180 -o dist/apple-touch-icon.png public/icon.svg
+          rsvg-convert -w 192 -h 192 -o dist/icon-192-v2.png public/brand-knight.svg
+          rsvg-convert -w 512 -h 512 -o dist/icon-512-v2.png public/brand-knight.svg
+          rsvg-convert -w 512 -h 512 -o dist/icon-maskable-512-v2.png public/brand-knight.svg
+          rsvg-convert -w 180 -h 180 -o dist/apple-touch-icon-v2.png public/brand-knight.svg
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
