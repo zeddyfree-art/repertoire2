@@ -764,6 +764,20 @@ function PlaySetup({ onStart }: { onStart: (g: GameConfig) => void }) {
           <h2>Choose your challenge</h2>
           <div className="muted">Against a human-like opponent: it plays like a real person of the chosen rating.</div>
         </div>
+        <div className="studio-play-modes" role="group" aria-label="Game type">
+          <button type="button" className={!isRated ? 'on' : ''} aria-pressed={!isRated}
+            onClick={() => { setRated(false); setTc({ minutes: 0, increment: 0 }); }}>
+            <Icon name="train" size={18}/>
+            <span><b>Casual practice</b><small>Learn at your own pace</small></span>
+          </button>
+          <button type="button" className={isRated ? 'on' : ''} aria-pressed={isRated}
+            disabled={start.length !== 0}
+            title={start.length ? 'Rated games must start from the initial position' : 'Play with a clock and track your Maia rating'}
+            onClick={() => { setRated(true); if (!hasClock(tc)) setTc({ minutes: 10, increment: 5 }); }}>
+            <Icon name="target" size={18}/>
+            <span><b>Rated challenge</b><small>Timed games and rating</small></span>
+          </button>
+        </div>
 
         <div className="field">
           <label>Start from</label>
