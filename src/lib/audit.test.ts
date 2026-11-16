@@ -1,0 +1,80 @@
+import { describe, expect, it } from 'vitest';
+import { findGaps } from './audit';
+import { fenKey, lineFromSans, START_KEY } from './chess';
+import { addLine, newRepertoire } from './repertoire';
+import type { ExplorerResult } from './lichess';
+
+const key = (sans: string[]) => (sans.length ? lineFromSans(sans)!.at(-1)!.to : START_KEY);
+const stats = (moves: [string, number][]): ExplorerResult =>
+  ({
+    white: moves.reduce((a, [, n]) => a + n, 0),
+    draws: 0,
+    black: 0,
+    moves: moves.map(([san, n]) => ({ san, uci: '', white: n, draws: 0, black: 0, averageRating: 1500 })),
+  }) as unknown as ExplorerResult;
+
+describe('finding gaps', () => {
+  // White: 1.d4, then 2.c4 against both 1…Nf6 and 1…e6; both reach 1.d4 Nf6 2.c4 e6, where only 3.Nc3 d5 is prepared.
+  let rep = newRepertoire('p', 'QG', 'white');
+  for (const l of [
+    ['d4', 'Nf6', 'c4', 'e6', 'Nc3', 'd5'],
+    ['d4', 'e6', 'c4', 'Nf6'],
+  ])
+    rep = addLine(rep, lineFromSans(l)!);
+  const db = new Map<string, ExplorerResult>([
+    [key(['d4']), stats([['Nf6', 60], ['e6', 40]])],
+    [key(['d4', 'Nf6', 'c4']), stats([['e6', 50], ['g6', 50]])],
+    [key(['d4', 'e6', 'c4']), stats([['Nf6', 75], ['d5', 25]])],
+    [key(['d4', 'Nf6', 'c4', 'e6', 'Nc3']), stats([['Bb4', 50], ['d5', 30], ['b6', 20]])],
+  ]);
+  const explorer = async (k: string) => db.get(k) ?? stats([]);
+
+  it('adds up every move order that reaches a position', async () => {
+    const r = await findGaps(rep, { ratings: [], speeds: [], minReach: 0.001, maxPly: 20 }, () => {}, new AbortController().signal, explorer);
+    const bb4 = r.gaps.find((g) => g.san === 'Bb4')!;
+    // Reach of the Nimzo position: 0.6·0.5 (via 1…Nf6) + 0.4·0.75 (via 1…e6) = 0.6; Bb4 is half of that.
+    expect(bb4.reach).toBeCloseTo(0.3);
+    expect(bb4.routes).toBe(2);
+    expect(r.gaps.find((g) => g.san === 'g6')!.reach).toBeCloseTo(0.3);
+    expect(r.gaps.find((g) => g.san === 'd5' && g.line.length === 3)!.reach).toBeCloseTo(0.1);
+    // Inside the preparation: 1 − (g6 0.3 + d5 0.1 + Bb4 0.3 + b6 0.12).
+    expect(r.coverage).toBeCloseTo(0.18);
+    expect(fenKey(`${bb4.key} 0 1`)).toBe(key(['d4', 'Nf6', 'c4', 'e6', 'Nc3']));
+  });
+
+  it('leaves out what you meet too rarely', async () => {
+    const r = await findGaps(rep, { ratings: [], speeds: [], minReach: 0.2, maxPly: 20 }, () => {}, new AbortController().signal, explorer);
+    expect(r.gaps.map((g) => g.san).sort()).toEqual(['Bb4', 'g6']);
+  });
+
+  it('also, if asked: replies common in a position you reach often, however rare they are in all your games', async () => {
+    // b6: 20% of the Nimzo position (reached in 60%) = 12%; d5 after 1…e6 2.c4: 25% of a position reached in 40% = 10%.
+    const r = await findGaps(
+      rep,
+      { ratings: [], speeds: [], minReach: 0.2, maxPly: 20, localShare: 0.05 },
+      () => {},
+      new AbortController().signal,
+      explorer,
+    );
+    expect(r.gaps.map((g) => g.san).sort()).toEqual(['Bb4', 'b6', 'd5', 'g6']);
+    // Positions reached less often than the threshold are not looked at: at 50%, the route via 1…e6 (40%) stops, so the
+    // Nimzo position comes to 30% and its replies drop out; g6 stays (50% of a position reached in 60%).
+    const strict = await findGaps(rep, { ratings: [], speeds: [], minReach: 0.5, maxPly: 20, localShare: 0.05 }, () => {}, new AbortController().signal, explorer);
+    expect(strict.gaps.map((g) => g.san).sort()).toEqual(['g6']);
+  });
+
+  it('lists the prepared branches you meet too rarely, the biggest first: what to trim', async () => {
+    let r2 = rep;
+    r2 = addLine(r2, lineFromSans(['d4', 'Nf6', 'c4', 'a5', 'Nc3'])!); // a5: not in the database's list at all
+    const r = await findGaps(r2, { ratings: [], speeds: [], minReach: 0.45, maxPly: 20 }, () => {}, new AbortController().signal, explorer);
+    const rare = r.rare!.map((b) => [b.line.join(' '), +b.reach.toFixed(2), b.plies]);
+    expect(rare).toEqual([
+      // 1…e6 (40%): deleting it takes 1…e6 2.c4 Nf6 (the position after it stays, reached by 1…Nf6 2.c4 e6).
+      ['d4 e6', 0.4, 3],
+      ['d4 Nf6 c4 a5', 0, 2],
+      // 2…e6 after 1…Nf6 2.c4: 30% (the other way there stopped at 1…e6); its moves stay reachable via 1…e6.
+      ['d4 Nf6 c4 e6', 0.3, 1],
+    ]);
+    expect(r.rare![0]).toMatchObject({ san: 'e6', from: key(['d4']) });
+  });
+});
