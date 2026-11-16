@@ -30,7 +30,7 @@ export const CHANGELOG: ChangelogEntry[] = [
   },
 ];
 
-const SEEN_KEY = 'seen-version';
+const SEEN_KEY = 'repertoire2-seen-version';
 
 function seenVersion(): string | null {
   try {
