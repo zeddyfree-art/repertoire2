@@ -65,12 +65,12 @@ function GamesList() {
   const [choosing, setChoosing] = useState(false);
   const [speed, setSpeed] = useState<GameSpeed | null>(null);
   const [limit, setLimit] = useState(60);
-  const [tab, setTabState] = useState<'games' | 'insights'>(() => (localStorage.getItem('games-tab') === 'insights' ? 'insights' : 'games'));
+  const [tab, setTabState] = useState<'games' | 'insights'>(() => (localStorage.getItem('repertoire2-games-tab') === 'insights' ? 'insights' : 'games'));
   const [fetching, setFetching] = useState(false);
   const setTab = (t: 'games' | 'insights') => {
     setTabState(t);
     try {
-      localStorage.setItem('games-tab', t);
+      localStorage.setItem('repertoire2-games-tab', t);
     } catch {
       /* ignore */
     }
