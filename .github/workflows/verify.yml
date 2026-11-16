@@ -23,4 +23,4 @@ jobs:
       - name: Install Chromium for desktop and phone smoke tests
         run: npx playwright install --with-deps chromium
       - name: Verify Warm Studio navigation, board and themes in Chromium
-        run: npx playwright test e2e/studio.spec.ts
+        run: npx playwright test e2e/studio.spec.ts e2e/workspaces.spec.ts
