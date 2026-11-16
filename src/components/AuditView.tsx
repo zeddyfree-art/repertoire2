@@ -151,7 +151,7 @@ export function AuditView() {
     <div className="audit-grid studio-audit-grid">
       <section className="studio-audit-summary" aria-label="Preparation check overview">
         <div className="studio-audit-fact"><span>GAPS FOUND</span><strong>{gaps ? gapItems.length : '—'}</strong><small>{gaps ? 'Last Lichess check' : 'Not checked yet'}</small></div>
-        <div className="studio-audit-fact"><span>ENGINE ISSUES</span><strong>{saved?.engine ? storedIssues : '—'}</strong><small>{saved?.engine ? 'Saved evaluation' : 'Not checked yet'}</small></div>
+        <div className="studio-audit-fact"><span>ENGINE ISSUES</span><strong>{saved?.engine ? engineItems.length : '—'}</strong><small>{saved?.engine ? 'Saved evaluation' : 'Not checked yet'}</small></div>
         <div className="studio-audit-fact"><span>LINE ENDS</span><strong>{gaps ? endItems.length : '—'}</strong><small>Prepared continuations</small></div>
       </section>
       <div className="card">
