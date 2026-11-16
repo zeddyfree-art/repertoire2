@@ -39,7 +39,7 @@ test('Warm Studio workspaces fit desktop and phone widths', async ({ page }) => 
 
 test('new brand SVG is present and the generated hero image is available', async ({ page }) => {
   await start(page);
-  await expect(page.locator('.topbar .studio-logo-mark img')).toBeVisible();
+  await expect(page.locator('.topbar .studio-brand')).toBeVisible();
   const photo = await page.request.get('/warm-studio-hero.jpg');
   expect(photo.ok()).toBeTruthy();
   expect(photo.headers()['content-type']).toContain('image/jpeg');
