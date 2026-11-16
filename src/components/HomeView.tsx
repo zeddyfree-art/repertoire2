@@ -133,7 +133,26 @@ export function HomeView() {
   };
 
   return (
-    <div className="stack" style={{ gap: 20 }}>
+    <div className="stack studio-home" style={{ gap: 20 }}>
+      <section className="studio-welcome">
+        <div className="studio-welcome-copy">
+          <div className="studio-eyebrow">YOUR CHESS STUDIO</div>
+          <h1>Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {profile.name}.</h1>
+          <p>Continue your training and grow your repertoire.</p>
+        </div>
+        <div className="studio-welcome-piece" aria-hidden="true">♚</div>
+      </section>
+      <section className="studio-today">
+        <div>
+          <div className="studio-eyebrow">TODAY</div>
+          <h2>Train your repertoire</h2>
+          <p>{plan.total > 0 ? `${plan.total} positions ready for review` : 'You are all caught up for today.'}</p>
+        </div>
+        <button className="studio-start" onClick={() => useApp.getState().trainToday()}>
+          <Icon name="train" size={20} /> {plan.total > 0 ? 'Start training' : 'Open training'}
+        </button>
+      </section>
+      <div className="studio-section-heading"><h2>Your repertoires</h2><span>{reps.length} {reps.length === 1 ? 'repertoire' : 'repertoires'}</span></div>
       <div className="row wrap">
         <div>
           <h2 style={{ fontSize: 22 }}>Hi {profile.name}</h2>
