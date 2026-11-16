@@ -143,13 +143,13 @@ function GamesList() {
             {tab === 'games' && <GameActions games={games} profileId={profile.id} suggestions={suggestions} onChoose={() => setChoosing(true)} />}
             {tab === 'games' && speeds.length > 1 && (
               <div className="filter-row">
-                <span className={`chip ${speed === null ? 'on' : ''}`} onClick={() => setSpeed(null)}>
+                <button type="button" aria-pressed={speed === null} className={`chip ${speed === null ? 'on' : ''}`} onClick={() => setSpeed(null)}>
                   All ({games.length})
-                </span>
+                </button>
                 {speeds.map((s) => (
-                  <span key={s} className={`chip ${speed === s ? 'on' : ''}`} onClick={() => setSpeed(s)}>
+                  <button type="button" key={s} aria-pressed={speed === s} className={`chip ${speed === s ? 'on' : ''}`} onClick={() => setSpeed(s)}>
                     {SPEED_NAMES[s]} ({games.filter((g) => g.speed === s).length})
-                  </span>
+                  </button>
                 ))}
               </div>
             )}
