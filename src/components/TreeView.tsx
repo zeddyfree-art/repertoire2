@@ -48,7 +48,7 @@ type Orientation = 'lr' | 'td';
 
 function readOrientation(): Orientation {
   try {
-    const o = localStorage.getItem('tree-orientation');
+    const o = localStorage.getItem('repertoire2-tree-orientation');
     if (o === 'lr' || o === 'td') return o;
   } catch {
     /* ignore */
@@ -136,7 +136,7 @@ export function TreeView() {
   const setOrientation = (o: Orientation) => {
     setOrientationState(o);
     try {
-      localStorage.setItem('tree-orientation', o);
+      localStorage.setItem('repertoire2-tree-orientation', o);
     } catch {
       /* ignore */
     }
