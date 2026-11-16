@@ -3328,3 +3328,92 @@ html {
   display: grid;
   gap: 6px;
 }
+
+
+/* Repertoire 2 — Warm Studio A2: appearance tokens and restrained surface refresh. */
+:root[data-theme="light"] {
+  --bg: #f5f2eb;
+  --surface: #fffdf8;
+  --surface-2: #f0ece3;
+  --surface-3: #e7e1d6;
+  --border: #ded7ca;
+  --text: #242b27;
+  --muted: #67716b;
+  --faint: #8e968e;
+  --accent: #416a51;
+  --accent-soft: #e2ece2;
+  --mine: #3d7854;
+  --mine-soft: #e0eee4;
+  --opp: #626b7b;
+  --opp-soft: #e8eaf0;
+  --gap: #b7503c;
+  --gap-soft: #f8e7e0;
+  --due: #a27632;
+  --due-soft: #f7edd8;
+  --edge: #c9c1b2;
+  --shadow: 0 2px 4px rgba(36, 43, 39, .035), 0 12px 32px rgba(36, 43, 39, .055);
+  --radius: 13px;
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  --bg: #161e1d;
+  --surface: #202a28;
+  --surface-2: #2a3531;
+  --surface-3: #35423b;
+  --border: #3b4942;
+  --text: #f0f1e9;
+  --muted: #b5c0b6;
+  --faint: #89988e;
+  --accent: #a3c9a2;
+  --accent-soft: #30463a;
+  --mine: #8ac99b;
+  --mine-soft: #284334;
+  --opp: #b2c0cb;
+  --opp-soft: #313e46;
+  --gap: #e68e76;
+  --gap-soft: #4c302b;
+  --due: #e5ba75;
+  --due-soft: #4a3e2a;
+  --edge: #536157;
+  --shadow: 0 2px 8px rgba(0,0,0,.12), 0 14px 35px rgba(0,0,0,.18);
+  --radius: 13px;
+  color-scheme: dark;
+}
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  letter-spacing: -.008em;
+}
+h1, h2 { letter-spacing: -.025em; }
+.card { border-radius: var(--radius); }
+.btn { border-radius: 9px; }
+.btn.primary { color: #fff; }
+:root[data-theme="dark"] .btn.primary { color: #14241b; }
+:where(button, input, select, textarea, a):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.appearance-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 3px 7px;
+  border-radius: 9px;
+  white-space: nowrap;
+}
+.appearance-control select {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  max-width: 76px;
+  font-size: 12px;
+}
+.appearance-label { color: var(--muted); font-size: 11px; }
+@media (max-width: 700px) {
+  .appearance-label { display: none; }
+  .appearance-control { padding: 3px 4px; }
+}
+/* Override legacy OS-only dark component rules when light is explicitly selected. */
+:root[data-theme="light"] { scrollbar-color: #b9b3a6 #f5f2eb; }
