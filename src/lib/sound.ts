@@ -10,7 +10,7 @@ export type SoundName = 'Move' | 'Capture' | 'Check' | 'GenericNotify' | 'LowTim
 
 export const SOUND_SET_NAMES: Record<SoundSet, string> = { sfx: 'SFX', wood: 'Wood', off: 'Off' };
 
-const KEY = 'sound-set';
+const KEY = 'repertoire2-sound-set';
 
 export function soundSet(): SoundSet {
   try {
