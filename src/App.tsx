@@ -240,7 +240,11 @@ function TopBar() {
 
       {/* Right: always visible, whatever the window width. */}
       <div className="topbar-right">
-        <label className="appearance-control" title="Choose appearance"><span className="appearance-label">Theme</span><select aria-label="Appearance" value={appearance} onChange={(e) => setAppearance(e.target.value as "auto" | "light" | "dark")}><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+        <div className="studio-appearance-toggle" role="group" aria-label="Appearance">
+          <button type="button" className={appearance === 'light' ? 'on' : ''} title="Light theme" aria-label="Light theme" aria-pressed={appearance === 'light'} onClick={() => setAppearance('light')}><Icon name="sun" size={17}/></button>
+          <button type="button" className={appearance === 'auto' ? 'on' : ''} title="Follow system appearance" aria-label="Automatic theme" aria-pressed={appearance === 'auto'} onClick={() => setAppearance('auto')}><Icon name="monitor" size={17}/></button>
+          <button type="button" className={appearance === 'dark' ? 'on' : ''} title="Dark theme" aria-label="Dark theme" aria-pressed={appearance === 'dark'} onClick={() => setAppearance('dark')}><Icon name="moon" size={17}/></button>
+        </div>
         <AnalysisPill />
         <SaveIndicator />
         <SyncButton />
