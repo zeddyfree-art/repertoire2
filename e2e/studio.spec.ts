@@ -29,10 +29,9 @@ test('Warm Studio dashboard shows live repertoire board, actions, and no horizon
 
 test('Warm Studio remembers manual dark/light preference and does not alter the board choice', async ({ page }) => {
   await start(page);
-  const theme = page.getByRole('combobox', { name: 'Appearance' });
-  await theme.selectOption('dark');
+  await page.getByRole('button', { name: 'Dark theme' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await theme.selectOption('light');
+  await page.getByRole('button', { name: 'Light theme' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   const choice = await page.evaluate(() => localStorage.getItem('repertoire2-appearance'));
   expect(choice).toBe('light');
@@ -41,5 +40,5 @@ test('Warm Studio remembers manual dark/light preference and does not alter the 
   await page.waitForTimeout(1000);
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
-  await expect(page.getByRole('combobox', { name: 'Appearance' })).toHaveValue('light');
+  await expect(page.getByRole('button', { name: 'Light theme' })).toHaveAttribute('aria-pressed', 'true');
 });
