@@ -9,7 +9,8 @@ import { useSync } from '../lib/sync';
 import { Dialog } from './Dialog';
 import { Icon } from './Icon';
 import { ImportPgnDialog } from './ImportPgnDialog';
-import { describePlan, useTodayPlan } from '../lib/today';
+import { useTodayPlan } from '../lib/today';
+import { StudioDashboard } from './StudioDashboard';
 import { Menu } from './Menu';
 
 /** In play (you play it now: your games are checked against it) or study (trained, but not checked against your games). */
@@ -133,43 +134,26 @@ export function HomeView() {
   };
 
   return (
-    <div className="stack studio-home" style={{ gap: 20 }}>
-      <section className="studio-welcome">
-        <div className="studio-welcome-copy">
-          <h1>Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, {profile.name}.</h1>
-          <p>Continue your training and grow your repertoire.</p>
-        </div>
-        <div className="studio-welcome-piece" aria-hidden="true">♚</div>
-      </section>
-      <section className="studio-today">
+    <div className="stack studio-home" style={{ gap: 26 }}>
+      <StudioDashboard
+        repertoires={reps}
+        activeId={data.activeRepId}
+        plan={plan}
+        onPick={setActiveRep}
+        onOpen={open}
+        onNavigate={setView}
+        onTrainToday={() => useApp.getState().trainToday()}
+        onNewRepertoire={() => setCreating(true)}
+      />
+      <div className="studio-section-heading" id="repertoire-library">
         <div>
-          <div className="studio-eyebrow">TODAY</div>
-          <h2>Train your repertoire</h2>
-          <p>{plan.total > 0 ? `${plan.total} positions ready for review` : 'You are all caught up for today.'}</p>
+          <h2>Your repertoires</h2>
+          <span>Organize, study and train your opening lines.</span>
         </div>
-        <button className="studio-start" onClick={() => useApp.getState().trainToday()}>
-          <Icon name="train" size={20} /> {plan.total > 0 ? 'Start training' : 'Open training'}
-        </button>
-      </section>
-      <div className="studio-section-heading"><h2>Your repertoires</h2><span>{reps.length} {reps.length === 1 ? 'repertoire' : 'repertoires'}</span></div>
-      <div className="row wrap">
-        <div>
-          <h2 style={{ fontSize: 22 }}>Hi {profile.name}</h2>
-          <div className="muted">
-            {reps.length === 0 ? 'Create your first repertoire.' : plan.total > 0 ? `Today: ${describePlan(plan)}.` : 'All done for today.'}
-          </div>
-        </div>
-        <span className="spacer" />
-        {plan.total > 0 && (
-          <button className="btn primary lg" onClick={() => useApp.getState().trainToday()} title="Today's session: all your repertoires and mistake cards">
-            <Icon name="train" size={18} /> Train ({plan.total})
-          </button>
-        )}
-        <button className={`btn ${plan.total > 0 ? '' : 'primary'}`} onClick={() => setCreating(true)}>
-          <Icon name="plus" size={16} /> New repertoire
+        <button className="btn" onClick={() => setCreating(true)}>
+          <Icon name="plus" size={16}/> New repertoire
         </button>
       </div>
-
       <div className="home-grid studio-repertoire-grid">
         {summaries.map(({ rep, stats: st, srs }) => (
           <div

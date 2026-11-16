@@ -22,13 +22,13 @@ import { activeRep, orderedReps, PROFILE_COLORS, useApp, type View } from './lib
 import { connectDrive, reconnectMessage, syncNow, useSync } from './lib/sync';
 
 const NAV: { view: View; label: string; icon: IconName; needsRep: boolean }[] = [
-  { view: 'home', label: 'Overview', icon: 'home', needsRep: false },
+  { view: 'home', label: 'Home', icon: 'home', needsRep: false },
+  { view: 'train', label: 'Train', icon: 'train', needsRep: false },
   { view: 'build', label: 'Build', icon: 'board', needsRep: true },
   { view: 'tree', label: 'Tree', icon: 'tree', needsRep: true },
-  { view: 'train', label: 'Train', icon: 'train', needsRep: false },
   { view: 'play', label: 'Play', icon: 'play', needsRep: false },
-  { view: 'audit', label: 'Check', icon: 'audit', needsRep: true },
   { view: 'games', label: 'Games', icon: 'games', needsRep: false },
+  { view: 'audit', label: 'Check', icon: 'audit', needsRep: true },
 ];
 
 export function App() {
@@ -230,12 +230,21 @@ function TopBar() {
               {n.view === 'train' && due > 0 && <span className="badge due">{due}</span>}
             </button>
           ))}
+          <div className="studio-nav-spacer" aria-hidden="true" />
+          <button className={view === 'settings' ? 'on studio-nav-settings' : 'studio-nav-settings'} onClick={() => setView('settings')} title="Settings">
+            <Icon name="settings" size={17} />
+            <span className="label">Settings</span>
+          </button>
         </nav>
       </div>
 
       {/* Right: always visible, whatever the window width. */}
       <div className="topbar-right">
-        <label className="appearance-control" title="Choose appearance"><span className="appearance-label">Theme</span><select aria-label="Appearance" value={appearance} onChange={(e) => setAppearance(e.target.value as "auto" | "light" | "dark")}><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+        <div className="studio-appearance-toggle" role="group" aria-label="Appearance">
+          <button type="button" className={appearance === 'light' ? 'on' : ''} title="Light theme" aria-label="Light theme" aria-pressed={appearance === 'light'} onClick={() => setAppearance('light')}><Icon name="sun" size={17}/></button>
+          <button type="button" className={appearance === 'auto' ? 'on' : ''} title="Follow system appearance" aria-label="Automatic theme" aria-pressed={appearance === 'auto'} onClick={() => setAppearance('auto')}><Icon name="monitor" size={17}/></button>
+          <button type="button" className={appearance === 'dark' ? 'on' : ''} title="Dark theme" aria-label="Dark theme" aria-pressed={appearance === 'dark'} onClick={() => setAppearance('dark')}><Icon name="moon" size={17}/></button>
+        </div>
         <AnalysisPill />
         <SaveIndicator />
         <SyncButton />
@@ -245,7 +254,7 @@ function TopBar() {
         <button className="btn icon ghost" disabled={!canRedo} onClick={redoLast} title="Redo (Ctrl+Y)">
           <Icon name="redo" />
         </button>
-        <button className={`btn icon ${view === 'settings' ? '' : 'ghost'}`} onClick={() => setView('settings')} title="Settings" aria-label="Settings">
+        <button className={`btn icon topbar-settings ${view === 'settings' ? '' : 'ghost'}`} onClick={() => setView('settings')} title="Settings" aria-label="Settings">
           <Icon name="settings" />
         </button>
       </div>

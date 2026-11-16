@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -20,3 +20,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Install Chromium for desktop and phone smoke tests
+        run: npx playwright install --with-deps chromium
+      - name: Verify Warm Studio navigation, board and themes in Chromium
+        run: npx playwright test e2e/studio.spec.ts

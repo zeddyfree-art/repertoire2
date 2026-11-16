@@ -12,7 +12,7 @@ export async function start(page: Page, rep?: { name: string; side?: 'white' | '
   await page.getByPlaceholder('Name').fill('Tester');
   await page.getByRole('button', { name: 'Get started' }).click();
   if (!rep) return;
-  await page.locator('main').getByRole('button', { name: 'New repertoire' }).click();
+  await page.locator('.studio-section-heading').getByRole('button', { name: 'New repertoire' }).click();
   const dialog = page.locator('.dialog');
   await dialog.getByPlaceholder(/^e\.g\./).fill(rep.name);
   if (rep.side === 'black') await dialog.getByRole('button', { name: /Black/ }).click();
@@ -22,7 +22,7 @@ export async function start(page: Page, rep?: { name: string; side?: 'white' | '
 }
 
 export const go = (page: Page, view: 'Overview' | 'Build' | 'Tree' | 'Train' | 'Play' | 'Check' | 'Games') =>
-  page.locator(`nav.nav button[title="${view}"]`).click();
+  page.locator(`nav.nav button[title="${view === 'Overview' ? 'Home' : view}"]`).click();
 
 /** Plays a move on the board by tapping (or clicking) its two squares. */
 export async function move(page: Page, from: string, to: string, board = page.locator('cg-board').first()) {
