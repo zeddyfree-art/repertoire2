@@ -42,7 +42,7 @@ interface SyncState {
 
 export const useSync = create<SyncState>()(() => ({ status: 'off', account: null, lastSyncAt: null, error: null }));
 
-const META_KEY = 'drive-sync';
+const META_KEY = 'repertoire2-drive-sync';
 const BACKUPS_KEPT = 30;
 const GAME_BACKUPS_KEPT = 8;
 const GAME_BACKUP_DAYS = 7;
