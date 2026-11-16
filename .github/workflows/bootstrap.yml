@@ -1,0 +1,33 @@
+name: Bootstrap Repertoire 2
+on:
+  push:
+    paths:
+      - '.github/workflows/bootstrap.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  copy:
+    if: github.repository == 'zeddyfree-art/repertoire2'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout destination
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Copy source application
+        run: |
+          git clone --depth 1 --branch claude/chess-opening-repertoire-app-r7j91r https://github.com/zeddyfree-art/chess.git /tmp/repertoire-source
+          rsync -a --exclude='.git' --exclude='node_modules' --exclude='.github/workflows' /tmp/repertoire-source/ ./
+          node - <<'NODE'
+          const fs = require('fs');
+          const p = JSON.parse(fs.readFileSync('package.json','utf8'));
+          p.name = 'repertoire2';
+          p.homepage = 'https://zeddyfree-art.github.io/repertoire2/';
+          p.repository.url = 'git+https://github.com/zeddyfree-art/repertoire2.git';
+          p.bugs.url = 'https://github.com/zeddyfree-art/repertoire2/issues';
+          fs.writeFileSync('package.json',JSON.stringify(p,null,2)+'\n');
+          NODE
+          git add -A
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m 'Clone chess application into Repertoire 2' || exit 0
+          git push
