@@ -113,6 +113,14 @@ function GamesList() {
           </button>
         </div>
         {games.length > 0 && (
+          <div className="studio-games-kpis" aria-label="Your game statistics">
+            <div><span>IMPORTED GAMES</span><strong>{games.length}</strong></div>
+            <div><span>ANALYSED</span><strong>{games.filter((g) => !!g.analysis && !needsAnalysis(g)).length}</strong></div>
+            <div><span>READY TO ANALYSE</span><strong>{waiting}</strong></div>
+            <div><span>TRAINABLE MOMENTS</span><strong>{suggestions.length}</strong></div>
+          </div>
+        )}
+        {games.length > 0 && (
           <div className="deck-tabs view-tabs" role="tablist">
             <button role="tab" aria-selected={tab === 'games'} className={tab === 'games' ? 'on' : ''} onClick={() => setTab('games')}>
               Games <span className="faint">{games.length}</span>
