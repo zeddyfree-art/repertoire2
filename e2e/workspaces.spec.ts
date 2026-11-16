@@ -43,4 +43,12 @@ test('new brand SVG is present and the generated hero image is available', async
   const photo = await page.request.get('/warm-studio-hero.jpg');
   expect(photo.ok()).toBeTruthy();
   expect(photo.headers()['content-type']).toContain('image/jpeg');
+  const dimensions = await page.evaluate(async () => {
+    const image = new Image();
+    image.src = '/warm-studio-hero.jpg';
+    try { await image.decode(); return [image.naturalWidth, image.naturalHeight]; }
+    catch { return [0, 0]; }
+  });
+  expect(dimensions[0]).toBeGreaterThan(100);
+  expect(dimensions[1]).toBeGreaterThan(50);
 });
