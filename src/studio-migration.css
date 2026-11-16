@@ -1,0 +1,109 @@
+/* Two independent repertoire decisions: used in games and trained with SRS. */
+.studio-rep-use {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap; padding: 3px 0 5px;
+}
+.studio-purpose-group {
+  display: inline-flex; align-items: center; padding: 3px;
+  border: 1px solid var(--border); border-radius: 100px;
+  background: var(--surface-2);
+}
+.studio-purpose-group button {
+  border: 0; border-radius: 100px; padding: 7px 10px;
+  background: transparent; color: var(--muted);
+  font-size: 11px; font-weight: 650; cursor: pointer;
+}
+.studio-purpose-group button.on {
+  color: var(--accent); background: var(--surface);
+  box-shadow: 0 1px 5px rgba(28, 43, 30, .11);
+}
+.studio-purpose-group button:focus-visible,
+.studio-srs-switch:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.studio-srs-switch {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  padding: 8px; font-size: 11px; font-weight: 650;
+  border-radius: 9px; color: var(--muted);
+  background: var(--surface-2);
+}
+.studio-srs-switch:has(input:checked) { color: var(--accent); }
+.studio-srs-switch input { margin: 0; accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+.studio-repertoire-grid .rep-card:has(.studio-srs-switch input:not(:checked)) { border-style: dashed; }
+.studio-repertoire-grid .rep-card .studio-rep-use { min-height: 39px; }
+
+/* Meaningful aggregate scopes rather than an average of repertoire percentages. */
+.studio-scope-tabs {
+  display: flex; gap: 5px; flex-wrap: wrap;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 4px; margin-top: 14px;
+}
+.studio-scope-tabs button {
+  flex: 1 1 auto; border: none; background: transparent;
+  color: var(--muted); border-radius: 9px; padding: 9px 11px;
+  font-size: 11px; font-weight: 700; cursor: pointer;
+}
+.studio-scope-tabs button.on {
+  color: var(--accent); background: var(--surface);
+  box-shadow: 0 1px 6px rgba(28, 43, 30, .07);
+}
+.studio-scope-hint { margin: 7px 0 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+.studio-progress-stats { max-height: 265px; overflow-y: auto; padding-right: 2px; }
+.studio-progress-empty { color: var(--muted); font-size: 12px; padding: 12px 3px; }
+.studio-kpi strong { font-variant-numeric: tabular-nums; }
+
+/* Migration: preview and consent are mandatory; never auto-write to the old app. */
+.dialog:has(.studio-legacy-import) {
+  width: min(660px, 100%);
+  border-radius: 21px; padding: clamp(16px, 3vw, 27px);
+}
+.dialog:has(.studio-legacy-import) > h2 {
+  font: 700 clamp(23px,2.6vw,31px)/1.15 Georgia,'Times New Roman',serif;
+  letter-spacing: -.03em;
+}
+.studio-legacy-import > p { margin: 0; line-height: 1.55; }
+.studio-legacy-counts {
+  display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px;
+}
+.studio-legacy-counts > div {
+  min-width: 0; display: flex; flex-direction: column; gap: 5px;
+  background: var(--surface-2); padding: 15px;
+  border: 1px solid var(--border); border-radius: 12px;
+}
+.studio-legacy-counts strong { font: 700 30px/1 Georgia,serif; color: var(--text); }
+.studio-legacy-counts span { font-size: 11px; color: var(--muted); }
+.studio-legacy-list {
+  border: 1px solid var(--border); border-radius: 13px;
+  max-height: 255px; overflow-y: auto;
+}
+.studio-legacy-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 12px; border-bottom: 1px solid var(--border);
+}
+.studio-legacy-item:last-child { border-bottom: none; }
+.studio-legacy-item > span:first-child { font-size: 23px; color: var(--accent); }
+.studio-legacy-item > span:nth-child(2) { flex: 1; min-width: 0; }
+.studio-legacy-item b { display: block; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+.studio-legacy-item small { display: block; color: var(--muted); font-size: 11px; margin-top: 3px; }
+.studio-legacy-item .badge { flex: none; }
+.studio-legacy-history {
+  padding: 12px; border: 1px solid var(--border);
+  border-radius: 12px; background: var(--surface-2); cursor: pointer;
+}
+.studio-legacy-history input { accent-color: var(--accent); width: 17px; height: 17px; flex: none; }
+.studio-legacy-history span { display: flex; flex-direction: column; gap: 3px; }
+.studio-legacy-history small { color: var(--muted); font-size: 11px; }
+.studio-legacy-settings { border-radius: 17px; }
+.studio-legacy-settings .section > h2 { font: 700 22px Georgia,serif; }
+@media (max-width: 650px) {
+  .studio-rep-use { gap: 6px; }
+  .studio-purpose-group button { padding: 7px 9px; }
+  .studio-scope-tabs { flex-wrap: nowrap; overflow-x: auto; }
+  .studio-scope-tabs button { white-space: nowrap; min-width: max-content; }
+  .studio-legacy-counts > div { padding: 11px; }
+  .studio-legacy-counts strong { font-size: 25px; }
+  .studio-legacy-item { gap: 6px; padding: 10px 8px; }
+  .studio-legacy-item small { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .studio-scope-tabs button,
+  .studio-purpose-group button { transition: none; }
+}
