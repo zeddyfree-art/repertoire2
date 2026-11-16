@@ -42,7 +42,7 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n.toLocaleString
 
 function readFilter(profileId: string): InsightFilter {
   try {
-    const f = JSON.parse(localStorage.getItem(`insights-${profileId}`) ?? 'null');
+    const f = JSON.parse(localStorage.getItem(`repertoire2-insights-${profileId}`) ?? 'null');
     if (f) return f;
   } catch {
     /* ignore */
@@ -58,7 +58,7 @@ export function InsightsView({ games, profileId, suggestions: allSuggestions, on
   const [filter, setFilter] = useState<InsightFilter>(() => readFilter(profileId));
   useEffect(() => {
     try {
-      localStorage.setItem(`insights-${profileId}`, JSON.stringify(filter));
+      localStorage.setItem(`repertoire2-insights-${profileId}`, JSON.stringify(filter));
     } catch {
       /* ignore */
     }
