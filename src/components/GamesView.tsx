@@ -97,10 +97,10 @@ function GamesList() {
   const current = queue.current ? all.games.find((g) => g.id === queue.current) : undefined;
 
   return (
-    <div style={{ maxWidth: 980, margin: '0 auto' }} className="stack">
-      <div className="card card-pad stack">
+    <div className="stack studio-games-layout">
+      <div className="card card-pad stack studio-games-library">
         <div className="row wrap">
-          <h2>Games</h2>
+          <h2>Game library</h2>
           <span className="muted">{profile.name}</span>
           <span className="spacer" />
           {profile.lichess && hasFetchedBefore(profile.id) && (
