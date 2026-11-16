@@ -317,7 +317,7 @@ function Onboarding() {
     setPeople((ps) => ps.map((x, j) => (j === i ? { ...x, ...patch } : x)));
 
   return (
-    <div style={{ minHeight: '100%', display: 'grid', gridTemplateRows: '1fr auto', gridTemplateColumns: 'minmax(0, 1fr)', padding: 16 }}>
+    <div className="studio-onboarding" style={{ minHeight: '100%', display: 'grid', gridTemplateRows: '1fr auto', gridTemplateColumns: 'minmax(0, 1fr)', padding: 16 }}>
       <div className="card card-pad stack" style={{ width: 'min(560px, 100%)', gap: 16, alignSelf: 'center', justifySelf: 'center' }}>
         <div className="row">
           <img className="studio-inline-brand" src={`${import.meta.env.BASE_URL}brand-knight.svg`} alt="Repertoire" width="46" height="46" />
