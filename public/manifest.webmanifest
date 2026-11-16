@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Repertoire 2 — chess opening trainer",
-  "short_name": "Repertoire",
+  "name": "Repertoire — Warm Studio opening trainer",
+  "short_name": "Repertoire 2",
   "description": "Build, check and train your chess opening repertoire: Lichess database, engine checks, spaced repetition and a human-like practice opponent.",
   "start_url": "./",
   "scope": "./",
@@ -10,9 +10,9 @@
   "theme_color": "#24442f",
   "categories": ["games", "education"],
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    { "src": "icon-192-v2.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-v2.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512-v2.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "brand-knight.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]
 }
