@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { setAppearance, useAppearance } from '../lib/appearance';
 import { googleClientId, preloadGoogle, setClientIdOverride, type DriveFile } from '../lib/drive';
 import { downloadText, safeName } from '../lib/download';
 import { exportPgn } from '../lib/pgn';
@@ -31,6 +32,7 @@ export function timeAgo(t: number | null): string {
 type DialogState = { title: string; body: React.ReactNode; choices: Choice[] } | null;
 
 export function SettingsView() {
+  const appearance = useAppearance();
   const data = useApp((s) => s.data);
   const rep = useApp(activeRep);
   const { addProfile, updateProfile, deleteProfile, renameRepertoire, deleteRepertoire, restoreRepertoire, replaceData, markBackup, showToast } =
@@ -119,6 +121,7 @@ export function SettingsView() {
         ))}
       </div>
 
+      <div className="card"><div className="section"><h2>Appearance</h2></div><div className="section stack"><label className="field"><span>Colour mode</span><select className="input" value={appearance} onChange={(e) => setAppearance(e.target.value as "auto" | "light" | "dark")}><option value="auto">Automatic — follow device</option><option value="light">Light — warm ivory</option><option value="dark">Dark — charcoal and sage</option></select></label><p className="help">This preference applies only to Repertoire 2. Your board colours remain independently configurable.</p></div></div>
       <SyncCard onRestore={confirmRestore} />
 
       <div className="card">
