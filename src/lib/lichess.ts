@@ -28,8 +28,8 @@ export function ratingLabel(bucket: number): string {
 // ---------------------------------------------------------------------------
 // Token handling
 
-const TOKEN_KEY = 'lichess-token';
-const USER_KEY = 'lichess-user';
+const TOKEN_KEY = 'repertoire2-lichess-token';
+const USER_KEY = 'repertoire2-lichess-user';
 
 export function getToken(): string | null {
   try {
@@ -68,7 +68,7 @@ export async function verifyToken(token: string): Promise<string> {
 
 // OAuth2 PKCE. Lichess accepts any client_id for public clients.
 const CLIENT_ID = 'repertoire-trainer';
-const PKCE_KEY = 'lichess-pkce';
+const PKCE_KEY = 'repertoire2-lichess-pkce';
 
 function redirectUri() {
   return location.origin + location.pathname;
@@ -162,7 +162,7 @@ export class RateLimitError extends Error {
   }
 }
 
-const cacheStore = typeof indexedDB !== 'undefined' ? createStore('repertoire-cache', 'lichess') : undefined;
+const cacheStore = typeof indexedDB !== 'undefined' ? createStore('repertoire2-cache', 'lichess') : undefined;
 const memCache = new Map<string, unknown>();
 const EXPLORER_TTL = 1000 * 60 * 60 * 24 * 30; // explorer data changes slowly
 
