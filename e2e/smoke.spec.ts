@@ -64,9 +64,9 @@ test("train: today's session learns the new moves, then recalls them", async ({ 
   await start(page, { name: 'Open games', pgn: REP });
   await go(page, 'Overview');
   // The same number on the Overview, the Train tab and its badge.
-  await expect(page.locator('main')).toContainText('Today: 3 new moves.');
+  await expect(page.locator('.studio-training-hero')).toContainText("3 positions in today's session");
   await expect(page.locator('nav.nav button[title="Train"] .badge')).toHaveText('3');
-  await page.getByRole('button', { name: 'Train (3)' }).click();
+  await page.locator('.studio-training-button').click();
   await expect(page.locator('.today-bar')).toContainText('part 1 of 1 · Open games: new moves (3)');
   const feedback = page.locator('.feedback');
   const squares: Record<string, [string, string]> = { e4: ['e2', 'e4'], Nf3: ['g1', 'f3'], Bc4: ['f1', 'c4'] };
