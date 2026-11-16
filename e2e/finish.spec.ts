@@ -37,7 +37,7 @@ test('Settings, About and onboarding stay accessible on laptop and phone', async
 
   await expect(page.locator('.studio-workspace-settings')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Settings & preferences' })).toBeVisible();
-  await expect(page.locator('.studio-settings-jumps button')).toHaveCount(5);
+  await expect(page.locator('.studio-settings-jumps button')).toHaveCount(6);
   await page.locator('.studio-settings-jumps').getByRole('button', { name: 'Appearance' }).click();
   await expect(page.locator('#studio-settings-appearance')).toBeVisible();
   await expect(page.locator('#studio-settings-backup')).toHaveCount(1);

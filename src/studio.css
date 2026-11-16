@@ -338,7 +338,7 @@
   top: 0; bottom: 0; right: 0;
   width: min(66%, 820px);
   pointer-events: none;
-  background: url('/warm-studio-hero.jpg') right center / cover no-repeat;
+  background: url('/warm-studio-hero-hires.svg') right center / cover no-repeat;
   mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.75) 30%, #000 65%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.75) 30%, #000 65%);
   opacity: .94;

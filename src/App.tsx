@@ -7,6 +7,7 @@ import { BuildView } from './components/BuildView';
 import { AnalysisPill, GamesView } from './components/GamesView';
 import { HomeView, NewRepertoireDialog } from './components/HomeView';
 import { WorkspaceHeader } from './components/WorkspaceHeader';
+import { LegacyImportPrompt } from './components/LegacyImport';
 import { Icon, type IconName } from './components/Icon';
 import { PlayView } from './components/PlayView';
 import { SaveIndicator, SyncBanner, UpdateBanner } from './components/SaveIndicator';
@@ -73,7 +74,7 @@ export function App() {
 
   if (!loaded) return null;
   if (!hasProfiles) {
-    if (view !== 'about') return <Onboarding />;
+    if (view !== 'about') return <><Onboarding /><LegacyImportPrompt /></>;
     return (
       <div className="app">
         <main>
@@ -115,6 +116,7 @@ export function App() {
       </main>
       <Footer />
       <WhatsNew />
+      <LegacyImportPrompt />
       {toast && (
         <div className="toast" role="status">
           <span>{toast.message}</span>
@@ -186,9 +188,9 @@ function TopBar() {
       {/* Left: identity, selection and navigation. It wraps onto a second line on narrow screens. */}
       <div className="topbar-left">
         <div className="brand studio-brand" role="img" aria-label="repertoire — chess knight and laurel">
-          <img className="studio-brand-logo" src={`${import.meta.env.BASE_URL}brand-lockup-v2.svg`} alt="" width="248" height="77" />
+          <img className="studio-brand-logo" src={`${import.meta.env.BASE_URL}brand-lockup-v2.svg?v=brand3`} alt="" width="248" height="77" />
           <div className="studio-brand-compact" aria-hidden="true">
-            <img className="studio-brand-knight" src={`${import.meta.env.BASE_URL}brand-knight.svg`} alt="" width="48" height="48" />
+            <img className="studio-brand-knight" src={`${import.meta.env.BASE_URL}brand-knight.svg?v=brand3`} alt="" width="48" height="48" />
             <span>repertoire</span>
           </div>
         </div>
@@ -320,7 +322,7 @@ function Onboarding() {
     <div className="studio-onboarding" style={{ minHeight: '100%', display: 'grid', gridTemplateRows: '1fr auto', gridTemplateColumns: 'minmax(0, 1fr)', padding: 16 }}>
       <div className="card card-pad stack" style={{ width: 'min(560px, 100%)', gap: 16, alignSelf: 'center', justifySelf: 'center' }}>
         <div className="row">
-          <img className="studio-inline-brand" src={`${import.meta.env.BASE_URL}brand-knight.svg`} alt="Repertoire" width="46" height="46" />
+          <img className="studio-inline-brand" src={`${import.meta.env.BASE_URL}brand-knight.svg?v=brand3`} alt="Repertoire" width="46" height="46" />
           <div>
             <h2 style={{ fontSize: 22 }}>Opening repertoire</h2>
             <div className="muted">Build, check and train your openings — no move limit.</div>

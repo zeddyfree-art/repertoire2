@@ -3,7 +3,7 @@ import { Board } from './Board';
 import { Icon } from './Icon';
 import { formatLine, uciToArrow } from '../lib/chess';
 import { ROOT, type Repertoire } from '../lib/repertoire';
-import { mainlinePreview, recentlyPracticed, studioSummary } from '../lib/studioDashboard';
+import { forStudioScope, mainlinePreview, recentlyPracticed, studioSummary, type StudioScope } from '../lib/studioDashboard';
 import type { TodayPlan } from '../lib/today';
 import type { View } from '../lib/store';
 
@@ -38,8 +38,19 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
     return () => window.clearTimeout(timer);
   }, [autoplay, position, frames.length]);
   const frame = frames[position];
-  const summary = useMemo(() => studioSummary(repertoires, plan.total), [repertoires, plan.total]);
-  const recent = useMemo(() => recentlyPracticed(repertoires), [repertoires]);
+  const [scope, setScope] = useState<StudioScope>(() => {
+    try {
+      const saved = localStorage.getItem('repertoire2-dashboard-scope');
+      return saved === 'play' || saved === 'study' || saved === 'all' ? saved : 'training';
+    } catch { return 'training'; }
+  });
+  const chooseScope = (next: StudioScope) => {
+    setScope(next);
+    try { localStorage.setItem('repertoire2-dashboard-scope', next); } catch { /* ignore */ }
+  };
+  const selectedRepertoires = useMemo(() => forStudioScope(repertoires, scope), [repertoires, scope]);
+  const summary = useMemo(() => studioSummary(selectedRepertoires, plan.total), [selectedRepertoires, plan.total]);
+  const recent = useMemo(() => recentlyPracticed(selectedRepertoires), [selectedRepertoires]);
   const practiced = recent.some((day) => day.count > 0);
   const max = Math.max(1, ...recent.map((day) => day.count));
   const coords = recent.map((day, index) => ({
@@ -82,16 +93,16 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
             <div className="studio-kpi">
               <Icon name="train" size={23}/>
               <strong>{summary.today}</strong>
-              <span>Today’s cards</span>
+              <span>Daily session</span>
             </div>
             <div className="studio-kpi">
               <Icon name="target" size={23}/>
-              <strong>{summary.progress === null ? '—' : `${summary.progress}%`}</strong>
-              <span>Moves learned</span>
+              <strong title="Share of SRS moves reviewed at least once — not mastery">{summary.progress === null ? '—' : `${summary.progress}%`}</strong>
+              <span>Moves reviewed</span>
             </div>
             <div className="studio-kpi">
               <Icon name="tree" size={23}/>
-              <strong>{summary.lines}</strong>
+              <strong title="Stored opening variations; independent of how often you reviewed them">{summary.lines}</strong>
               <span>Prepared lines</span>
             </div>
           </div>
@@ -141,6 +152,12 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
             <h2>Your progress</h2>
             <span>Latest reviews · 7 days</span>
           </div>
+          <div className="studio-scope-tabs" role="group" aria-label="Which repertoires to include in progress">
+            {([['training', 'Training now'], ['play', 'In play'], ['study', 'Study'], ['all', 'All']] as const).map(([value, label]) => (
+              <button type="button" key={value} aria-pressed={scope === value} className={scope === value ? 'on' : ''} onClick={() => chooseScope(value)}>{label}</button>
+            ))}
+          </div>
+          <p className="studio-scope-hint">{scope === 'training' ? 'Includes In play and Study; paused repertoires are excluded.' : scope === 'all' ? 'All repertoires, including those with SRS paused.' : scope === 'play' ? 'Repertoires used to check your played games, including any paused training.' : 'Study-only repertoires, including any paused training.'}</p>
           <div className="studio-progress-content">
             <div className="studio-weekly-chart">
               {practiced ? (
@@ -165,15 +182,16 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
               <div className="studio-chart-note">Shows each move's <em>latest</em> review, not the full review history.</div>
             </div>
             <div className="studio-progress-stats">
-              <div className="studio-progress-fact"><span><Icon name="check" size={16}/> Learned moves</span><strong>{summary.learned} / {summary.total}</strong></div>
-              <div className="studio-progress-fact"><span><Icon name="target" size={16}/> Learning progress</span><strong>{summary.progress === null ? '—' : `${summary.progress}%`}</strong></div>
+              <div className="studio-progress-fact"><span><Icon name="check" size={16}/> Reviewed at least once</span><strong>{summary.learned} / {summary.total}</strong></div>
+              <div className="studio-progress-fact"><span><Icon name="target" size={16}/> Moves introduced</span><strong>{summary.progress === null ? '—' : `${summary.progress}%`}</strong></div>
               <div className="studio-progress-fact"><span><Icon name="tree" size={16}/> Prepared lines</span><strong>{summary.lines}</strong></div>
-              {summary.byRepertoire.slice(0, 3).map((rep) =>
+              {summary.byRepertoire.map((rep) =>
                 <div className="studio-progress-by-rep" key={rep.id}>
-                  <div><span title={rep.name}>{rep.name}</span><b>{rep.total ? `${rep.percent}%` : '—'}</b></div>
+                  <div><span title={`${rep.role}${rep.paused ? ', training paused' : ''}`}>{rep.name}{rep.paused ? ' · ⏸' : ''}</span><b>{rep.total ? `${rep.percent}%` : '—'}</b></div>
                   <div className="studio-progress-track"><i style={{ width: `${rep.percent}%` }}/></div>
                 </div>
               )}
+              {summary.byRepertoire.length === 0 && <div className="studio-progress-empty">No repertoires in this view yet.</div>}
             </div>
           </div>
         </section>

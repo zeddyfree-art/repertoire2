@@ -40,15 +40,15 @@ test('Warm Studio workspaces fit desktop and phone widths', async ({ page }) => 
 test('new brand SVG is present and the generated hero image is available', async ({ page }) => {
   await start(page);
   await expect(page.locator('.topbar .studio-brand')).toBeVisible();
-  const photo = await page.request.get('/warm-studio-hero.jpg');
+  const photo = await page.request.get('/warm-studio-hero-hires.svg');
   expect(photo.ok()).toBeTruthy();
-  expect(photo.headers()['content-type']).toContain('image/jpeg');
+  expect(photo.headers()['content-type']).toContain('image/svg+xml');
   const dimensions = await page.evaluate(async () => {
     const image = new Image();
-    image.src = '/warm-studio-hero.jpg';
+    image.src = '/warm-studio-hero-hires.svg';
     try { await image.decode(); return [image.naturalWidth, image.naturalHeight]; }
     catch { return [0, 0]; }
   });
-  expect(dimensions[0]).toBeGreaterThan(100);
-  expect(dimensions[1]).toBeGreaterThan(50);
+  expect(dimensions[0]).toBeGreaterThan(1000);
+  expect(dimensions[1]).toBeGreaterThan(600);
 });
