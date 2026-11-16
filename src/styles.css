@@ -1883,17 +1883,9 @@ a.btn {
   color: #4f7fb8;
 }
 
-@media (prefers-color-scheme: dark) {
-  .sym.bad {
-    color: #f0726a;
-  }
-  .sym.mistake {
-    color: #f0a640;
-  }
-  .sym.inaccuracy {
-    color: #82aee6;
-  }
-}
+ :root[data-theme='dark'] .sym.bad { color: #f0726a; }
+:root[data-theme='dark'] .sym.mistake { color: #f0a640; }
+:root[data-theme='dark'] .sym.inaccuracy { color: #82aee6; }
 
 .badge.kind-blunder,
 .badge.kind-miss {
@@ -1993,11 +1985,7 @@ a.btn {
   font-weight: 600;
 }
 
-@media (prefers-color-scheme: dark) {
-  .key-engine {
-    color: #b88ae6;
-  }
-}
+:root[data-theme='dark'] .key-engine { color: #b88ae6; }
 
 .acc-table {
   width: 100%;
@@ -2265,13 +2253,7 @@ a.btn {
   --s3: #1baf7a;
 }
 
-@media (prefers-color-scheme: dark) {
-  .insights {
-    --s1: #3987e5;
-    --s2: #d95926;
-    --s3: #199e70;
-  }
-}
+:root[data-theme='dark'] .insights { --s1: #3987e5; --s2: #d95926; --s3: #199e70; }
 
 .filter-sep {
   width: 1px;
