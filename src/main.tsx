@@ -12,10 +12,12 @@ import { initUpdateCheck } from './lib/version';
 import { initInstall } from './lib/install';
 import { initPersistence } from './lib/persist';
 import { applyBoardTheme } from './lib/boardTheme';
+import { initAppearance } from './lib/appearance';
 import './styles.css';
 
 // Before anything else, so the browser's "can be installed" event is not missed.
 initInstall();
+initAppearance();
 applyBoardTheme();
 
 createRoot(document.getElementById('root')!).render(
