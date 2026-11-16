@@ -142,7 +142,7 @@ export function mergeChecks(
 // ---------------------------------------------------------------------------
 // The version before syncing kept results in this device's database only: taken over once.
 
-const idb = typeof indexedDB !== 'undefined' ? createStore('repertoire-data', 'app') : undefined;
+const idb = typeof indexedDB !== 'undefined' ? createStore('repertoire2-data', 'app') : undefined;
 
 export async function takeOverDeviceResults(): Promise<Record<string, CheckResults>> {
   if (!idb) return {};
