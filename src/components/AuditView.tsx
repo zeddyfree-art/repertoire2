@@ -17,23 +17,23 @@ export function AuditView() {
   const { goToSans, updateRep, setView } = useApp.getState();
 
   // 2% by default: a reply you meet in one of every fifty games with this colour. Your last choice is remembered.
-  const [gapOpts, setGapOptsState] = useState(() => ({ minReach: Number(localStorage.getItem('gap-min-reach')) || 0.02, maxPly: 20 }));
+  const [gapOpts, setGapOptsState] = useState(() => ({ minReach: Number(localStorage.getItem('repertoire2-gap-min-reach')) || 0.02, maxPly: 20 }));
   const setGapOpts = (fn: (o: typeof gapOpts) => typeof gapOpts) =>
     setGapOptsState((o) => {
       const next = fn(o);
       try {
-        localStorage.setItem('gap-min-reach', String(next.minReach));
+        localStorage.setItem('repertoire2-gap-min-reach', String(next.minReach));
       } catch {
         /* ignore */
       }
       return next;
     });
   // Also the replies common in a position you reach often (≥5% there): the rule of the red boxes in Tree and Build.
-  const [localRule, setLocalRuleState] = useState(() => localStorage.getItem('gap-local') !== '0');
+  const [localRule, setLocalRuleState] = useState(() => localStorage.getItem('repertoire2-gap-local') !== '0');
   const setLocalRule = (v: boolean) => {
     setLocalRuleState(v);
     try {
-      localStorage.setItem('gap-local', v ? '1' : '0');
+      localStorage.setItem('repertoire2-gap-local', v ? '1' : '0');
     } catch {
       /* ignore */
     }
@@ -45,11 +45,11 @@ export function AuditView() {
   const saveChecks = useApp((s) => s.saveChecks);
   const gaps = saved?.gaps?.report ?? null;
   const issues = saved?.engine?.issues ?? null;
-  const [hideDone, setHideDone] = useState(() => localStorage.getItem('check-hide-done') === '1');
+  const [hideDone, setHideDone] = useState(() => localStorage.getItem('repertoire2-check-hide-done') === '1');
   const toggleHideDone = (v: boolean) => {
     setHideDone(v);
     try {
-      localStorage.setItem('check-hide-done', v ? '1' : '0');
+      localStorage.setItem('repertoire2-check-hide-done', v ? '1' : '0');
     } catch {
       /* ignore */
     }
