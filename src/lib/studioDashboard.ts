@@ -1,4 +1,4 @@
-import { counts } from './srs';
+import { State } from './srs';
 import { movesAt, ROOT, stats, type Repertoire } from './repertoire';
 
 /** Only positions actually stored in the selected repertoire are shown on the home board. */
@@ -16,11 +16,25 @@ export function mainlinePreview(rep: Repertoire, maxPlies = 16) {
   return frames;
 }
 
-/** Learn-progress is a ratio of reviewed SRS cards, not an invented repertoire coverage estimate. */
+export type StudioScope = 'training' | 'play' | 'study' | 'all';
+
+/** Two independent axes: role in games and whether SRS is paused. */
+export function forStudioScope(reps: readonly Repertoire[], scope: StudioScope): Repertoire[] {
+  if (scope === 'training') return reps.filter((r) => !r.paused);
+  if (scope === 'play') return reps.filter((r) => !r.study);
+  if (scope === 'study') return reps.filter((r) => !!r.study);
+  return [...reps];
+}
+
+/** "Reviewed" means at least one completed SRS review, never "mastered".
+ * Include all prepared moves, even beyond a temporary training-depth limit. */
 export function studioSummary(reps: readonly Repertoire[], today: number) {
-  const results = reps.map((rep) => ({ rep, srs: counts(rep), stats: stats(rep) }));
-  const learned = results.reduce((sum, x) => sum + x.srs.learned, 0);
-  const total = results.reduce((sum, x) => sum + x.srs.total, 0);
+  const results = reps.map((rep) => {
+    const cards = Object.values(rep.cards);
+    return { rep, reviewed: cards.filter((c) => c.state !== State.New).length, total: cards.length, stats: stats(rep) };
+  });
+  const learned = results.reduce((sum, x) => sum + x.reviewed, 0);
+  const total = results.reduce((sum, x) => sum + x.total, 0);
   const lines = results.reduce((sum, x) => sum + x.stats.lineEnds, 0);
   const moves = results.reduce((sum, x) => sum + x.stats.myMoves, 0);
   return {
@@ -30,9 +44,11 @@ export function studioSummary(reps: readonly Repertoire[], today: number) {
     lines,
     moves,
     progress: total ? Math.round((learned / total) * 100) : null,
-    byRepertoire: results.map(({ rep, srs }) => ({
-      id: rep.id, name: rep.name, learned: srs.learned, total: srs.total,
-      percent: srs.total ? Math.round(srs.learned / srs.total * 100) : 0,
+    byRepertoire: results.map(({ rep, reviewed, total: count }) => ({
+      id: rep.id, name: rep.name, learned: reviewed, total: count,
+      role: rep.study ? 'Study' as const : 'In play' as const,
+      paused: !!rep.paused,
+      percent: count ? Math.round(reviewed / count * 100) : 0,
     })),
   };
 }
