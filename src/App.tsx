@@ -22,13 +22,13 @@ import { activeRep, orderedReps, PROFILE_COLORS, useApp, type View } from './lib
 import { connectDrive, reconnectMessage, syncNow, useSync } from './lib/sync';
 
 const NAV: { view: View; label: string; icon: IconName; needsRep: boolean }[] = [
-  { view: 'home', label: 'Overview', icon: 'home', needsRep: false },
+  { view: 'home', label: 'Home', icon: 'home', needsRep: false },
+  { view: 'train', label: 'Train', icon: 'train', needsRep: false },
   { view: 'build', label: 'Build', icon: 'board', needsRep: true },
   { view: 'tree', label: 'Tree', icon: 'tree', needsRep: true },
-  { view: 'train', label: 'Train', icon: 'train', needsRep: false },
   { view: 'play', label: 'Play', icon: 'play', needsRep: false },
-  { view: 'audit', label: 'Check', icon: 'audit', needsRep: true },
   { view: 'games', label: 'Games', icon: 'games', needsRep: false },
+  { view: 'audit', label: 'Check', icon: 'audit', needsRep: true },
 ];
 
 export function App() {
@@ -230,6 +230,11 @@ function TopBar() {
               {n.view === 'train' && due > 0 && <span className="badge due">{due}</span>}
             </button>
           ))}
+          <div className="studio-nav-spacer" aria-hidden="true" />
+          <button className={view === 'settings' ? 'on studio-nav-settings' : 'studio-nav-settings'} onClick={() => setView('settings')} title="Settings">
+            <Icon name="settings" size={17} />
+            <span className="label">Settings</span>
+          </button>
         </nav>
       </div>
 
@@ -245,7 +250,7 @@ function TopBar() {
         <button className="btn icon ghost" disabled={!canRedo} onClick={redoLast} title="Redo (Ctrl+Y)">
           <Icon name="redo" />
         </button>
-        <button className={`btn icon ${view === 'settings' ? '' : 'ghost'}`} onClick={() => setView('settings')} title="Settings" aria-label="Settings">
+        <button className={`btn icon topbar-settings ${view === 'settings' ? '' : 'ghost'}`} onClick={() => setView('settings')} title="Settings" aria-label="Settings">
           <Icon name="settings" />
         </button>
       </div>
