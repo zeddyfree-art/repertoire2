@@ -387,3 +387,11 @@
   .topbar .studio-brand { flex: none; }
   .topbar .studio-brand .studio-brand-compact span { display: none !important; }
 }
+
+.studio-inline-brand {
+  display: block;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #133624;
+  flex: none;
+}
