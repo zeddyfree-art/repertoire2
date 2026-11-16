@@ -13,26 +13,29 @@ import { useTodayPlan } from '../lib/today';
 import { StudioDashboard } from './StudioDashboard';
 import { Menu } from './Menu';
 
-/** In play (you play it now: your games are checked against it) or study (trained, but not checked against your games). */
-function PlayToggle({ rep }: { rep: Repertoire }) {
-  const updateRep = useApp((s) => s.updateRep);
-  const study = !!rep.study;
+/** What a repertoire is used for (game checks), and whether SRS is running, are separate decisions. */
+function RepUseControls({ rep }: { rep: Repertoire }) {
+  const updateRep = useApp((state) => state.updateRep);
+  const changePurpose = (study: boolean) => {
+    if (!!rep.study === study) return;
+    updateRep(rep.id, (r) => setStudy(r, study), study ? 'Marked as Study' : 'Marked as In play');
+  };
   return (
-    <button
-      className={`play-toggle ${study ? 'study' : 'in-play'}`}
-      onClick={(e) => {
-        e.stopPropagation();
-        updateRep(rep.id, (r) => setStudy(r, !study), study ? 'Marked as in play' : 'Marked as study');
-      }}
-      title={
-        study
-          ? 'Study repertoire: you train it, but your games are not checked against it. Click to mark it as in play.'
-          : 'In play: you play this now, so your games are checked against it (game reviews and Insights). Click to mark it as a study repertoire.'
-      }
-      aria-pressed={!study}
-    >
-      {study ? '○ Study' : '● In play'}
-    </button>
+    <div className="studio-rep-use" onClick={(event) => event.stopPropagation()}>
+      <div className="studio-purpose-group" role="group" aria-label={`Purpose of ${rep.name}`}>
+        <button type="button" className={!rep.study ? 'on' : ''} aria-pressed={!rep.study}
+          title="In play: compare your actual games to this repertoire. SRS is separate."
+          onClick={() => changePurpose(false)}>● In play</button>
+        <button type="button" className={rep.study ? 'on' : ''} aria-pressed={!!rep.study}
+          title="Study: practice with SRS without checking your played games against it."
+          onClick={() => changePurpose(true)}>Study</button>
+      </div>
+      <label className="studio-srs-switch" title="SRS training on/off. Keeps all existing review history and due dates.">
+        <input type="checkbox" checked={!rep.paused} onChange={() => togglePause(rep)}
+          aria-label={`SRS training for ${rep.name}`} />
+        <span>SRS {rep.paused ? 'paused' : 'on'}</span>
+      </label>
+    </div>
   );
 }
 
@@ -178,24 +181,7 @@ export function HomeView() {
                 <div style={{ fontWeight: 650, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={rep.name}>
                   {rep.name}
                 </div>
-                <div className="row wrap small" style={{ gap: 4 }}>
-                  <span className="muted" style={{ whiteSpace: 'nowrap', marginRight: 2 }}>
-                    {rep.side === 'white' ? 'with White' : 'with Black'}
-                  </span>
-                  <PlayToggle rep={rep} />
-                  {rep.paused && (
-                    <button
-                      className="play-toggle paused"
-                      title="Training paused: no reviews, nothing due. Click to resume."
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        togglePause(rep);
-                      }}
-                    >
-                      ⏸ Paused
-                    </button>
-                  )}
-                </div>
+                <div className="small muted">{rep.side === 'white' ? 'Playing White' : 'Playing Black'}</div>
               </div>
               <Menu
                 label={`More for ${rep.name}`}
@@ -209,6 +195,7 @@ export function HomeView() {
                 ]}
               />
             </div>
+            <RepUseControls rep={rep} />
             <div className="studio-repertoire-label">OPENING REPERTOIRE</div>
             <div className="stat-row">
               <div
@@ -237,7 +224,7 @@ export function HomeView() {
                 {rep.trainDepth ? ` · trained up to move ${rep.trainDepth}` : ''}
               </div>
             )}
-            <div className="progress" title={`${srs.learned} of ${srs.total} moves learned${rep.trainDepth ? ` (up to move ${rep.trainDepth})` : ''}`}>
+            <div className="progress" title={`${srs.learned} of ${srs.total} moves reviewed at least once${rep.trainDepth ? ` (up to move ${rep.trainDepth})` : ''}; not a mastery percentage`}>
               <div style={{ width: `${(srs.learned / Math.max(1, srs.total)) * 100}%` }} />
             </div>
             <div className="row studio-repertoire-actions" onClick={(e) => e.stopPropagation()}>
