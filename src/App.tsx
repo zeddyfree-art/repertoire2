@@ -105,7 +105,7 @@ export function App() {
       <SyncBanner />
       <main>
         <ErrorBoundary key={view} onReset={() => useApp.getState().setView('home')}>
-          {(view === 'build' || view === 'train' || view === 'tree') ? (
+          {(view === 'build' || view === 'train' || view === 'tree' || view === 'play' || view === 'games' || view === 'audit' || view === 'settings') ? (
             <div className={`studio-workspace studio-workspace-${view}`}>
               <WorkspaceHeader view={view} rep={rep} />
               {content}
