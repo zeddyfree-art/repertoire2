@@ -176,10 +176,10 @@ function RepertoireTrain({ rep }: { rep: Repertoire }) {
               </div>
               <div className="stat">
                 <b>{c.learned}</b>
-                <span>learned</span>
+                <span>reviewed</span>
               </div>
             </div>
-            <div className="progress" title="Share of your moves you have learned">
+            <div className="progress" title="Share of trainable SRS moves reviewed at least once; not a mastery score">
               <div style={{ width: `${(c.learned / Math.max(1, total)) * 100}%` }} />
             </div>
             {newLimit === 0 && !c.due && c.fresh > 0 && (
