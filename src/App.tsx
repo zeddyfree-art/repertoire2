@@ -185,9 +185,12 @@ function TopBar() {
     <header className="topbar">
       {/* Left: identity, selection and navigation. It wraps onto a second line on narrow screens. */}
       <div className="topbar-left">
-        <div className="brand">
-          <div className="brand-mark studio-logo-mark"><img src={`${import.meta.env.BASE_URL}icon.svg`} alt="" /></div>
-          <span>repertoire</span>
+        <div className="brand studio-brand" role="img" aria-label="repertoire — chess knight and laurel">
+          <img className="studio-brand-logo" src={`${import.meta.env.BASE_URL}brand-lockup-v2.svg`} alt="" width="248" height="77" />
+          <div className="studio-brand-compact" aria-hidden="true">
+            <img className="studio-brand-knight" src={`${import.meta.env.BASE_URL}brand-knight.svg`} alt="" width="48" height="48" />
+            <span>repertoire</span>
+          </div>
         </div>
 
         {data.profiles.length > 1 && (
