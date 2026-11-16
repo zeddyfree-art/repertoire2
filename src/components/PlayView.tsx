@@ -757,10 +757,11 @@ function PlaySetup({ onStart }: { onStart: (g: GameConfig) => void }) {
   const busy = maia.status === 'downloading' || maia.status === 'loading';
 
   return (
-    <div style={{ maxWidth: 680, margin: '0 auto' }} className="stack">
-      <div className="card card-pad stack" style={{ gap: 16 }}>
-        <div>
-          <h2>Play a practice game</h2>
+    <div className="stack studio-play-setup">
+      <div className="card card-pad stack studio-play-config" style={{ gap: 16 }}>
+        <div className="studio-play-intro">
+          <div className="studio-mini-kicker">YOUR NEXT GAME</div>
+          <h2>Choose your challenge</h2>
           <div className="muted">Against a human-like opponent: it plays like a real person of the chosen rating.</div>
         </div>
 
