@@ -19,6 +19,7 @@ import { formatDate } from '../lib/games';
 import { ChoiceDialog, type Choice } from './Dialog';
 import { Icon } from './Icon';
 import { ImportPgnDialog } from './ImportPgnDialog';
+import { LegacyImportSettings } from './LegacyImport';
 
 export function timeAgo(t: number | null): string {
   if (!t) return 'never';
@@ -85,7 +86,7 @@ export function SettingsView() {
   return (
     <div className="stack studio-settings-layout" style={{ gap: 18 }}>
       <nav className="studio-settings-jumps" aria-label="Settings sections">
-        {([['players', 'Players'], ['appearance', 'Appearance'], ['sync', 'Cloud sync'], ['lichess', 'Lichess'], ['backup', 'Backups']] as const).map(([id, name]) => (
+        {([['players', 'Players'], ['appearance', 'Appearance'], ['sync', 'Cloud sync'], ['lichess', 'Lichess'], ['backup', 'Backups'], ['import', 'Old app import']] as const).map(([id, name]) => (
           <button type="button" key={id} onClick={() => document.getElementById(`studio-settings-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>{name}</button>
         ))}
       </nav>
@@ -267,6 +268,8 @@ export function SettingsView() {
         </div>
       </div>
 
+      <div id="studio-settings-import"><LegacyImportSettings /></div>
+
       <InstallCard />
       <MaiaCard />
       <SoundCard />
@@ -285,10 +288,10 @@ export function SettingsView() {
             <a href="#about">About this app</a>
             <a href="privacy.html">Privacy Policy</a>
             <a href="terms.html">Terms of Service</a>
-            <a href="https://github.com/zeddyfree-art/chess" target="_blank" rel="noreferrer">
+            <a href="https://github.com/zeddyfree-art/repertoire2" target="_blank" rel="noreferrer">
               Source code
             </a>
-            <a href="https://github.com/zeddyfree-art/chess/issues" target="_blank" rel="noreferrer">
+            <a href="https://github.com/zeddyfree-art/repertoire2/issues" target="_blank" rel="noreferrer">
               Report a problem
             </a>
           </div>
@@ -353,7 +356,7 @@ function SyncCard({ onRestore }: { onRestore: (d: AppData, source: string) => vo
           <div className="notice small stack" style={{ gap: 8 }}>
             <div>
               Drive sync is not set up for this site yet. The site owner creates a (free) Google OAuth client ID once — see{' '}
-              <a href="https://github.com/zeddyfree-art/chess/blob/HEAD/docs/google-drive-setup.md" target="_blank" rel="noreferrer">
+              <a href="https://github.com/zeddyfree-art/repertoire2/blob/HEAD/docs/google-drive-setup.md" target="_blank" rel="noreferrer">
                 the setup guide
               </a>
               .
