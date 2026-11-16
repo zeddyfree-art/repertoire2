@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Icon } from './Icon';
 import { stats, type Repertoire } from '../lib/repertoire';
 import { counts } from '../lib/srs';
-import { useApp, type View } from '../lib/store';
+import { useApp } from '../lib/store';
 import { useTodayPlan } from '../lib/today';
 
 export function WorkspaceHeader({ view, rep }: { view: 'build' | 'train' | 'tree'; rep: Repertoire | null }) {
