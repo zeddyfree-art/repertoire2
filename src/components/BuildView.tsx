@@ -70,22 +70,22 @@ export function BuildView() {
   useEffect(() => {
     setOrientation(rep.side);
   }, [rep.id, rep.side]);
-  const [tab, setTab] = useState<Tab>(() => readPref('build-tab', 'lichess'));
-  const [engineOn, setEngineOn] = useState<boolean>(() => readPref('engine-on', true));
+  const [tab, setTab] = useState<Tab>(() => readPref('repertoire2-build-tab', 'lichess'));
+  const [engineOn, setEngineOn] = useState<boolean>(() => readPref('repertoire2-engine-on', true));
   const [hover, setHover] = useState<string | null>(null);
   const [dialog, setDialog] = useState<{ title: string; body: React.ReactNode; choices: Choice[] } | null>(null);
   const [opening, setOpening] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
-  const [showDrawings, setShowDrawings] = useState<boolean>(() => readPref('show-drawings', true));
+  const [showDrawings, setShowDrawings] = useState<boolean>(() => readPref('repertoire2-show-drawings', true));
 
   useEffect(() => {
-    writePref('show-drawings', showDrawings);
+    writePref('repertoire2-show-drawings', showDrawings);
   }, [showDrawings]);
   useEffect(() => {
-    writePref('build-tab', tab);
+    writePref('repertoire2-build-tab', tab);
   }, [tab]);
   useEffect(() => {
-    writePref('engine-on', engineOn);
+    writePref('repertoire2-engine-on', engineOn);
   }, [engineOn]);
 
   const explorerDb = tab === 'masters' ? 'masters' : 'lichess';
