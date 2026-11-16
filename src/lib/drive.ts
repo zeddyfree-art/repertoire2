@@ -18,10 +18,10 @@
 const SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const API = 'https://www.googleapis.com/drive/v3';
 const UPLOAD = 'https://www.googleapis.com/upload/drive/v3';
-const TOKEN_KEY = 'google-token';
-const CLIENT_OVERRIDE_KEY = 'google-client-id';
-const APP_KEY = 'repertoireApp';
-const FOLDER_NAME = 'Repertoire app';
+const TOKEN_KEY = 'repertoire2-google-token';
+const CLIENT_OVERRIDE_KEY = 'repertoire2-google-client-id';
+const APP_KEY = 'repertoire2App';
+const FOLDER_NAME = 'Repertoire 2 app';
 
 /** OAuth client of the published site (public by design; see docs/google-drive-setup.md). */
 const DEFAULT_CLIENT_ID = '611331060397-qed3b7dfpv7tfq9d40otn610dm4knumt.apps.googleusercontent.com';
