@@ -16,6 +16,7 @@ import { TrainView } from './components/TrainView';
 import { TreeView } from './components/TreeView';
 import { googleClientId, preloadGoogle } from './lib/drive';
 import { useKey } from './lib/hooks';
+import { setAppearance, useAppearance } from './lib/appearance';
 import { useTodayPlan } from './lib/today';
 import { activeRep, orderedReps, PROFILE_COLORS, useApp, type View } from './lib/store';
 import { connectDrive, reconnectMessage, syncNow, useSync } from './lib/sync';
@@ -162,6 +163,7 @@ function SyncButton() {
 }
 
 function TopBar() {
+  const appearance = useAppearance();
   const data = useApp((s) => s.data);
   const view = useApp((s) => s.view);
   const rep = useApp(activeRep);
@@ -233,6 +235,7 @@ function TopBar() {
 
       {/* Right: always visible, whatever the window width. */}
       <div className="topbar-right">
+        <label className="appearance-control" title="Choose appearance"><span className="appearance-label">Theme</span><select aria-label="Appearance" value={appearance} onChange={(e) => setAppearance(e.target.value as "auto" | "light" | "dark")}><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
         <AnalysisPill />
         <SaveIndicator />
         <SyncButton />
