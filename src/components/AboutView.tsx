@@ -11,7 +11,7 @@ export function AboutView({ standalone = false }: { standalone?: boolean }) {
   const version = `${APP_VERSION} · ${__APP_COMMIT__ === 'local' ? `${__BUILD_DATE__} (local build)` : `${__BUILD_DATE__} · ${__APP_COMMIT__}`}`;
 
   return (
-    <article className="about">
+    <article className="about studio-about">
       {standalone && (
         <button className="btn ghost" onClick={() => setView('home')}>
           <Icon name="prev" size={16} /> Back
