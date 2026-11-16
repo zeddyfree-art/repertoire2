@@ -6,6 +6,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { BuildView } from './components/BuildView';
 import { AnalysisPill, GamesView } from './components/GamesView';
 import { HomeView, NewRepertoireDialog } from './components/HomeView';
+import { WorkspaceHeader } from './components/WorkspaceHeader';
 import { Icon, type IconName } from './components/Icon';
 import { PlayView } from './components/PlayView';
 import { SaveIndicator, SyncBanner, UpdateBanner } from './components/SaveIndicator';
@@ -104,7 +105,12 @@ export function App() {
       <SyncBanner />
       <main>
         <ErrorBoundary key={view} onReset={() => useApp.getState().setView('home')}>
-          {content}
+          {(view === 'build' || view === 'train' || view === 'tree') ? (
+            <div className={`studio-workspace studio-workspace-${view}`}>
+              <WorkspaceHeader view={view} rep={rep} />
+              {content}
+            </div>
+          ) : content}
         </ErrorBoundary>
       </main>
       <Footer />
@@ -180,8 +186,8 @@ function TopBar() {
       {/* Left: identity, selection and navigation. It wraps onto a second line on narrow screens. */}
       <div className="topbar-left">
         <div className="brand">
-          <div className="brand-mark">♞</div>
-          <span>Repertoire</span>
+          <div className="brand-mark studio-logo-mark"><img src={`${import.meta.env.BASE_URL}icon.svg`} alt="" /></div>
+          <span>repertoire</span>
         </div>
 
         {data.profiles.length > 1 && (
