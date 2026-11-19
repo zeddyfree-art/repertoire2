@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { AboutView } from './components/AboutView';
 import { AuditView } from './components/AuditView';
 import { Footer } from './components/Footer';
