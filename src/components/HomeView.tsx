@@ -146,7 +146,15 @@ export function HomeView() {
         onPick={setActiveRep}
         onOpen={open}
         onNavigate={setView}
-        onTrainToday={() => useApp.getState().trainToday()}
+        onTrainToday={() => {
+          useApp.getState().setTrainDeck('today');
+          if (plan.total > 0) useApp.getState().trainToday();
+          else useApp.getState().setView('train');
+        }}
+        onLearnNew={() => {
+          useApp.getState().setTrainDeck('today');
+          useApp.getState().setView('train');
+        }}
         onNewRepertoire={() => setCreating(true)}
       />
       <div className="studio-section-heading" id="repertoire-library">
