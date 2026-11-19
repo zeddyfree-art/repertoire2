@@ -368,10 +368,16 @@
   flex: none; object-fit: contain;
 }
 .topbar .studio-brand .studio-brand-compact span {
-  display: inline !important; font-size: 24px;
+  display: inline !important; font-size: 22px;
   line-height: 1; font-weight: 700; letter-spacing: -.035em;
   color: var(--text);
 }
+.topbar .studio-brand .studio-brand-compact { display: flex; }
+.topbar .studio-brand-logo { display: none; }
+.topbar .studio-knight-light { display: block; }
+.topbar .studio-knight-dark { display: none; }
+:root[data-theme="dark"] .topbar .studio-knight-light { display: none; }
+:root[data-theme="dark"] .topbar .studio-knight-dark { display: block; }
 :root[data-theme="dark"] .topbar .studio-brand-logo { display: none; }
 :root[data-theme="dark"] .topbar .studio-brand-compact { display: flex; }
 @media (min-width: 1101px) {
