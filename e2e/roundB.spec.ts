@@ -50,7 +50,7 @@ test('Rename works from repertoire card, Settings is only global configuration',
   await page.getByRole('menuitem', { name: 'Rename repertoire…' }).click();
   await page.getByRole('textbox', { name: 'New repertoire name' }).fill('Scotch Open Games');
   await page.getByRole('button', { name: 'Save name' }).click();
-  await expect(card).toContainText('Scotch Open Games');
+  await expect(page.locator('.rep-card')).toContainText('Scotch Open Games');
   await go(page, 'Build');
   await expect(page.getByRole('combobox', { name: 'Working repertoire' })).toContainText('Scotch Open Games');
   const settings = page.locator('.topbar .topbar-settings');
