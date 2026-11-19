@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { AboutView } from './components/AboutView';
 import { AuditView } from './components/AuditView';
 import { Footer } from './components/Footer';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { BuildView } from './components/BuildView';
 import { AnalysisPill, GamesView } from './components/GamesView';
-import { HomeView, NewRepertoireDialog } from './components/HomeView';
+import { HomeView } from './components/HomeView';
 import { WorkspaceHeader } from './components/WorkspaceHeader';
 import { LegacyImportPrompt } from './components/LegacyImport';
 import { Icon, type IconName } from './components/Icon';
@@ -20,7 +20,7 @@ import { googleClientId, preloadGoogle } from './lib/drive';
 import { useKey } from './lib/hooks';
 import { setAppearance, useAppearance } from './lib/appearance';
 import { useTodayPlan } from './lib/today';
-import { activeRep, orderedReps, PROFILE_COLORS, useApp, type View } from './lib/store';
+import { activeRep, useApp, type View } from './lib/store';
 import { connectDrive, reconnectMessage, syncNow, useSync } from './lib/sync';
 
 const NAV: { view: View; label: string; icon: IconName; needsRep: boolean }[] = [
@@ -177,9 +177,9 @@ function TopBar() {
   const rep = useApp(activeRep);
   const canUndo = useApp((s) => s.undo.length > 0);
   const canRedo = useApp((s) => s.redo.length > 0);
-  const { setView, setTrainDeck, setActiveProfile, setActiveRep, undoLast, redoLast } = useApp.getState();
-  const [creating, setCreating] = useState(false);
-  const reps = useMemo(() => orderedReps(data, data.activeProfileId), [data]);
+  const { setView, setTrainDeck, setActiveProfile, undoLast, redoLast } = useApp.getState();
+
+
   // The same number as on the Overview and in today's session.
   const due = useTodayPlan().total;
 
@@ -213,25 +213,6 @@ function TopBar() {
           </div>
         )}
 
-        <select
-          className="input rep-select"
-          value={rep?.id ?? ''}
-          onChange={(e) => {
-            if (e.target.value === '__new') setCreating(true);
-            else {
-              setActiveRep(e.target.value);
-              if (view === 'home' || view === 'settings') setView('build');
-            }
-          }}
-        >
-          {!rep && <option value="">Choose a repertoire…</option>}
-          {reps.map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.side === 'white' ? '♔' : '♚'} {r.name}
-            </option>
-          ))}
-          <option value="__new">+ New repertoire…</option>
-        </select>
 
         <nav className="nav">
           {NAV.map((n) => (
@@ -269,7 +250,6 @@ function TopBar() {
           <Icon name="settings" />
         </button>
       </div>
-      {creating && <NewRepertoireDialog onClose={() => setCreating(false)} />}
     </header>
   );
 }
