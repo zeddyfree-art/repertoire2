@@ -27,8 +27,10 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq --no-install-recommends librsvg2-bin
+          rsvg-convert -w 32 -h 32 -o /tmp/repertoire-favicon.png public/brand-knight.svg
           rsvg-convert -w 192 -h 192 -o /tmp/repertoire-knight.png public/brand-knight.svg
           rsvg-convert -w 248 -h 77 -o /tmp/repertoire-logo.png public/brand-lockup-v2.svg
+          test "$(stat -c%s /tmp/repertoire-favicon.png)" -gt 800
           test "$(stat -c%s /tmp/repertoire-knight.png)" -gt 4000
           test "$(stat -c%s /tmp/repertoire-logo.png)" -gt 2000
       - name: Install Chromium for desktop and phone smoke tests
