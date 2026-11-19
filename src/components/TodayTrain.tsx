@@ -292,7 +292,7 @@ function TodaySession({ plan, onExit }: { plan: TodayPlan; onExit: () => void })
   );
   let body: React.ReactNode;
   if (part.kind === 'mistakes') body = <MistakeSession key={index} initial={part.cards} onExit={onExit} onDone={next} />;
-  else if (wholeLines.get(rep!.id)) body = <LineReviewSession key={index} rep={rep!} items={part.items} start={[]} onExit={onExit} onDone={next} />;
+  else if (wholeLines.get(rep!.id) && part.kind !== 'review') body = <LineReviewSession key={index} rep={rep!} items={part.items} start={[]} onExit={onExit} onDone={next} />;
   else
     body = (
       <ReviewSession
