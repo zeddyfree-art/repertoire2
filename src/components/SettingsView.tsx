@@ -280,7 +280,7 @@ export function SettingsView() {
         </div>
         <div className="section stack" style={{ gap: 8 }}>
           <div className="help">
-            Repertoire is free, open-source software (GPL-3.0). Built on Lichess’ chessground and chessops, Stockfish, Maia-3
+            Repertoire 2 is free, open-source software (GPL-3.0). Built on Lichess’ chessground and chessops, Stockfish, Maia-3
             (CSSLab, University of Toronto), ONNX Runtime and FSRS. No account, no tracking: your data stays in your browser
             or in your own Google Drive.
           </div>
@@ -479,7 +479,7 @@ function InstallCard() {
         ) : state === 'available' ? (
           <div className="row wrap" style={{ gap: 10 }}>
             <button className="btn primary" onClick={() => installApp().then((ok) => ok && showToast('Installed'))}>
-              <Icon name="download" size={16} /> Install Repertoire
+              <Icon name="download" size={16} /> Install Repertoire 2
             </button>
             <span className="small muted">Its own icon and window, without the browser around it.</span>
           </div>
@@ -491,7 +491,7 @@ function InstallCard() {
         ) : (
           <div>
             Use your browser’s install option: in Chrome and Edge the install icon at the right of the address bar (or the
-            menu ⋮ → <b>Install Repertoire</b> / <b>Cast, save and share → Install page as app</b>); on Android ⋮ → <b>Add to
+            menu ⋮ → <b>Install Repertoire 2</b> / <b>Cast, save and share → Install page as app</b>); on Android ⋮ → <b>Add to
             Home screen</b> or <b>Install app</b>. Firefox on a computer cannot install web apps.
           </div>
         )}
