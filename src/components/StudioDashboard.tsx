@@ -15,10 +15,11 @@ interface Props {
   onOpen: (id: string, view: 'build' | 'train' | 'tree') => void;
   onNavigate: (view: View) => void;
   onTrainToday: () => void;
+  onLearnNew: () => void;
   onNewRepertoire: () => void;
 }
 
-export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, onNavigate, onTrainToday, onNewRepertoire }: Props) {
+export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, onNavigate, onTrainToday, onLearnNew, onNewRepertoire }: Props) {
   const active = repertoires.find((rep) => rep.id === activeId) ?? repertoires[0] ?? null;
   const frames = useMemo(() => active ? mainlinePreview(active) : [{ key: ROOT }], [active]);
   const [ply, setPly] = useState(0);
@@ -73,80 +74,46 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
         <div className="studio-royal-mark" aria-hidden="true"><span>♚</span><span>♔</span><strong>♚</strong></div>
       </header>
 
-      <div className="studio-dashboard-primary">
-        <div className="studio-dashboard-left">
+      <div className="studio-dashboard-flow">
           <section className="studio-training-hero" aria-label="Today's training">
             <div>
               <div className="studio-overline">TODAY</div>
-              <h2>Train your repertoire</h2>
+              <h2>Your next chess session</h2>
               <p>{plan.total > 0
                 ? `${plan.total} ${plan.total === 1 ? 'position' : 'positions'} in today's session`
                 : 'You are all caught up for today.'}</p>
             </div>
-            <button className="studio-training-button" onClick={onTrainToday}>
-              <Icon name="play" size={20} /> {plan.total > 0 ? 'Start training' : 'Open training'}
-            </button>
+            <div className="studio-home-training-actions">
+              <button className="studio-training-button" onClick={onTrainToday}>
+                <Icon name="train" size={20}/> {plan.total > 0 ? `Review (${plan.total})` : 'Review'}
+              </button>
+              <button className="studio-training-secondary" onClick={onLearnNew}>
+                <Icon name="plus" size={20}/> Learn new moves
+              </button>
+            </div>
             <div className="studio-leaf-motif" aria-hidden="true">❧</div>
           </section>
 
-          <div className="studio-kpi-row" aria-label="Training overview">
-            <div className="studio-kpi">
-              <Icon name="train" size={23}/>
-              <strong>{summary.today}</strong>
-              <span>Daily session</span>
-            </div>
-            <div className="studio-kpi">
-              <Icon name="target" size={23}/>
-              <strong title="Share of SRS moves reviewed at least once — not mastery">{summary.progress === null ? '—' : `${summary.progress}%`}</strong>
-              <span>Moves reviewed</span>
-            </div>
-            <div className="studio-kpi">
-              <Icon name="tree" size={23}/>
-              <strong title="Stored opening variations; independent of how often you reviewed them">{summary.lines}</strong>
-              <span>Prepared lines</span>
-            </div>
-          </div>
-        </div>
 
-        <section className="studio-featured-card" aria-label="Your featured repertoire">
-          {active ? (
-            <>
-              <div className="studio-preview-stage">
-                <Board
-                  className="studio-preview-board"
-                  position={frame.key}
-                  orientation={active.side}
-                  movable={null}
-                  lastMove={frame.uci ? uciToArrow(frame.uci) : null}
-                />
-              </div>
-              <div className="studio-featured-detail">
-                <span className="studio-card-kicker">YOUR REPERTOIRE</span>
-                <select aria-label="Featured repertoire" className="studio-featured-picker" value={active.id} onChange={(event) => onPick(event.target.value)}>
-                  {repertoires.map((rep) => <option key={rep.id} value={rep.id}>{rep.name}</option>)}
-                </select>
-                <h2>{active.name}</h2>
-                <p className="studio-move-caption" aria-live="polite">{position === 0 ? 'Starting position' : formatLine(frames.slice(1, position + 1).map((m) => m.san!))}</p>
-                <div className="studio-preview-nav" aria-label="Preview moves">
-                  <button aria-label="Previous move" title="Previous move" onClick={() => { setAutoplay(false); setPly((i) => Math.max(0, i - 1)); }} disabled={position === 0}><Icon name="prev"/></button>
-                  <button className="studio-preview-play" aria-label={autoplay ? 'Pause line playback' : 'Play line'} title={autoplay ? 'Pause' : 'Play the main line'} aria-pressed={autoplay} onClick={() => { if (autoplay) setAutoplay(false); else { if (position >= frames.length - 1) setPly(0); setAutoplay(true); } }} disabled={frames.length <= 1}><Icon name={autoplay ? 'pause' : 'play'}/></button>
-                  <button aria-label="Next move in repertoire" title="Next move in repertoire" onClick={() => { setAutoplay(false); setPly((i) => Math.min(frames.length - 1, i + 1)); }} disabled={position === frames.length - 1}><Icon name="next"/></button>
-                </div>
-                <button className="studio-open-builder" onClick={() => onOpen(active.id, 'build')}><Icon name="board" size={17}/> Open in builder</button>
-              </div>
-            </>
-          ) : (
-            <div className="studio-no-repertoire">
-              <span className="studio-empty-piece" aria-hidden="true">♘</span>
-              <h2>Your next opening starts here</h2>
-              <p>Build your first repertoire or import an existing PGN.</p>
-              <button className="studio-open-builder" onClick={onNewRepertoire}><Icon name="plus"/> New repertoire</button>
-            </div>
-          )}
+        <section className="studio-continue-card">
+          <div className="studio-panel-head"><h2>Continue where you left off</h2></div>
+          <button className="studio-continue-item" onClick={() => active ? onOpen(active.id, 'build') : onNewRepertoire()}>
+            <span className="studio-action-icon"><Icon name="board" size={21}/></span>
+            <span><b>Build repertoire</b><small>{active?.name ?? 'Create your first opening'}</small></span>
+            <Icon name="next" size={19}/>
+          </button>
+          <button className="studio-continue-item" onClick={() => onNavigate('play')}>
+            <span className="studio-action-icon"><Icon name="play" size={21}/></span>
+            <span><b>Play vs. Maia</b><small>Practice against a human-like opponent</small></span>
+            <Icon name="next" size={19}/>
+          </button>
+          <button className="studio-continue-item" onClick={() => onNavigate('games')}>
+            <span className="studio-action-icon"><Icon name="games" size={21}/></span>
+            <span><b>Analyze a game</b><small>Find and train your mistakes</small></span>
+            <Icon name="next" size={19}/>
+          </button>
         </section>
-      </div>
 
-      <div className="studio-dashboard-secondary">
         <section className="studio-progress-card">
           <div className="studio-panel-head">
             <h2>Your progress</h2>
@@ -196,23 +163,60 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
           </div>
         </section>
 
-        <section className="studio-continue-card">
-          <div className="studio-panel-head"><h2>Continue</h2></div>
-          <button className="studio-continue-item" onClick={() => active ? onOpen(active.id, 'build') : onNewRepertoire()}>
-            <span className="studio-action-icon"><Icon name="board" size={21}/></span>
-            <span><b>Build repertoire</b><small>{active?.name ?? 'Create your first opening'}</small></span>
-            <Icon name="next" size={19}/>
-          </button>
-          <button className="studio-continue-item" onClick={() => onNavigate('play')}>
-            <span className="studio-action-icon"><Icon name="play" size={21}/></span>
-            <span><b>Play vs. Maia</b><small>Practice against a human-like opponent</small></span>
-            <Icon name="next" size={19}/>
-          </button>
-          <button className="studio-continue-item" onClick={() => onNavigate('games')}>
-            <span className="studio-action-icon"><Icon name="games" size={21}/></span>
-            <span><b>Analyze a game</b><small>Find and train your mistakes</small></span>
-            <Icon name="next" size={19}/>
-          </button>
+
+          <div className="studio-kpi-row" aria-label="Training overview">
+            <div className="studio-kpi">
+              <Icon name="train" size={23}/>
+              <strong>{summary.today}</strong>
+              <span>Daily session</span>
+            </div>
+            <div className="studio-kpi">
+              <Icon name="target" size={23}/>
+              <strong title="Share of SRS moves reviewed at least once — not mastery">{summary.progress === null ? '—' : `${summary.progress}%`}</strong>
+              <span>Moves reviewed</span>
+            </div>
+            <div className="studio-kpi">
+              <Icon name="tree" size={23}/>
+              <strong title="Stored opening variations; independent of how often you reviewed them">{summary.lines}</strong>
+              <span>Prepared lines</span>
+            </div>
+          </div>
+
+        <section className="studio-featured-card" aria-label="Your featured repertoire">
+          {active ? (
+            <>
+              <div className="studio-preview-stage">
+                <Board
+                  className="studio-preview-board"
+                  position={frame.key}
+                  orientation={active.side}
+                  movable={null}
+                  lastMove={frame.uci ? uciToArrow(frame.uci) : null}
+                />
+              </div>
+              <div className="studio-featured-detail">
+                <span className="studio-card-kicker">EXPLORE A MAIN LINE</span>
+                <select aria-label="Featured repertoire" className="studio-featured-picker" value={active.id} onChange={(event) => onPick(event.target.value)}>
+                  {repertoires.map((rep) => <option key={rep.id} value={rep.id}>{rep.name}</option>)}
+                </select>
+                <h2>{active.name}</h2>
+                <p className="studio-move-caption" aria-live="polite">{position === 0 ? 'Starting position' : formatLine(frames.slice(1, position + 1).map((m) => m.san!))}</p>
+                <div className="studio-preview-nav" aria-label="Preview moves">
+                  <button aria-label="Previous move" title="Previous move" onClick={() => { setAutoplay(false); setPly((i) => Math.max(0, i - 1)); }} disabled={position === 0}><Icon name="prev"/></button>
+                  <button className="studio-preview-play" aria-label={autoplay ? 'Pause line playback' : 'Play line'} title={autoplay ? 'Pause' : 'Play the main line'} aria-pressed={autoplay} onClick={() => { if (autoplay) setAutoplay(false); else { if (position >= frames.length - 1) setPly(0); setAutoplay(true); } }} disabled={frames.length <= 1}><Icon name={autoplay ? 'pause' : 'play'}/></button>
+                  <button aria-label="Next move in repertoire" title="Next move in repertoire" onClick={() => { setAutoplay(false); setPly((i) => Math.min(frames.length - 1, i + 1)); }} disabled={position === frames.length - 1}><Icon name="next"/></button>
+                </div>
+                <button className="studio-open-builder" onClick={() => onOpen(active.id, 'build')}><Icon name="board" size={17}/> Open in builder</button>
+              </div>
+            </>
+          ) : (
+            <div className="studio-no-repertoire">
+              <span className="studio-empty-piece" aria-hidden="true">♘</span>
+              <h2>Your next opening starts here</h2>
+              <p>Build your first repertoire or import an existing PGN.</p>
+              <button className="studio-open-builder" onClick={onNewRepertoire}><Icon name="plus"/> New repertoire</button>
+            </div>
+          )}
         </section>
       </div>
     </div>
