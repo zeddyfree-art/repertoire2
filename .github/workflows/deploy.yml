@@ -32,10 +32,11 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq --no-install-recommends librsvg2-bin
-          rsvg-convert -w 192 -h 192 -o dist/icon-192-v3.png public/brand-knight.svg
-          rsvg-convert -w 512 -h 512 -o dist/icon-512-v3.png public/brand-knight.svg
-          rsvg-convert -w 512 -h 512 -o dist/icon-maskable-512-v3.png public/brand-knight.svg
-          rsvg-convert -w 180 -h 180 -o dist/apple-touch-icon-v3.png public/brand-knight.svg
+          rsvg-convert -w 32 -h 32 -o dist/favicon-32-v4.png public/brand-knight.svg
+          rsvg-convert -w 192 -h 192 -o dist/icon-192-v4.png public/brand-knight.svg
+          rsvg-convert -w 512 -h 512 -o dist/icon-512-v4.png public/brand-knight.svg
+          rsvg-convert -w 512 -h 512 -o dist/icon-maskable-512-v4.png public/brand-knight.svg
+          rsvg-convert -w 180 -h 180 -o dist/apple-touch-icon-v4.png public/brand-knight.svg
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
