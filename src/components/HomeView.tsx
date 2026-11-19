@@ -134,6 +134,7 @@ export function HomeView() {
 
   const open = (id: string, view: 'build' | 'train' | 'tree') => {
     setActiveRep(id);
+    if (view === 'train') useApp.getState().setTrainDeck('repertoire');
     setView(view);
   };
 
