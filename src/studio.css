@@ -398,6 +398,7 @@
   display: block;
   border-radius: 12px;
   object-fit: contain;
-  background: #133624;
+  background: transparent;
   flex: none;
 }
+:root[data-theme="dark"] .studio-inline-brand { background: #efe9db; }
