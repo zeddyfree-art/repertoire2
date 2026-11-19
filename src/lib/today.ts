@@ -102,14 +102,14 @@ export function unlearnedMoves(rep: Repertoire): TrainItem[] {
   return buildQueue(rep, { newLimit: Number.MAX_SAFE_INTEGER }).filter((item) => item.isNew);
 }
 
-/** Today's plan for the active player, kept up to date with their repertoires, cards and choices. */
+/** Active player's due-only plan for Home, nav badge and Train. New moves are explicitly learned separately. */
 export function useTodayPlan(): TodayPlan {
   const data = useApp((s) => s.data);
   const profile = useApp(activeProfile);
   return useMemo(() => {
     const reps = orderedReps(data, data.activeProfileId);
     const cards = (data.mistakes ?? []).filter((m) => m.profileId === data.activeProfileId);
-    return todayPlan(reps, cards, trainPrefs(profile));
+    return reviewOnlyPlan(reps, cards, trainPrefs(profile));
   }, [data, profile]);
 }
 
