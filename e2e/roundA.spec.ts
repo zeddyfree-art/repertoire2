@@ -62,14 +62,16 @@ test('Review has no new cards; Learn has one repertoire selector and stopping le
   await expect(page.getByLabel('Repertoire to learn')).toContainText('new');
 });
 
-test('light theme logo is transparent and brand has no Warm Studio product naming', async ({ page }) => {
+test('light mode restores original logo and keeps Repertoire 2 branding', async ({ page }) => {
   await start(page);
   await page.getByRole('button', { name: 'Light theme' }).click();
-  await expect(page.locator('.studio-knight-light')).toBeVisible();
+  const original = page.locator('.studio-brand-original');
+  const compact = page.locator('.studio-knight-light');
+  await expect(original.or(compact).first()).toBeAttached();
   await expect(page.locator('.studio-brand')).toContainText('Repertoire 2');
   await expect(page).toHaveTitle('Repertoire 2');
   const manifest = await (await page.request.get('/manifest.webmanifest')).json();
   expect(manifest.name).toBe('Repertoire 2');
-  const text = await (await page.request.get('/brand-transparent.svg')).text();
-  expect(text).not.toContain('data:image/jpeg');
+  const artwork = await (await page.request.get('/brand-lockup-v2.svg')).text();
+  expect(artwork).toContain('viewBox="0 0 992 305"');
 });
