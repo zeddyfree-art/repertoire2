@@ -208,38 +208,33 @@ export function TodayTrain() {
 function LearnNewMoves({ repId, onExit }: { repId: string; onExit: () => void }) {
   const rep = useApp((s) => s.data.repertoires.find((r) => r.id === repId));
   const [batch, setBatch] = useState(0);
-  const [breakTime, setBreakTime] = useState(false);
   const [learned, setLearned] = useState(0);
-  // A short automatic batch creates a natural resting point; the user never
-  // has to choose a 5/10-card limit. Unreached cards remain State.New.
+  // Three cards at a time prevents an enormous teaching queue whose recall
+  // tests would otherwise happen far too late. Batches advance automatically:
+  // no 5/10 settings, no extra confirmation, Stop is always available.
   const [items, setItems] = useState(() => {
     const chosen = useApp.getState().data.repertoires.find((r) => r.id === repId);
     return chosen ? unlearnedMoves(chosen).slice(0, 3).map((i) => ({ ...i, kind: 'learn' as const })) : [];
   });
   if (!rep) return <div className="card card-pad"><p>This repertoire is no longer available.</p><button className="btn" onClick={onExit}>Back</button></div>;
   if (rep.paused) return <div className="card card-pad stack"><h2>Training paused</h2><p>Resume SRS from the repertoire card before learning new moves.</p><button className="btn" onClick={onExit}>Back</button></div>;
-  const nextBatch = () => {
+  const advance = () => {
+    setLearned((n) => n + items.length);
     const current = useApp.getState().data.repertoires.find((r) => r.id === repId);
     setItems(current ? unlearnedMoves(current).slice(0, 3).map((i) => ({ ...i, kind: 'learn' as const })) : []);
     setBatch((n) => n + 1);
-    setBreakTime(false);
   };
-  const remaining = unlearnedMoves(rep).length;
   return (
     <div className="stack studio-continuous-learn" style={{ gap: 10 }}>
-      <div className="today-bar small"><b>Learn new moves</b><span className="muted"> · {rep.name} · stop at any time</span></div>
-      {breakTime || !items.length ? (
+      <div className="today-bar small"><b>Learn new moves</b><span className="muted"> · {rep.name} · keep learning until you stop</span></div>
+      {!items.length ? (
         <div className="card card-pad stack studio-learning-rest">
-          <h2>{remaining ? 'Ready for the next line?' : 'All eligible moves introduced'}</h2>
-          <p>{learned} moves reviewed in this learning session. {remaining ? `${remaining} new moves remain.` : 'You are caught up for now.'}</p>
-          <div className="row wrap">
-            {remaining > 0 && <button className="btn primary" onClick={nextBatch}>Continue learning</button>}
-            <button className="btn" onClick={onExit}>Finish for now</button>
-          </div>
+          <h2>All eligible moves introduced</h2>
+          <p>{learned} moves reviewed in this learning session. New cards will return later as scheduled reviews.</p>
+          <div className="row wrap"><button className="btn primary" onClick={onExit}>Finish for now</button></div>
         </div>
       ) : (
-        <ReviewSession key={batch} rep={rep} initial={items} onExit={onExit}
-          onDone={() => { setLearned((n) => n + items.length); setBreakTime(true); }} />
+        <ReviewSession key={batch} rep={rep} initial={items} onExit={onExit} onDone={advance} />
       )}
     </div>
   );
