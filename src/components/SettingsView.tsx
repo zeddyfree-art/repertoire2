@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { setAppearance, useAppearance } from '../lib/appearance';
 import { googleClientId, preloadGoogle, setClientIdOverride, type DriveFile } from '../lib/drive';
-import { downloadText, safeName } from '../lib/download';
-import { exportPgn } from '../lib/pgn';
 import { getLichessUser, getToken, logout, RATING_BUCKETS, ratingLabel, setToken, SPEED_LABELS, SPEEDS, startLogin, verifyToken } from '../lib/lichess';
 import { isMaiaDownloaded, removeMaia } from '../lib/maia';
 import { stats } from '../lib/repertoire';
@@ -13,12 +11,11 @@ import { keepStorage, useStorageState } from '../lib/persist';
 import { BOARD_THEMES, boardBackground, setBoardTheme, useBoardTheme, type BoardThemeName } from '../lib/boardTheme';
 import { connectDrive, disconnectDrive, driveBackups, loadDriveBackup, reconnectDrive, syncNow, useSync } from '../lib/sync';
 import { useGames } from '../lib/gamesStore';
-import { activeRep, exportBackup, lichessRatingOf, parseBackup, PROFILE_COLORS, profileRating, useApp, type AppData, type Profile } from '../lib/store';
+import { exportBackup, lichessRatingOf, parseBackup, PROFILE_COLORS, profileRating, useApp, type AppData, type Profile } from '../lib/store';
 import { refreshLichessRating, useLichessRatingState } from '../lib/lichessRating';
 import { formatDate } from '../lib/games';
 import { ChoiceDialog, type Choice } from './Dialog';
 import { Icon } from './Icon';
-import { ImportPgnDialog } from './ImportPgnDialog';
 import { LegacyImportSettings } from './LegacyImport';
 
 export function timeAgo(t: number | null): string {
@@ -35,11 +32,9 @@ type DialogState = { title: string; body: React.ReactNode; choices: Choice[] } |
 export function SettingsView() {
   const appearance = useAppearance();
   const data = useApp((s) => s.data);
-  const rep = useApp(activeRep);
-  const { addProfile, updateProfile, deleteProfile, renameRepertoire, deleteRepertoire, restoreRepertoire, replaceData, markBackup, showToast } =
+  const { addProfile, updateProfile, deleteProfile, replaceData, markBackup, showToast } =
     useApp.getState();
   const [dialog, setDialog] = useState<DialogState>(null);
-  const [importing, setImporting] = useState(false);
   const [tokenInput, setTokenInput] = useState('');
   const [tokenMsg, setTokenMsg] = useState<string | null>(null);
   const [user, setUser] = useState(getLichessUser());
@@ -193,52 +188,6 @@ export function SettingsView() {
         </div>
       </div>
 
-      {rep && (
-        <div className="card">
-          <div className="section">
-            <h2>Repertoire: {rep.name}</h2>
-          </div>
-          <div className="section stack" style={{ gap: 10 }}>
-            <div className="field">
-              <label>Name</label>
-              <input className="input" defaultValue={rep.name} onBlur={(e) => e.target.value.trim() && renameRepertoire(rep.id, e.target.value.trim())} />
-            </div>
-            <div className="row wrap">
-              <button className="btn" onClick={() => downloadText(`${safeName(rep.name)}.pgn`, exportPgn(rep), 'application/x-chess-pgn')}>
-                <Icon name="download" size={16} /> Export PGN
-              </button>
-              <button className="btn" onClick={() => setImporting(true)}>
-                <Icon name="upload" size={16} /> Import PGN…
-              </button>
-              <span className="spacer" />
-              <button
-                className="btn danger"
-                onClick={() =>
-                  setDialog({
-                    title: `Delete ${rep.name}?`,
-                    body: `The whole repertoire (${stats(rep).moves} moves) and its training history are deleted.`,
-                    choices: [
-                      {
-                        label: 'Delete',
-                        kind: 'danger',
-                        run: () => {
-                          deleteRepertoire(rep.id);
-                          showToast(`Deleted “${rep.name}”`, { label: 'Undo', run: () => restoreRepertoire(rep) });
-                        },
-                      },
-                    ],
-                  })
-                }
-              >
-                <Icon name="trash" size={16} /> Delete
-              </button>
-            </div>
-            <div className="help">
-              The PGN export contains all lines as variations and can be loaded into Lichess studies, ChessBase or Chessbook.
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="card" id="studio-settings-backup">
         <div className="section">
