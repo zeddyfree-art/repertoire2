@@ -20,7 +20,7 @@ import { googleClientId, preloadGoogle } from './lib/drive';
 import { useKey } from './lib/hooks';
 import { setAppearance, useAppearance } from './lib/appearance';
 import { useTodayPlan } from './lib/today';
-import { activeRep, useApp, type View } from './lib/store';
+import { activeRep, PROFILE_COLORS, useApp, type View } from './lib/store';
 import { connectDrive, reconnectMessage, syncNow, useSync } from './lib/sync';
 
 const NAV: { view: View; label: string; icon: IconName; needsRep: boolean }[] = [
