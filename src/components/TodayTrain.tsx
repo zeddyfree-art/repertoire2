@@ -20,21 +20,21 @@ export function useTrainPrefs(): [TrainPrefs, (patch: Partial<TrainPrefs>) => vo
 
 /** One repertoire's session settings: how many new moves a session adds, and whole lines or single cards. Kept with the
  *  repertoire, so each has its own, the same on all your devices. */
-export function RepSessionSettings({ rep, compact = false }: { rep: Repertoire; compact?: boolean }) {
+export function RepSessionSettings({ rep, compact = false, showNewLimit = true }: { rep: Repertoire; compact?: boolean; showNewLimit?: boolean }) {
   const [prefs] = useTrainPrefs();
   const own = repTraining(rep, prefs);
   const set = (patch: { newMoves?: number; wholeLines?: boolean }) =>
     useApp.getState().updateRep(rep.id, (r) => setTraining(r, patch), 'session settings', { undoable: false });
   return (
     <div className={compact ? 'row wrap' : 'stack'} style={{ gap: compact ? 10 : 8 }}>
-      <div className="row wrap">
+      {showNewLimit && <div className="row wrap">
         <span className="muted small">New moves per session</span>
         {NEW_MOVE_CHOICES.map((n) => (
           <span key={n} className={`chip ${own.newMoves === n ? 'on' : ''}`} onClick={() => set({ newMoves: n })} title={n === 0 ? 'Only reviews: no new moves' : undefined}>
             {n}
           </span>
         ))}
-      </div>
+      </div>}
       <label className="row small" style={{ gap: 6, cursor: 'pointer', alignItems: 'flex-start' }}>
         <input type="checkbox" checked={own.wholeLines} onChange={(e) => set({ wholeLines: e.target.checked })} style={{ marginTop: 2 }} />
         <span>
@@ -59,7 +59,7 @@ function TodaySettings({ reps, mistakes }: { reps: Repertoire[]; mistakes: boole
             </b>
             <span className="faint"> · {r.trainDepth ? `up to move ${r.trainDepth}` : 'all moves'} (on its own tab)</span>
           </div>
-          <RepSessionSettings rep={r} compact />
+          <RepSessionSettings rep={r} compact showNewLimit={false} />
         </div>
       ))}
       {mistakes && (
@@ -72,7 +72,7 @@ function TodaySettings({ reps, mistakes }: { reps: Repertoire[]; mistakes: boole
           ))}
         </div>
       )}
-      <div className="small faint">Each repertoire keeps its own settings, the same on all your devices.</div>
+      <div className="small faint">Training style is saved per repertoire. New moves are introduced only from Learn new moves.</div>
     </div>
   );
 }
