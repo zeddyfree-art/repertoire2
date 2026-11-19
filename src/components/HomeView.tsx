@@ -187,7 +187,7 @@ export function HomeView() {
               <Menu
                 label={`More for ${rep.name}`}
                 items={[
-                  { label: 'Rename repertoire…', icon: 'edit', onClick: () => setRenaming(rep) },
+                  { label: 'Rename repertoire…', icon: 'comment', onClick: () => setRenaming(rep) },
                   rep.paused
                     ? { label: 'Resume training', icon: 'train', onClick: () => togglePause(rep) }
                     : { label: 'Pause training', icon: 'pause', onClick: () => togglePause(rep) },
