@@ -19,9 +19,9 @@ export function AboutView({ standalone = false }: { standalone?: boolean }) {
       )}
 
       <header className="about-head">
-        <img className="studio-inline-brand" src={`${import.meta.env.BASE_URL}brand-knight.svg`} alt="Repertoire" width="48" height="48" />
+        <img className="studio-inline-brand" src={`${import.meta.env.BASE_URL}brand-transparent.svg`} alt="Repertoire 2" width="48" height="48" />
         <div>
-          <h1>About Repertoire</h1>
+          <h1>About Repertoire 2</h1>
           <p className="muted">A free, open-source app to build, check and train chess opening repertoires. No move limit, no account, no ads.</p>
         </div>
       </header>

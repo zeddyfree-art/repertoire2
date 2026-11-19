@@ -1,0 +1,147 @@
+/* Round A: mobile-first width containment and two clear training actions.
+ * Scoped constraints rather than hiding overflow on html/body. */
+.studio-workspace-train,
+.studio-workspace-train > .stack,
+.studio-workspace-train .today-card,
+.studio-workspace-train .train,
+.studio-workspace-train .train-panel,
+.studio-workspace-train .train-panel > .card,
+.studio-workspace-train .board-area,
+.studio-workspace-train .today-bar,
+.studio-workspace-train .studio-continuous-learn { min-width: 0; max-width: 100%; }
+.studio-workspace-train > .stack,
+.studio-workspace-train .studio-continuous-learn { width: 100%; }
+.studio-workspace-train .deck-tabs {
+  display: flex; width: 100%; max-width: 100%; min-width: 0;
+  flex: 0 1 auto; align-self: stretch;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.studio-workspace-train .deck-tabs > button { flex: 0 0 auto; }
+.studio-workspace-train .today-card > .row,
+.studio-workspace-train .train-panel .row { min-width: 0; max-width: 100%; }
+.studio-workspace-train .today-card > .row { flex-wrap: wrap; gap: 9px; }
+.studio-train-entry-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 13px; }
+.studio-train-action {
+  min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 11px;
+  padding: 21px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 16px;
+}
+.studio-train-action h3 { font: 700 24px/1.12 Georgia,'Times New Roman',serif; letter-spacing: -.025em; }
+.studio-train-action p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 13px; flex: 1; }
+.studio-train-action .field { min-width: 0; width: 100%; }
+.studio-train-action select { width: 100%; min-width: 0; max-width: 100%; }
+.studio-train-action .btn { min-height: 44px; border-radius: 99px; }
+.studio-review-breakdown { border: 1px solid var(--border); border-radius: 11px; padding: 13px; }
+.studio-review-breakdown summary { cursor: pointer; }
+.studio-review-breakdown .today-list { margin-top: 10px; }
+.studio-learning-rest { margin-inline: auto; max-width: 610px; width: 100%; }
+.studio-continuous-learn .today-bar { overflow-wrap: anywhere; }
+
+@media (max-width: 900px) {
+  .studio-workspace-train .train { width: 100%; grid-template-columns: minmax(0,1fr); justify-items: stretch; }
+  .studio-workspace-train .train-panel { width: 100%; }
+  .studio-workspace-train .train > .board-area { justify-self: center; max-width: 100%; }
+  .studio-workspace-train .train-panel > .card { width: 100%; }
+}
+@media (max-width: 700px) {
+  .studio-train-entry-actions { grid-template-columns: minmax(0,1fr); }
+  .studio-train-action { padding: 17px; }
+  .studio-workspace-train .studio-workspace-header { min-width: 0; }
+  .studio-workspace-train .studio-workspace-heading,
+  .studio-workspace-train .studio-workspace-meta { min-width: 0; max-width: 100%; }
+  .studio-workspace-train .today-card { width: 100%; padding: 15px !important; }
+  .studio-workspace-train .today-card h2 { font-size: 23px; }
+  .studio-workspace-train .today-card .small,
+  .studio-workspace-train .train-panel .small { overflow-wrap: anywhere; }
+  .studio-workspace-train .train-choices { grid-template-columns: minmax(0,1fr); }
+  .studio-workspace-train .train-choices > div { min-width: 0; }
+  .studio-workspace-train .train .board-area { padding: 4px; width: max-content; }
+  .studio-workspace-train .train .board-wrap {
+    width: min(calc(100dvw - 48px), 560px);
+    height: auto; aspect-ratio: 1; flex: none;
+  }
+  .studio-workspace-train .train .board-wrap .cg-wrap { width: 100%; height: 100%; }
+  .studio-workspace-train .train-panel { min-height: 0; }
+  .studio-workspace-train .train-panel > .card { padding: 15px; }
+  .studio-workspace-train .train-panel .feedback { overflow-wrap: anywhere; }
+  .studio-workspace-train .train-panel .row { flex-wrap: wrap; gap: 7px; }
+  .studio-workspace-train .train-panel .row > .spacer { flex: 1; }
+  .studio-workspace-train .today-bar { line-height: 1.45; overflow-wrap: anywhere; }
+  .studio-workspace-train .studio-workspace-chip { max-width: 100%; min-width: 0; }
+}
+@media (max-width: 600px) {
+  .topbar .nav {
+    left: 0; right: 0; width: 100vw; max-width: 100vw;
+    box-sizing: border-box; overflow: hidden;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    isolation: isolate;
+  }
+  .topbar .nav button { min-width: 0; overflow: hidden; }
+  .site-footer { position: relative; z-index: 0; }
+  .app > main { padding-bottom: calc(85px + env(safe-area-inset-bottom)); }
+  .studio-workspace-train .train .board-wrap { width: min(calc(100dvw - 48px), 560px); }
+}
+@media (max-width: 360px) {
+  .studio-workspace-train .train .board-wrap { width: calc(100dvw - 42px); }
+  .studio-workspace-train .train .feedback { padding: 11px; }
+  .studio-workspace-train .train-panel > .card { padding: 11px; }
+}
+
+/* Build at 320px: PGN move badges, engine status and Lichess filter controls
+ * must wrap within their own cards (confirmed 41px overflow in Chromium). */
+@media (max-width: 700px) {
+  .studio-workspace-build .build,
+  .studio-workspace-build .side-panel,
+  .studio-workspace-build .side-panel > .card,
+  .studio-workspace-build .side-panel .section,
+  .studio-workspace-build .side-panel .stack,
+  .studio-workspace-build .side-panel .rep-moves,
+  .studio-workspace-build .side-panel .rep-move {
+    min-width: 0; max-width: 100%;
+  }
+  .studio-workspace-build .side-panel .row,
+  .studio-workspace-build .side-panel .rep-move {
+    flex-wrap: wrap;
+    row-gap: 7px;
+  }
+  .studio-workspace-build .side-panel .rep-move {
+    width: 100%;
+    padding: 7px;
+    column-gap: 6px;
+  }
+  .studio-workspace-build .rep-move .san { min-width: 0; }
+  .studio-workspace-build .side-panel .row > .btn {
+    min-width: 0; max-width: 100%;
+  }
+  .studio-workspace-build .side-panel .row .btn .muted {
+    display: inline-block; min-width: 0; max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .studio-workspace-build .side-panel .faint.small {
+    overflow-wrap: anywhere;
+  }
+  .studio-workspace-build .side-panel .explorer-table {
+    display: block; max-width: 100%; overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+}
+
+/* Play at 320px: the repertoire scope select and Maia start button were
+ * wider than their 243px configuration field; keep both inside their card. */
+@media (max-width: 700px) {
+  .studio-play-config,
+  .studio-play-config > .field,
+  .studio-play-config > .field > .row,
+  .studio-workspace-play .rep-scope { min-width: 0; max-width: 100%; }
+  .studio-workspace-play .rep-scope { display: flex; flex-wrap: wrap; align-items: flex-start; }
+  .studio-workspace-play .rep-scope select {
+    flex: 1 1 100%; display: block; width: 100%;
+    min-width: 0; max-width: 100%;
+  }
+  .studio-play-config .btn.primary {
+    min-width: 0; max-width: 100%; width: 100%;
+    height: auto; min-height: 44px; white-space: normal;
+    overflow-wrap: anywhere; text-align: center; justify-content: center;
+  }
+}

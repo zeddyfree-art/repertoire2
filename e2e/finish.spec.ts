@@ -44,7 +44,7 @@ test('Settings, About and onboarding stay accessible on laptop and phone', async
 
   await page.locator('a[href="#about"]').first().click();
   await expect(page.locator('.studio-about')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'About Repertoire' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'About Repertoire 2' })).toBeVisible();
 });
 
 test('all seven primary screens and Settings fit viewport with no horizontal page overflow', async ({ page }) => {

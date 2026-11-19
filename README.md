@@ -1,4 +1,4 @@
-# Repertoire — build, check and train your chess openings
+# Repertoire 2 — build, check and train your chess openings
 
 A web app in the spirit of Chessbook, but with **no move limit**, **several players** per device, **sync
 across devices** through your own Google Drive, and a **human-like practice opponent**. Build opening

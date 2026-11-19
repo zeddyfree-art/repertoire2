@@ -90,14 +90,26 @@ export function todayPlan(reps: readonly Repertoire[], mistakes: readonly Mistak
   return { parts, due, mistakes: cards.length, fresh, total: due + cards.length + fresh };
 }
 
-/** Today's plan for the active player, kept up to date with their repertoires, cards and choices. */
+/** Reviews are a separate task: no new repertoire or mistake cards enter this queue. */
+export function reviewOnlyPlan(reps: readonly Repertoire[], mistakes: readonly MistakeCard[], prefs: TrainPrefs, now = Date.now()): TodayPlan {
+  return todayPlan(reps.map((rep) => ({ ...rep, newMoves: 0 })), mistakes,
+    { ...prefs, newMoves: 0, newMistakes: 0 }, now);
+}
+
+/** Number of unintroduced moves in an unpaused repertoire, respecting its training depth. */
+export function unlearnedMoves(rep: Repertoire): TrainItem[] {
+  if (rep.paused) return [];
+  return buildQueue(rep, { newLimit: Number.MAX_SAFE_INTEGER }).filter((item) => item.isNew);
+}
+
+/** Active player's due-only plan for Home, nav badge and Train. New moves are explicitly learned separately. */
 export function useTodayPlan(): TodayPlan {
   const data = useApp((s) => s.data);
   const profile = useApp(activeProfile);
   return useMemo(() => {
     const reps = orderedReps(data, data.activeProfileId);
     const cards = (data.mistakes ?? []).filter((m) => m.profileId === data.activeProfileId);
-    return todayPlan(reps, cards, trainPrefs(profile));
+    return reviewOnlyPlan(reps, cards, trainPrefs(profile));
   }, [data, profile]);
 }
 
