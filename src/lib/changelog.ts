@@ -61,7 +61,7 @@ export function newsToShow(isNewPlayer: boolean): ChangelogEntry | null {
 }
 
 /** The feedback e-mail, with the version and device filled in so a report says what it is about. */
-export function feedbackHref(app = 'Repertoire'): string {
+export function feedbackHref(app = 'Repertoire 2'): string {
   const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
   const body = `\n\n\n—\n${app} ${APP_VERSION} (${__APP_COMMIT__}, ${__BUILD_DATE__})\n${ua}`;
   return `mailto:zeddyfree@gmail.com?subject=${encodeURIComponent(`${app} feedback`)}&body=${encodeURIComponent(body)}`;
