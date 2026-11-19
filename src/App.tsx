@@ -177,7 +177,7 @@ function TopBar() {
   const rep = useApp(activeRep);
   const canUndo = useApp((s) => s.undo.length > 0);
   const canRedo = useApp((s) => s.redo.length > 0);
-  const { setView, setActiveProfile, setActiveRep, undoLast, redoLast } = useApp.getState();
+  const { setView, setTrainDeck, setActiveProfile, setActiveRep, undoLast, redoLast } = useApp.getState();
   const [creating, setCreating] = useState(false);
   const reps = useMemo(() => orderedReps(data, data.activeProfileId), [data]);
   // The same number as on the Overview and in today's session.
@@ -235,7 +235,7 @@ function TopBar() {
 
         <nav className="nav">
           {NAV.map((n) => (
-            <button key={n.view} className={view === n.view ? 'on' : ''} disabled={n.needsRep && !rep} onClick={() => setView(n.view)} title={n.label}>
+            <button key={n.view} className={view === n.view ? 'on' : ''} disabled={n.needsRep && !rep} onClick={() => { if (n.view === 'train') setTrainDeck('today'); setView(n.view); }} title={n.label}>
               <Icon name={n.icon} size={16} />
               <span className="label">{n.label}</span>
               {n.view === 'train' && due > 0 && <span className="badge due">{due}</span>}
