@@ -7,8 +7,15 @@ const SIZES = [320, 360, 375, 390, 430, 768];
 async function noOverflow(page: import('@playwright/test').Page, screen: string, width: number) {
   const check = await page.evaluate(() => {
     const root = document.documentElement;
-    return { overflow: root.scrollWidth - root.clientWidth, inner: window.innerWidth };
+    const offenders = [...document.querySelectorAll<HTMLElement>('*')].map((el) => {
+      const rect = el.getBoundingClientRect();
+      const name = el.tagName.toLowerCase() + '.' + (typeof el.className === 'string' ? el.className.slice(0, 68).replace(/\s+/g,'.') : '');
+      return { name, left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width), scroll: el.scrollWidth - el.clientWidth };
+    }).filter((v) => v.right > root.clientWidth + 2 || v.left < -2 || v.scroll > 3)
+      .sort((a, b) => b.right - a.right).slice(0, 12);
+    return { overflow: root.scrollWidth - root.clientWidth, inner: window.innerWidth, offenders };
   });
+  if (check.overflow > 1) console.log('ROUND_A_OVERFLOW ' + JSON.stringify({screen,width,check}));
   expect(check.overflow, `${screen} width=${width} viewport=${check.inner}`).toBeLessThanOrEqual(1);
 }
 
