@@ -87,3 +87,42 @@
   .studio-workspace-train .train .feedback { padding: 11px; }
   .studio-workspace-train .train-panel > .card { padding: 11px; }
 }
+
+/* Build at 320px: PGN move badges, engine status and Lichess filter controls
+ * must wrap within their own cards (confirmed 41px overflow in Chromium). */
+@media (max-width: 700px) {
+  .studio-workspace-build .build,
+  .studio-workspace-build .side-panel,
+  .studio-workspace-build .side-panel > .card,
+  .studio-workspace-build .side-panel .section,
+  .studio-workspace-build .side-panel .stack,
+  .studio-workspace-build .side-panel .rep-moves,
+  .studio-workspace-build .side-panel .rep-move {
+    min-width: 0; max-width: 100%;
+  }
+  .studio-workspace-build .side-panel .row,
+  .studio-workspace-build .side-panel .rep-move {
+    flex-wrap: wrap;
+    row-gap: 7px;
+  }
+  .studio-workspace-build .side-panel .rep-move {
+    width: 100%;
+    padding: 7px;
+    column-gap: 6px;
+  }
+  .studio-workspace-build .rep-move .san { min-width: 0; }
+  .studio-workspace-build .side-panel .row > .btn {
+    min-width: 0; max-width: 100%;
+  }
+  .studio-workspace-build .side-panel .row .btn .muted {
+    display: inline-block; min-width: 0; max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .studio-workspace-build .side-panel .faint.small {
+    overflow-wrap: anywhere;
+  }
+  .studio-workspace-build .side-panel .explorer-table {
+    display: block; max-width: 100%; overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+}
