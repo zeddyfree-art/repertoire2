@@ -121,6 +121,7 @@ export function HomeView() {
   const { setActiveRep, setView } = useApp.getState();
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<Repertoire | null>(null);
+  const [renaming, setRenaming] = useState<Repertoire | null>(null);
   const [importingId, setImportingId] = useState<string | null>(null);
   const ordered = useMemo(() => orderedReps(data, data.activeProfileId), [data]);
   const reorder = useReorder(ordered.map((r) => r.id), (ids) => profile && useApp.getState().updateProfile(profile.id, { repOrder: ids }));
@@ -133,6 +134,7 @@ export function HomeView() {
 
   const open = (id: string, view: 'build' | 'train' | 'tree') => {
     setActiveRep(id);
+    if (view === 'train') useApp.getState().setTrainDeck('repertoire');
     setView(view);
   };
 
@@ -145,7 +147,15 @@ export function HomeView() {
         onPick={setActiveRep}
         onOpen={open}
         onNavigate={setView}
-        onTrainToday={() => useApp.getState().trainToday()}
+        onTrainToday={() => {
+          useApp.getState().setTrainDeck('today');
+          if (plan.total > 0) useApp.getState().trainToday();
+          else useApp.getState().setView('train');
+        }}
+        onLearnNew={() => {
+          useApp.getState().setTrainDeck('today');
+          useApp.getState().setView('train');
+        }}
         onNewRepertoire={() => setCreating(true)}
       />
       <div className="studio-section-heading" id="repertoire-library">
@@ -186,6 +196,7 @@ export function HomeView() {
               <Menu
                 label={`More for ${rep.name}`}
                 items={[
+                  { label: 'Rename repertoire…', icon: 'comment', onClick: () => setRenaming(rep) },
                   rep.paused
                     ? { label: 'Resume training', icon: 'train', onClick: () => togglePause(rep) }
                     : { label: 'Pause training', icon: 'pause', onClick: () => togglePause(rep) },
@@ -254,11 +265,38 @@ export function HomeView() {
       </div>
 
       {creating && <NewRepertoireDialog onClose={() => setCreating(false)} />}
+      {renaming && <RenameRepertoireDialog rep={renaming} onClose={() => setRenaming(null)} />}
       {deleting && <DeleteRepertoireDialog rep={deleting} onClose={() => setDeleting(null)} />}
       {importingId && reps.find((r) => r.id === importingId) && (
         <ImportPgnDialog rep={reps.find((r) => r.id === importingId)!} onClose={() => setImportingId(null)} />
       )}
     </div>
+  );
+}
+
+/** Per-repertoire naming belongs with the repertoire card, not global Settings. */
+function RenameRepertoireDialog({ rep, onClose }: { rep: Repertoire; onClose: () => void }) {
+  const [name, setName] = useState(rep.name);
+  const rename = () => {
+    const next = name.trim();
+    if (!next) return;
+    if (next !== rep.name) useApp.getState().renameRepertoire(rep.id, next);
+    onClose();
+  };
+  return (
+    <Dialog title={`Rename ${rep.name}`} onClose={onClose}>
+      <form className="stack" onSubmit={(e) => { e.preventDefault(); rename(); }}>
+        <label className="field">
+          <span>Name</span>
+          <input className="input" autoFocus aria-label="New repertoire name" value={name}
+            maxLength={120} onChange={(e) => setName(e.target.value)}/>
+        </label>
+        <div className="row" style={{ justifyContent: 'flex-end', gap: 8 }}>
+          <button type="button" className="btn" onClick={onClose}>Cancel</button>
+          <button type="submit" className="btn primary" disabled={!name.trim()}>Save name</button>
+        </div>
+      </form>
+    </Dialog>
   );
 }
 

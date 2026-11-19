@@ -1,0 +1,112 @@
+/* Round B: keep the commissioned original logo intact. The attempted redraw
+ * changed its shape, so the full original lockup is restored for light desktop.
+ * Compact/mobile and dark modes use the same original knight, not a redraw. */
+.topbar .studio-brand-original {
+  width: min(100%, 226px);
+  height: auto;
+  max-height: 74px;
+  display: block;
+  object-fit: contain;
+}
+.topbar .studio-knight-light { display: block; }
+.topbar .studio-knight-dark { display: none; }
+@media (min-width: 1101px) {
+  :root:not([data-theme="dark"]) .topbar .studio-brand-original { display: block; }
+  :root:not([data-theme="dark"]) .topbar .studio-brand-compact { display: none; }
+  :root[data-theme="dark"] .topbar .studio-brand-original { display: none; }
+  :root[data-theme="dark"] .topbar .studio-brand-compact { display: flex; }
+}
+@media (max-width: 1100px) {
+  .topbar .studio-brand-original { display: none; }
+  .topbar .studio-brand-compact { display: flex; }
+}
+:root[data-theme="dark"] .topbar .studio-knight-light { display: none; }
+:root[data-theme="dark"] .topbar .studio-knight-dark { display: block; }
+
+/* Contextual repertoire selection: within Build/Tree/Check or individual
+ * repertoire training only. The top navigation has no duplicated selector. */
+.studio-workspace-selector { display: flex; min-width: 0; max-width: min(250px,100%); }
+.studio-workspace-selector .input {
+  width: 100%; min-width: 0; max-width: 100%;
+  padding: 9px 30px 9px 13px; font-size: 12px;
+  border: 1px solid var(--border); border-radius: 100px;
+  background: var(--surface-2); color: var(--text); font-weight: 650;
+}
+.studio-workspace-selector .input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+
+/* Home: intentional reading/interaction order rather than an ornamental
+ * preview interrupting the primary training and Continue actions. */
+.studio-dashboard-flow {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.13fr);
+  gap: 19px;
+  align-items: stretch;
+}
+.studio-dashboard-flow > * { min-width: 0; }
+.studio-dashboard-flow > .studio-training-hero { grid-column: 1 / -1; min-height: 214px; }
+.studio-dashboard-flow > .studio-continue-card { grid-column: 1; grid-row: auto; }
+.studio-dashboard-flow > .studio-progress-card { grid-column: 2; grid-row: auto; }
+.studio-dashboard-flow > .studio-kpi-row { grid-column: 1 / -1; }
+.studio-dashboard-flow > .studio-featured-card { grid-column: 1 / -1; }
+.studio-training-hero { gap: 20px; }
+.studio-home-training-actions {
+  position: relative; z-index: 2;
+  display: flex; flex-wrap: wrap; gap: 11px;
+  align-items: center; width: 100%;
+}
+.studio-home-training-actions > button {
+  min-height: 47px;
+  border-radius: 100px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  font-weight: 750; padding: 11px 21px; font-size: 14px;
+  transition: background .17s ease, transform .17s ease;
+}
+.studio-home-training-actions > button:hover { transform: translateY(-1px); }
+.studio-home-training-actions .studio-training-secondary {
+  border: 1px solid rgba(255,255,255,.6);
+  color: #fffef7; background: rgba(25,53,35,.19);
+}
+.studio-home-training-actions .studio-training-secondary:hover { background: rgba(25,53,35,.35); }
+.studio-home-training-actions button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.studio-dashboard-flow .studio-progress-content { grid-template-columns: minmax(0,1fr); gap: 17px; }
+.studio-dashboard-flow .studio-progress-card { min-height: 310px; }
+.studio-dashboard-flow .studio-continue-card { min-height: 310px; }
+.studio-dashboard-flow .studio-featured-card {
+  justify-content: flex-start; gap: 26px;
+  padding: 17px 22px;
+}
+.studio-dashboard-flow .studio-preview-stage {
+  flex: 0 1 240px; width: 240px; max-width: 240px;
+}
+.studio-dashboard-flow .studio-featured-detail {
+  flex: 1 1 260px; min-height: 260px; justify-content: center;
+}
+.studio-dashboard-flow .studio-continue-item { flex: 0 1 auto; }
+@media (max-width: 1100px) {
+  .studio-dashboard-flow { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .studio-dashboard-flow > .studio-featured-card { display: none; }
+}
+@media (max-width: 850px) {
+  .studio-dashboard-flow { grid-template-columns: minmax(0,1fr); gap: 14px; }
+  .studio-dashboard-flow > .studio-training-hero,
+  .studio-dashboard-flow > .studio-continue-card,
+  .studio-dashboard-flow > .studio-progress-card,
+  .studio-dashboard-flow > .studio-kpi-row { grid-column: 1; }
+  .studio-dashboard-flow > .studio-featured-card { display: none; }
+  .studio-dashboard-flow > .studio-continue-card,
+  .studio-dashboard-flow > .studio-progress-card { min-height: 0; }
+  .studio-dashboard-flow .studio-progress-content { grid-template-columns: minmax(0,1fr); }
+  .studio-dashboard-flow .studio-training-hero { padding: 23px; }
+}
+@media (max-width: 600px) {
+  .studio-home-training-actions { flex-direction: column; align-items: stretch; gap: 9px; }
+  .studio-home-training-actions > button { width: 100%; min-height: 46px; }
+  .studio-dashboard-flow .studio-kpi-row { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+  .studio-dashboard-flow .studio-kpi { padding: 12px 8px; min-height: 95px; }
+  .studio-dashboard-flow .studio-kpi strong { font-size: 24px; }
+  .studio-dashboard-flow .studio-kpi span { white-space: normal; font-size: 10px; }
+  .studio-workspace-meta { width: 100%; }
+  .studio-workspace-selector { max-width: 100%; flex: 1 1 180px; }
+}

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Icon, type IconName } from './Icon';
 import { stats, type Repertoire } from '../lib/repertoire';
 import { counts } from '../lib/srs';
-import { useApp } from '../lib/store';
+import { orderedReps, useApp } from '../lib/store';
 import { useTodayPlan } from '../lib/today';
 
 export type StudioView = 'build' | 'train' | 'tree' | 'play' | 'games' | 'audit' | 'settings';
@@ -54,10 +54,15 @@ const DESCRIPTIONS: Record<StudioView, { eyebrow: string; title: string; lead: s
 
 export function WorkspaceHeader({ view, rep }: { view: StudioView; rep: Repertoire | null }) {
   const setView = useApp((state) => state.setView);
+  const setActiveRep = useApp((state) => state.setActiveRep);
+  const data = useApp((state) => state.data);
+  const deck = useApp((state) => state.trainDeck);
+  const reps = useMemo(() => orderedReps(data, data.activeProfileId), [data]);
   const today = useTodayPlan();
   const info = useMemo(() => rep ? { lines: stats(rep).lineEnds, cards: counts(rep).total } : null, [rep]);
   const active = DESCRIPTIONS[view];
   const aboutRep = view === 'build' || view === 'tree' || view === 'audit';
+  const showSelector = aboutRep || (view === 'train' && deck === 'repertoire');
   const total = view === 'train' ? `${today.total} today` : aboutRep ? `${info?.lines ?? 0} lines` : null;
 
   return (
@@ -68,11 +73,16 @@ export function WorkspaceHeader({ view, rep }: { view: StudioView; rep: Repertoi
         <p>{active.lead}</p>
       </div>
       <div className="studio-workspace-meta">
-        {(aboutRep || (view === 'train' && rep)) && (
-          <div className="studio-workspace-chip">
-            <span aria-hidden="true">{rep?.side === 'black' ? '♚' : '♔'}</span>
-            <b>{rep?.name ?? 'All repertoires'}</b>
-          </div>
+        {showSelector && (
+          <label className="studio-workspace-selector">
+            <span className="sr-only">Working repertoire</span>
+            <select className="input" aria-label="Working repertoire" value={rep?.id ?? ''}
+              onChange={(event) => setActiveRep(event.target.value)}>
+              {reps.map((r) => (
+                <option key={r.id} value={r.id}>{r.side === 'white' ? '♔' : '♚'} {r.name}</option>
+              ))}
+            </select>
+          </label>
         )}
         {total && (
           <span className="studio-workspace-count">

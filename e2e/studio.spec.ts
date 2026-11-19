@@ -9,19 +9,24 @@ test('Warm Studio dashboard shows live repertoire board, actions, and no horizon
   await page.locator('nav.nav button[title="Home"]').click();
   await expect(page.locator('.studio-dashboard')).toBeVisible();
   await expect(page.locator('.studio-training-hero')).toBeVisible();
-  await expect(page.locator('.studio-featured-card cg-board')).toBeVisible();
+  const featured = page.locator('.studio-featured-card cg-board');
+  if (page.viewportSize()!.width <= 850) await expect(featured).toBeHidden();
+  else await expect(featured).toBeVisible();
   await expect(page.locator('.studio-featured-detail')).toContainText('Scotch');
   await expect(page.locator('.studio-kpi-row')).toBeVisible();
   await expect(page.locator('.studio-progress-card')).toBeVisible();
   await expect(page.locator('.studio-continue-card')).toBeVisible();
   await expect(page.locator('.studio-repertoire-grid .rep-card')).toHaveCount(1);
 
-  const caption = page.locator('.studio-move-caption');
-  const last = await caption.innerText();
-  await page.getByRole('button', { name: 'Previous move' }).click();
-  await expect(caption).not.toHaveText(last);
-  await page.getByRole('button', { name: 'Next move in repertoire' }).click();
-  await expect(caption).toHaveText(last);
+  if (page.viewportSize()!.width > 850) {
+    const caption = page.locator('.studio-move-caption');
+    const last = await caption.innerText();
+    await page.getByRole('button', { name: 'Previous move' }).click();
+    await expect(caption).not.toHaveText(last);
+    await page.getByRole('button', { name: 'Next move in repertoire' }).click();
+    await expect(caption).toHaveText(last);
+  
+  }
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(0);

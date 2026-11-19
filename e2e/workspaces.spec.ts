@@ -8,7 +8,7 @@ test('Build, Tree and Train share Warm Studio identity while keeping controls', 
 
   await expect(page.locator('.studio-workspace-build')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Build your repertoire' })).toBeVisible();
-  await expect(page.locator('.studio-workspace-chip')).toContainText('Slav');
+  await expect(page.getByRole('combobox', { name: 'Working repertoire' })).toContainText('Slav');
   await expect(page.locator('.build cg-board')).toBeVisible();
   await expect(page.locator('.build .board-controls')).toBeVisible();
   await expect(page.locator('.build .side-panel')).toBeVisible();
