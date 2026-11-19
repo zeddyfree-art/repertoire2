@@ -3,7 +3,7 @@ import { counts } from '../lib/srs';
 import { activeProfile, orderedReps, useApp } from '../lib/store';
 import { saveNow, type SaveResult } from '../lib/sync';
 import { setTraining, type Repertoire } from '../lib/repertoire';
-import { describePlan, NEW_MISTAKE_CHOICES, NEW_MOVE_CHOICES, repTraining, todayPlan, trainPrefs, useTodayPlan, type TodayPart, type TodayPlan, type TrainPrefs } from '../lib/today';
+import { NEW_MISTAKE_CHOICES, NEW_MOVE_CHOICES, repTraining, reviewOnlyPlan, todayPlan, trainPrefs, unlearnedMoves, type TodayPart, type TodayPlan, type TrainPrefs } from '../lib/today';
 import { Icon } from './Icon';
 import { LineReviewSession } from './LineReview';
 import { DeckTabs, MistakeSession } from './MistakesTrain';
@@ -79,35 +79,43 @@ function TodaySettings({ reps, mistakes }: { reps: Repertoire[]; mistakes: boole
 
 /** The Train tab's first page: one button for today's session over everything. */
 export function TodayTrain() {
-  const plan = useTodayPlan();
   const [prefs, setPrefs] = useTrainPrefs();
   const myCards = useApp((s) => (s.data.mistakes ?? []).some((m) => m.profileId === s.data.activeProfileId));
   const data = useApp((s) => s.data);
   const autostart = useApp((s) => s.todayAutostart);
   const [session, setSession] = useState<TodayPlan | null>(null);
+  const [learningRep, setLearningRep] = useState<string | null>(null);
   const [settings, setSettings] = useState(false);
+  const [selectedForLearning, setSelectedForLearning] = useState<string>('');
+  const reviewPlan = reviewOnlyPlan(
+    orderedReps(data, data.activeProfileId),
+    (data.mistakes ?? []).filter((m) => m.profileId === data.activeProfileId),
+    prefs,
+  );
 
   // "Train" on the Overview: straight into the session.
   useEffect(() => {
     if (!autostart) return;
     useApp.getState().clearTodayAutostart();
-    if (plan.total) setSession(plan);
+    if (reviewPlan.total) setSession(reviewPlan);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autostart]);
 
   if (session) return <TodaySession plan={session} onExit={() => setSession(null)} />;
+  if (learningRep) return <LearnNewMoves repId={learningRep} onExit={() => setLearningRep(null)} />;
 
   const reps = orderedReps(data, data.activeProfileId);
   const paused = reps.filter((r) => r.paused);
   const byRep = new Map<string, { reviews: number; fresh: number }>();
-  for (const p of plan.parts) {
+  for (const p of reviewPlan.parts) {
     if (p.kind === 'mistakes') continue;
     const x = byRep.get(p.repId) ?? { reviews: 0, fresh: 0 };
     if (p.kind === 'review') x.reviews += p.items.length;
     else x.fresh += p.items.length;
     byRep.set(p.repId, x);
   }
-  const mistakes = plan.parts.find((p) => p.kind === 'mistakes');
+  const mistakes = reviewPlan.parts.find((p) => p.kind === 'mistakes');
+  const available = reps.filter((r) => !r.paused && unlearnedMoves(r).length > 0);
 
   return (
     <div style={{ maxWidth: 760, margin: '0 auto' }} className="stack">
@@ -120,38 +128,46 @@ export function TodayTrain() {
             <Icon name="settings" size={15} /> Settings
           </button>
         </div>
-        <div className="muted">{plan.total ? describePlan(plan) : 'Nothing to train right now: every review is done.'}</div>
-        <div>
-          <button className="btn primary lg" disabled={!plan.total} onClick={() => setSession(plan)}>
-            <Icon name="train" size={18} /> Train ({plan.total})
-          </button>
+        <p className="muted">Review what is due, or choose an opening and learn new moves. No settings to switch back and forth.</p>
+        <div className="studio-train-entry-actions">
+          <section className="studio-train-action">
+            <div className="studio-mini-kicker">SPACED REPETITION</div>
+            <h3>Review</h3>
+            <p>Only scheduled reviews. No new moves will be introduced.</p>
+            <button className="btn primary lg" disabled={!reviewPlan.total} onClick={() => setSession(reviewPlan)}>
+              <Icon name="train" size={18}/> Review ({reviewPlan.total})
+            </button>
+            {!reviewPlan.total && <small className="muted">You're up to date. Come back when cards are due.</small>}
+          </section>
+          <section className="studio-train-action">
+            <div className="studio-mini-kicker">EXPAND YOUR REPERTOIRE</div>
+            <h3>Learn new moves</h3>
+            <p>Learn prepared moves in one repertoire at your own pace. Stop whenever you like.</p>
+            <label className="field">
+              <span className="small">Choose repertoire</span>
+              <select className="input" aria-label="Repertoire to learn" value={selectedForLearning || available[0]?.id || ''}
+                onChange={(e) => setSelectedForLearning(e.target.value)}>
+                {available.length ? available.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name} ({unlearnedMoves(r).length} new)</option>
+                )) : <option value="">No new moves available</option>}
+              </select>
+            </label>
+            <button className="btn lg" disabled={!available.length}
+              onClick={() => setLearningRep(available.some((r) => r.id === selectedForLearning) ? selectedForLearning : available[0].id)}>
+              <Icon name="play" size={18}/> Start learning
+            </button>
+          </section>
         </div>
-        {plan.total > 0 && (
-          <ul className="today-list small">
-            {reps
-              .filter((r) => byRep.has(r.id))
-              .map((r) => {
-                const x = byRep.get(r.id)!;
-                return (
-                  <li key={r.id}>
-                    <span className="muted">{r.side === 'white' ? '♔' : '♚'}</span> {r.name}
-                    <span className="muted">
-                      {' '}
-                      — {[x.reviews ? `${x.reviews} ${x.reviews === 1 ? 'review' : 'reviews'}` : '', x.fresh ? `${x.fresh} new` : ''].filter(Boolean).join(', ')}
-                    </span>
-                  </li>
-                );
-              })}
-            {mistakes && mistakes.kind === 'mistakes' && (
-              <li>
-                <span className="muted">✕</span> My mistakes
-                <span className="muted">
-                  {' '}
-                  — {[mistakes.due ? `${mistakes.due} due` : '', mistakes.cards.length - mistakes.due ? `${mistakes.cards.length - mistakes.due} new` : ''].filter(Boolean).join(', ')}
-                </span>
-              </li>
-            )}
-          </ul>
+        {reviewPlan.total > 0 && (
+          <details className="studio-review-breakdown">
+            <summary className="small muted">Due across your repertoires ({reviewPlan.total})</summary>
+            <ul className="today-list small">
+              {reps.filter((r) => byRep.has(r.id)).map((r) => (
+                <li key={r.id}>{r.side === 'white' ? '♔' : '♚'} {r.name} — {byRep.get(r.id)?.reviews ?? 0} due</li>
+              ))}
+              {mistakes && <li>My mistakes — {mistakes.cards.length} due</li>}
+            </ul>
+          </details>
         )}
         {myCards && (
           <label className="row small" style={{ gap: 6, cursor: 'pointer' }}>
@@ -173,17 +189,35 @@ export function TodayTrain() {
         </summary>
         <div className="stack" style={{ gap: 6, marginTop: 8 }}>
           <div>
-            One session for everything you train: first the reviews that are due in each repertoire (one repertoire after the
-            other, each in the order of its tree, so the cards share their context), then your mistake cards (the due ones,
-            then new ones; opening mistakes and the themes you miss most first), then new moves, up to the number you chose,
-            repertoire by repertoire in your Overview order. Paused repertoires are left out.
+            Review schedules only previously introduced moves (and due mistake cards if included). Learn new moves lets you
+            choose one repertoire, introduces only its unlearned SRS cards and continues until you stop or all moves are learned.
+            Both keep the same SRS history, due dates and notes. Paused repertoires are never included.
           </div>
           <div>
-            The number on the Overview, on this tab and in the session is the same. To work on one repertoire only, use its tab
-            above, or <b>Train from here</b> in the tree or on the build board for one branch.
+            New repertoire moves are never introduced during Review. Practice all lines on an individual repertoire
+            remains available without changing SRS progress.
           </div>
         </div>
       </details>
+    </div>
+  );
+}
+
+/** A single continuous learning session; unreached cards stay new when Stop is pressed.
+ * ReviewSession grades a new card only after it has been taught and recalled. */
+function LearnNewMoves({ repId, onExit }: { repId: string; onExit: () => void }) {
+  const rep = useApp((s) => s.data.repertoires.find((r) => r.id === repId));
+  const [initial] = useState(() => {
+    const chosen = useApp.getState().data.repertoires.find((r) => r.id === repId);
+    return chosen ? unlearnedMoves(chosen).map((i) => ({ ...i, kind: 'learn' as const })) : [];
+  });
+  if (!rep) return <div className="card card-pad"><p>This repertoire is no longer available.</p><button className="btn" onClick={onExit}>Back</button></div>;
+  if (rep.paused) return <div className="card card-pad stack"><h2>Training paused</h2><p>Resume SRS from the repertoire card before learning new moves.</p><button className="btn" onClick={onExit}>Back</button></div>;
+  return (
+    <div className="stack studio-continuous-learn" style={{ gap: 10 }}>
+      <div className="today-bar small"><b>Learn new moves</b><span className="muted"> · {rep.name} · stop at any time</span></div>
+      {initial.length ? <ReviewSession rep={rep} initial={initial} onExit={onExit} /> :
+        <div className="card card-pad stack"><h2>No new moves</h2><p>All currently eligible moves have been introduced.</p><button className="btn primary" onClick={onExit}>Back</button></div>}
     </div>
   );
 }
