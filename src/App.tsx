@@ -187,9 +187,10 @@ function TopBar() {
     <header className="topbar">
       {/* Left: identity, selection and navigation. It wraps onto a second line on narrow screens. */}
       <div className="topbar-left">
-        <div className="brand studio-brand" role="img" aria-label="Repertoire 2 — chess knight and laurel">
+        <div className="brand studio-brand" role="img" aria-label="Repertoire 2 — original chess knight and laurel">
+          <img className="studio-brand-original" src={`${import.meta.env.BASE_URL}brand-lockup-v2.svg?v=round-b`} alt="" width="248" height="77" />
           <div className="studio-brand-compact" aria-hidden="true">
-            <img className="studio-brand-knight studio-knight-light" src={`${import.meta.env.BASE_URL}brand-transparent.svg?v=round-a`} alt="" width="48" height="48" />
+            <img className="studio-brand-knight studio-knight-light" src={`${import.meta.env.BASE_URL}brand-knight.svg?v=round-b`} alt="" width="48" height="48" />
             <img className="studio-brand-knight studio-knight-dark" src={`${import.meta.env.BASE_URL}brand-knight.svg?v=brand3`} alt="" width="48" height="48" />
             <span>Repertoire 2</span>
           </div>
