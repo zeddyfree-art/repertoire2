@@ -60,30 +60,28 @@ test('practice all lines: every line to its end, without cards', async ({ page }
   await expect(page.locator('.stat', { hasText: 'new' }).locator('b')).toHaveText('3');
 });
 
-test("train: today's session learns the new moves, then recalls them", async ({ page }) => {
+test("train: Review is due-only, Learn adds cards after recall and keeps SRS", async ({ page }) => {
   await start(page, { name: 'Open games', pgn: REP });
   await go(page, 'Overview');
-  // The same number on the Overview, the Train tab and its badge.
-  await expect(page.locator('.studio-training-hero')).toContainText("3 positions in today's session");
-  await expect(page.locator('nav.nav button[title="Train"] .badge')).toHaveText('3');
-  await page.locator('.studio-training-button').click();
-  await expect(page.locator('.today-bar')).toContainText('part 1 of 1 · Open games: new moves (3)');
+  await expect(page.locator('.studio-training-hero')).toContainText('caught up');
+  await go(page, 'Train');
+  await expect(page.getByRole('button', { name: 'Review (0)' })).toBeDisabled();
+  await page.getByRole('button', { name: 'Start learning' }).click();
   const feedback = page.locator('.feedback');
   const squares: Record<string, [string, string]> = { e4: ['e2', 'e4'], Nf3: ['g1', 'f3'], Bc4: ['f1', 'c4'] };
-  const done = page.getByText('Today done');
+  const rest = page.locator('.studio-learning-rest');
   const ready = async () =>
-    (await done.count()) > 0 || /New move: play|What do you play here|repertoire too/.test((await feedback.textContent().catch(() => '')) ?? '');
+    (await rest.count()) > 0 || /New move: play|What do you play here|repertoire too/.test((await feedback.textContent().catch(() => '')) ?? '');
   for (let step = 0; step < 20; step++) {
     await expect.poll(ready).toBe(true);
-    if (await done.count()) break;
-    await page.waitForTimeout(600); // the card's position is set up in two steps
+    if (await rest.count()) break;
+    await page.waitForTimeout(600);
     const text = await feedback.innerText();
     const line = await page.locator('.train .card .small.muted').first().innerText();
-    const learn = /New move: play (\S+)/.exec(text)?.[1];
+    const learn = /New move: play (\\S+)/.exec(text)?.[1];
     let san = learn ?? (line === 'Starting position' ? 'e4' : 'Nf3');
     await move(page, ...squares[san]);
     if (!learn && san === 'Nf3') {
-      // Two moves of yours here: a card asks for its own one.
       await page.waitForTimeout(300);
       if (/repertoire too/.test(await feedback.innerText())) {
         san = 'Bc4';
@@ -95,10 +93,10 @@ test("train: today's session learns the new moves, then recalls them", async ({ 
     await page.waitForTimeout(400);
     if (await next.count()) await next.click();
   }
-  await expect(page.getByText('Today done')).toBeVisible();
-  await expect(page.locator('.stat', { hasText: 'right first time' })).toContainText('3');
-  await page.getByRole('button', { name: 'Back' }).click();
-  await expect(page.locator('.today-card')).toContainText('Nothing to train right now');
+  await expect(rest).toBeVisible();
+  await expect(rest).toContainText('3 moves reviewed');
+  await page.getByRole('button', { name: 'Finish for now' }).click();
+  await expect(page.getByRole('button', { name: 'Review (0)' })).toBeDisabled();
 });
 
 test('a game: import, analysis without spoilers, find a better move', async ({ page }) => {
