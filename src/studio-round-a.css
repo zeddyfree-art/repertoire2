@@ -126,3 +126,22 @@
     overscroll-behavior-x: contain;
   }
 }
+
+/* Play at 320px: the repertoire scope select and Maia start button were
+ * wider than their 243px configuration field; keep both inside their card. */
+@media (max-width: 700px) {
+  .studio-play-config,
+  .studio-play-config > .field,
+  .studio-play-config > .field > .row,
+  .studio-workspace-play .rep-scope { min-width: 0; max-width: 100%; }
+  .studio-workspace-play .rep-scope { display: flex; flex-wrap: wrap; align-items: flex-start; }
+  .studio-workspace-play .rep-scope select {
+    flex: 1 1 100%; display: block; width: 100%;
+    min-width: 0; max-width: 100%;
+  }
+  .studio-play-config .btn.primary {
+    min-width: 0; max-width: 100%; width: 100%;
+    height: auto; min-height: 44px; white-space: normal;
+    overflow-wrap: anywhere; text-align: center; justify-content: center;
+  }
+}
