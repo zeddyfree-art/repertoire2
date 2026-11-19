@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { setAppearance, useAppearance } from '../lib/appearance';
+import { downloadText } from '../lib/download';
 import { googleClientId, preloadGoogle, setClientIdOverride, type DriveFile } from '../lib/drive';
 import { getLichessUser, getToken, logout, RATING_BUCKETS, ratingLabel, setToken, SPEED_LABELS, SPEEDS, startLogin, verifyToken } from '../lib/lichess';
 import { isMaiaDownloaded, removeMaia } from '../lib/maia';
@@ -248,7 +249,6 @@ export function SettingsView() {
       </div>
 
       {dialog && <ChoiceDialog {...dialog} onClose={() => setDialog(null)} />}
-      {importing && rep && <ImportPgnDialog rep={rep} onClose={() => setImporting(false)} />}
     </div>
   );
 }
