@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { go, start } from './helpers';
+import { go, move, start } from './helpers';
 
 const SAMPLE = '1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 *';
 const SIZES = [320, 360, 375, 390, 430, 768];
@@ -74,4 +74,49 @@ test('light mode restores original logo and keeps Repertoire 2 branding', async 
   expect(manifest.name).toBe('Repertoire 2');
   const artwork = await (await page.request.get('/brand-lockup-v2.svg')).text();
   expect(artwork).toContain('viewBox="0 0 992 305"');
+});
+
+test('Today practises warned repertoire moves before they are due without changing SRS cards', async ({ page }) => {
+  await start(page, { name: 'Scotch', pgn: SAMPLE });
+  await go(page, 'Train');
+  await expect(page.getByRole('button', { name: 'Practise frequent mistakes (0)' })).toBeDisabled();
+
+  const savedCards = (seed: boolean) => page.evaluate(async (seed) => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const req = indexedDB.open('repertoire2-data');
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    try {
+      return await new Promise<Record<string, unknown>>((resolve, reject) => {
+        const tx = db.transaction('app', seed ? 'readwrite' : 'readonly');
+        const store = tx.objectStore('app');
+        const req = store.get('data');
+        tx.oncomplete = () => resolve(req.result.repertoires[0].cards);
+        tx.onerror = () => reject(tx.error);
+        req.onsuccess = () => {
+          if (!seed) return;
+          const data = req.result;
+          const cards = data.repertoires[0].cards;
+          const first = Object.keys(cards).find((id) => id.endsWith('|e2e4'))!;
+          Object.assign(cards[first], { state: 2, lapses: 4, due: Date.now() + 86400000 });
+          store.put(data, 'data');
+        };
+      });
+    } finally {
+      db.close();
+    }
+  }, seed);
+
+  const before = await savedCards(true);
+  await page.reload();
+  await go(page, 'Train');
+  await expect(page.getByRole('button', { name: 'Review (0)' })).toBeDisabled();
+  await page.getByRole('button', { name: 'Practise frequent mistakes (1)' }).click();
+  await expect(page.getByRole('button', { name: 'Hint' })).toBeEnabled();
+  await move(page, 'e2', 'e4');
+  await expect(page.getByRole('heading', { name: 'Frequent mistakes practised' })).toBeVisible();
+  await page.getByRole('button', { name: 'Back to Today' }).click();
+  await expect(page.getByRole('button', { name: 'Practise frequent mistakes (1)' })).toBeEnabled();
+  expect(await savedCards(false)).toEqual(before);
 });

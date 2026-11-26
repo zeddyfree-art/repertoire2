@@ -4,8 +4,8 @@
 // new ones up to your limit), then new moves, each repertoire up to its own number, in your Overview order.
 import { useMemo } from 'react';
 import { mistakeQueue, type MistakeCard } from './mistakes';
-import type { Repertoire } from './repertoire';
-import { buildQueue, State, type TrainItem } from './srs';
+import { edgeId, inTrainDepth, myEdgesInOrder, type Repertoire } from './repertoire';
+import { buildQueue, isLeech, State, type TrainItem } from './srs';
 import { activeProfile, orderedReps, useApp, type Profile } from './store';
 
 /** How a player trains, synced with their other devices. */
@@ -51,6 +51,29 @@ export type TodayPart =
   | { kind: 'review'; repId: string; items: TrainItem[] }
   | { kind: 'new'; repId: string; items: TrainItem[] }
   | { kind: 'mistakes'; cards: MistakeCard[]; due: number };
+
+export type FrequentMistakesPart = { kind: 'frequent'; repId: string; items: TrainItem[] };
+
+/** The same cards that trigger the training warning, including reviews scheduled for later. */
+export function frequentMistakes(reps: readonly Repertoire[]): FrequentMistakesPart[] {
+  const ranked = reps.filter((rep) => !rep.paused).flatMap((rep) => {
+    const inDepth = inTrainDepth(rep);
+    return myEdgesInOrder(rep).flatMap(({ from, uci, san }) => {
+      const id = edgeId(from, uci);
+      const card = rep.cards[id];
+      if (!inDepth(from) || !isLeech(card)) return [];
+      return [{ repId: rep.id, lapses: card.lapses, item: { id, from, uci, san, isNew: false } }];
+    });
+  }).sort((a, b) => b.lapses - a.lapses);
+
+  const parts: FrequentMistakesPart[] = [];
+  for (const { repId, item } of ranked) {
+    const previous = parts.at(-1);
+    if (previous?.repId === repId) previous.items.push(item);
+    else parts.push({ kind: 'frequent', repId, items: [item] });
+  }
+  return parts;
+}
 
 export interface TodayPlan {
   parts: TodayPart[];

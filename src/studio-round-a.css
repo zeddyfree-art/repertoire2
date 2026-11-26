@@ -27,6 +27,8 @@
   padding: 21px; background: var(--surface-2);
   border: 1px solid var(--border); border-radius: 16px;
 }
+.studio-frequent-mistakes { grid-column: 1 / -1; }
+.studio-frequent-mistakes .btn { align-self: flex-start; max-width: 100%; white-space: normal; }
 .studio-train-action h3 { font: 700 24px/1.12 Georgia,'Times New Roman',serif; letter-spacing: -.025em; }
 .studio-train-action p { margin: 0; color: var(--muted); line-height: 1.5; font-size: 13px; flex: 1; }
 .studio-train-action .field { min-width: 0; width: 100%; }

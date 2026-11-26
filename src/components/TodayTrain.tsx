@@ -3,7 +3,7 @@ import { counts } from '../lib/srs';
 import { activeProfile, orderedReps, useApp } from '../lib/store';
 import { saveNow, type SaveResult } from '../lib/sync';
 import { setTraining, type Repertoire } from '../lib/repertoire';
-import { NEW_MISTAKE_CHOICES, NEW_MOVE_CHOICES, repTraining, reviewOnlyPlan, todayPlan, trainPrefs, unlearnedMoves, type TodayPart, type TodayPlan, type TrainPrefs } from '../lib/today';
+import { NEW_MISTAKE_CHOICES, NEW_MOVE_CHOICES, frequentMistakes, repTraining, reviewOnlyPlan, todayPlan, trainPrefs, unlearnedMoves, type FrequentMistakesPart, type TodayPart, type TrainPrefs } from '../lib/today';
 import { Icon } from './Icon';
 import { LineReviewSession } from './LineReview';
 import { DeckTabs, MistakeSession } from './MistakesTrain';
@@ -83,12 +83,13 @@ export function TodayTrain() {
   const myCards = useApp((s) => (s.data.mistakes ?? []).some((m) => m.profileId === s.data.activeProfileId));
   const data = useApp((s) => s.data);
   const autostart = useApp((s) => s.todayAutostart);
-  const [session, setSession] = useState<TodayPlan | null>(null);
+  const [session, setSession] = useState<(TodayPart | FrequentMistakesPart)[] | null>(null);
   const [learningRep, setLearningRep] = useState<string | null>(null);
   const [settings, setSettings] = useState(false);
   const [selectedForLearning, setSelectedForLearning] = useState<string>('');
+  const reps = orderedReps(data, data.activeProfileId);
   const reviewPlan = reviewOnlyPlan(
-    orderedReps(data, data.activeProfileId),
+    reps,
     (data.mistakes ?? []).filter((m) => m.profileId === data.activeProfileId),
     prefs,
   );
@@ -97,14 +98,15 @@ export function TodayTrain() {
   useEffect(() => {
     if (!autostart) return;
     useApp.getState().clearTodayAutostart();
-    if (reviewPlan.total) setSession(reviewPlan);
+    if (reviewPlan.total) setSession(reviewPlan.parts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autostart]);
 
-  if (session) return <TodaySession plan={session} onExit={() => setSession(null)} />;
+  if (session) return <TodaySession parts={session} onExit={() => setSession(null)} />;
   if (learningRep) return <LearnNewMoves repId={learningRep} onExit={() => setLearningRep(null)} />;
 
-  const reps = orderedReps(data, data.activeProfileId);
+  const frequent = frequentMistakes(reps);
+  const frequentCount = frequent.reduce((total, part) => total + part.items.length, 0);
   const paused = reps.filter((r) => r.paused);
   const byRep = new Map<string, { reviews: number; fresh: number }>();
   for (const p of reviewPlan.parts) {
@@ -128,13 +130,13 @@ export function TodayTrain() {
             <Icon name="settings" size={15} /> Settings
           </button>
         </div>
-        <p className="muted">Review what is due, or choose an opening and learn new moves. No settings to switch back and forth.</p>
+        <p className="muted">Review what is due, learn new moves or practise the moves you keep missing.</p>
         <div className="studio-train-entry-actions">
           <section className="studio-train-action">
             <div className="studio-mini-kicker">SPACED REPETITION</div>
             <h3>Review</h3>
             <p>Only scheduled reviews. No new moves will be introduced.</p>
-            <button className="btn primary lg" disabled={!reviewPlan.total} onClick={() => setSession(reviewPlan)}>
+            <button className="btn primary lg" disabled={!reviewPlan.total} onClick={() => setSession(reviewPlan.parts)}>
               <Icon name="train" size={18}/> Review ({reviewPlan.total})
             </button>
             {!reviewPlan.total && <small className="muted">You're up to date. Come back when cards are due.</small>}
@@ -156,6 +158,14 @@ export function TodayTrain() {
               onClick={() => setLearningRep(available.some((r) => r.id === selectedForLearning) ? selectedForLearning : available[0].id)}>
               <Icon name="play" size={18}/> Start learning
             </button>
+          </section>
+          <section className="studio-train-action studio-frequent-mistakes">
+            <h3>Frequent mistakes</h3>
+            <p>Practise repertoire moves that triggered a repeated-mistake warning. The most missed moves come first.</p>
+            <button className="btn lg" disabled={!frequentCount} onClick={() => setSession(frequent)}>
+              <Icon name="train" size={18} /> Practise frequent mistakes ({frequentCount})
+            </button>
+            {!frequentCount && <small className="muted">No flagged moves in your active training range yet.</small>}
           </section>
         </div>
         {reviewPlan.total > 0 && (
@@ -240,13 +250,13 @@ function LearnNewMoves({ repId, onExit }: { repId: string; onExit: () => void })
   );
 }
 
-function partLabel(part: TodayPart, name: string | undefined): string {
+function partLabel(part: TodayPart | FrequentMistakesPart, name: string | undefined): string {
   if (part.kind === 'mistakes') return `My mistakes (${part.cards.length})`;
-  return `${name ?? 'Repertoire'}: ${part.kind === 'review' ? 'reviews' : 'new moves'} (${part.items.length})`;
+  return `${name ?? 'Repertoire'}: ${part.kind === 'new' ? 'new moves' : 'reviews'} (${part.items.length})`;
 }
 
 /** Today's session: its parts one after another, then one summary. */
-function TodaySession({ plan, onExit }: { plan: TodayPlan; onExit: () => void }) {
+function TodaySession({ parts, onExit }: { parts: (TodayPart | FrequentMistakesPart)[]; onExit: () => void }) {
   const reps = useApp((s) => s.data.repertoires);
   const activeRepId = useApp((s) => s.data.activeRepId);
   const profile = useApp(activeProfile);
@@ -254,9 +264,10 @@ function TodaySession({ plan, onExit }: { plan: TodayPlan; onExit: () => void })
   const [wholeLines] = useState(() => new Map(reps.map((r) => [r.id, repTraining(r, trainPrefs(profile)).wholeLines])));
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState<SessionScore>({ good: 0, bad: 0 });
-  const part = plan.parts[index];
+  const part = parts[index];
+  const practice = parts[0]?.kind === 'frequent';
   const rep = part && part.kind !== 'mistakes' ? reps.find((r) => r.id === part.repId) : undefined;
-  const gone = !!part && part.kind !== 'mistakes' && !rep;
+  const gone = !!part && part.kind !== 'mistakes' && (!rep || (practice && rep.paused));
 
   // The repertoire being trained is the selected one, so "Open in Build" opens the right one.
   useEffect(() => {
@@ -266,33 +277,43 @@ function TodaySession({ plan, onExit }: { plan: TodayPlan; onExit: () => void })
   // A repertoire deleted meanwhile (here or on another device): skip its part.
   useEffect(() => {
     if (gone) setIndex((i) => i + 1);
-  }, [gone]);
+  }, [gone, index]);
 
   const next = (s: SessionScore) => {
     setScore((t) => ({ good: t.good + s.good, bad: t.bad + s.bad }));
     setIndex((i) => i + 1);
   };
 
-  if (!part) return <TodayDone score={score} onBack={onExit} />;
+  if (!part) {
+    if (!practice) return <TodayDone score={score} onBack={onExit} />;
+    return (
+      <div className="card card-pad stack">
+        <h2>Frequent mistakes practised</h2>
+        <p>{score.good} right first time · {score.bad} missed first time</p>
+        <button className="btn primary" onClick={onExit}>Back to Today</button>
+      </div>
+    );
+  }
   if (gone || (part.kind !== 'mistakes' && !rep)) return null;
 
   const bar = (
     <div className="today-bar small">
-      <b>Today</b>
+      <b>{practice ? 'Frequent mistakes' : 'Today'}</b>
       <span className="muted">
         {' '}
-        · part {index + 1} of {plan.parts.length} · {partLabel(part, rep?.name)}
+        · part {index + 1} of {parts.length} · {practice ? rep?.name : partLabel(part, rep?.name)}
       </span>
     </div>
   );
   let body: React.ReactNode;
   if (part.kind === 'mistakes') body = <MistakeSession key={index} initial={part.cards} onExit={onExit} onDone={next} />;
-  else if (wholeLines.get(rep!.id) && part.kind !== 'review') body = <LineReviewSession key={index} rep={rep!} items={part.items} start={[]} onExit={onExit} onDone={next} />;
+  else if (wholeLines.get(rep!.id) && part.kind === 'new') body = <LineReviewSession key={index} rep={rep!} items={part.items} start={[]} onExit={onExit} onDone={next} />;
   else
     body = (
       <ReviewSession
         key={index}
         rep={rep!}
+        practice={practice}
         initial={part.items.map((it) => ({ ...it, kind: part.kind === 'new' ? ('learn' as const) : ('review' as const) }))}
         onExit={onExit}
         onDone={next}

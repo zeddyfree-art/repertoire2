@@ -398,7 +398,7 @@ export interface SessionScore {
 
 /** A card review. With `onDone` (a part of today's session) it hands over its score when the cards run out instead of
  *  showing its own summary. */
-export function ReviewSession({ rep, initial, onExit, onDone }: { rep: Repertoire; initial: QItem[]; onExit: () => void; onDone?: (score: SessionScore) => void }) {
+export function ReviewSession({ rep, initial, onExit, onDone, practice = false }: { rep: Repertoire; initial: QItem[]; practice?: boolean; onExit: () => void; onDone?: (score: SessionScore) => void }) {
   useScrollToTop();
   const updateRep = useApp((s) => s.updateRep);
   const showToast = useApp((s) => s.showToast);
@@ -594,9 +594,12 @@ export function ReviewSession({ rep, initial, onExit, onDone }: { rep: Repertoir
       } else if (mistake) {
         info = 'Good. It comes back once more at the end of the session.';
       } else {
-        const due = grade(hinted ? Rating.Hard : Rating.Good);
         setScore((s) => ({ ...s, good: s.good + 1 }));
-        info = `Correct! Next review in ${formatInterval(due - Date.now())}.`;
+        if (practice) info = 'Correct!';
+        else {
+          const due = grade(hinted ? Rating.Hard : Rating.Good);
+          info = `Correct! Next review in ${formatInterval(due - Date.now())}.`;
+        }
       }
       const w = authorWords(rep, item, path);
       setMessage(info);
@@ -610,7 +613,7 @@ export function ReviewSession({ rep, initial, onExit, onDone }: { rep: Repertoir
       triggerFlash('flash-bad');
       setPhase('bad');
       if (!mistake && (item.kind === 'review' || item.kind === 'test')) {
-        grade(Rating.Again);
+        if (!practice) grade(Rating.Again);
         setScore((s) => ({ ...s, bad: s.bad + 1 }));
         setQueue((q) => [...q, { ...item, kind: 'retry' }]);
         const card = useApp.getState().data.repertoires.find((r) => r.id === rep.id)?.cards[item.id];
@@ -746,7 +749,8 @@ export function ReviewSession({ rep, initial, onExit, onDone }: { rep: Repertoir
           )}
         </div>
         <div className="help">
-          A hint (which piece) counts as “hard”, a wrong move as “again”. Another of your moves does not count: each card asks
+          {practice ? "This practice leaves your review schedule unchanged. " : "A hint (which piece) counts as “hard”, a wrong move as “again”. "}
+          Another of your moves does not count: each card asks
           for its own. After a wrong move you play the right one with the arrow, then once more from memory, and only then go on;
           the card comes back at the end of the session too. A comment on a move you found stays in view
           on the next card.
