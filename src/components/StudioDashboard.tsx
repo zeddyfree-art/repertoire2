@@ -4,7 +4,7 @@ import { Icon } from './Icon';
 import { formatLine, uciToArrow } from '../lib/chess';
 import { ROOT, type Repertoire } from '../lib/repertoire';
 import { forStudioScope, mainlinePreview, recentlyPracticed, studioSummary, type StudioScope } from '../lib/studioDashboard';
-import type { TodayPlan } from '../lib/today';
+import { frequentMistakes, type TodayPlan } from '../lib/today';
 import type { View } from '../lib/store';
 
 interface Props {
@@ -16,10 +16,12 @@ interface Props {
   onNavigate: (view: View) => void;
   onTrainToday: () => void;
   onLearnNew: () => void;
+  onPractiseFrequent: () => void;
   onNewRepertoire: () => void;
 }
 
-export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, onNavigate, onTrainToday, onLearnNew, onNewRepertoire }: Props) {
+export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, onNavigate, onTrainToday, onLearnNew, onPractiseFrequent, onNewRepertoire }: Props) {
+  const frequentCount = useMemo(() => frequentMistakes(repertoires).reduce((total, part) => total + part.items.length, 0), [repertoires]);
   const active = repertoires.find((rep) => rep.id === activeId) ?? repertoires[0] ?? null;
   const frames = useMemo(() => active ? mainlinePreview(active) : [{ key: ROOT }], [active]);
   const [ply, setPly] = useState(0);
@@ -89,6 +91,9 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
               </button>
               <button className="studio-training-secondary" onClick={onLearnNew}>
                 <Icon name="plus" size={20}/> Learn new moves
+              </button>
+              <button className="studio-training-secondary" disabled={!frequentCount} onClick={onPractiseFrequent}>
+                <Icon name="train" size={20}/> Practise frequent mistakes ({frequentCount})
               </button>
             </div>
             <div className="studio-leaf-motif" aria-hidden="true">❧</div>

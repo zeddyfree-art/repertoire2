@@ -99,7 +99,7 @@ export interface AppState {
   /** What the Train tab shows: today's session for everything, one repertoire, or the mistake cards. */
   trainDeck: TrainDeck;
   /** Set by "Train" on the Overview: the Train tab starts today's session at once (then clears it). */
-  todayAutostart: boolean;
+  todayAutostart: 'review' | 'frequent' | null;
   /** Going through the results of a check one by one, from the Build board. */
   checkTour: CheckTour | null;
   undo: UndoEntry[];
@@ -137,7 +137,7 @@ export interface AppState {
   openGame(id: string | null): void;
   setTrainDeck(deck: TrainDeck): void;
   /** Today's session, right away. */
-  trainToday(): void;
+  trainToday(mode?: 'review' | 'frequent'): void;
   /** The Train tab took over the autostart. */
   clearTodayAutostart(): void;
   /** Opens item `index` of a check's results on the Build board (null: stop). */
@@ -201,7 +201,7 @@ export const useApp = create<AppState>()((set, get) => {
     playSetup: null,
     openGameId: null,
     trainDeck: 'today',
-    todayAutostart: false,
+    todayAutostart: null,
     checkTour: null,
     undo: [],
     redo: [],
@@ -388,8 +388,8 @@ export const useApp = create<AppState>()((set, get) => {
     openGame: (id) => set(id ? { openGameId: id, view: id.includes('|practice:') ? 'play' : 'games' } : { openGameId: null }),
 
     setTrainDeck: (deck) => set({ trainDeck: deck }),
-    trainToday: () => set({ view: 'train', trainDeck: 'today', todayAutostart: true, trainScope: null }),
-    clearTodayAutostart: () => set({ todayAutostart: false }),
+    trainToday: (mode = 'review') => set({ view: 'train', trainDeck: 'today', todayAutostart: mode, trainScope: null }),
+    clearTodayAutostart: () => set({ todayAutostart: null }),
 
     tourTo: (tour) => set({ checkTour: tour }),
 

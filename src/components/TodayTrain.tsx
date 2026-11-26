@@ -94,11 +94,12 @@ export function TodayTrain() {
     prefs,
   );
 
-  // "Train" on the Overview: straight into the session.
+  // Home shortcuts start the selected session directly.
   useEffect(() => {
     if (!autostart) return;
     useApp.getState().clearTodayAutostart();
-    if (reviewPlan.total) setSession(reviewPlan.parts);
+    const parts = autostart === 'frequent' ? frequentMistakes(reps) : reviewPlan.parts;
+    if (parts.length) setSession(parts);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autostart]);
 
