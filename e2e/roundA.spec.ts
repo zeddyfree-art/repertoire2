@@ -78,6 +78,7 @@ test('light mode restores original logo and keeps Repertoire 2 branding', async 
 
 test('Home and Today offer warned repertoire moves before they are due without changing SRS cards', async ({ page }) => {
   await start(page, { name: 'Scotch', pgn: SAMPLE });
+  await go(page, 'Overview');
   const home = page.getByRole('region', { name: "Today's training" });
   await expect(home.getByRole('button', { name: 'Practise frequent mistakes (0)' })).toBeDisabled();
 
