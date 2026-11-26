@@ -63,12 +63,13 @@
   font-weight: 750; padding: 11px 21px; font-size: 14px;
   transition: background .17s ease, transform .17s ease;
 }
-.studio-home-training-actions > button:hover { transform: translateY(-1px); }
+.studio-home-training-actions > button:enabled:hover { transform: translateY(-1px); }
 .studio-home-training-actions .studio-training-secondary {
   border: 1px solid rgba(255,255,255,.6);
   color: #fffef7; background: rgba(25,53,35,.19);
 }
-.studio-home-training-actions .studio-training-secondary:hover { background: rgba(25,53,35,.35); }
+.studio-home-training-actions .studio-training-secondary:enabled:hover { background: rgba(25,53,35,.35); }
+.studio-home-training-actions > button:disabled { opacity: .65; cursor: default; }
 .studio-home-training-actions button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .studio-dashboard-flow .studio-progress-content { grid-template-columns: minmax(0,1fr); gap: 17px; }
 .studio-dashboard-flow .studio-progress-card { min-height: 310px; }

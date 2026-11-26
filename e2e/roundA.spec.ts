@@ -76,10 +76,11 @@ test('light mode restores original logo and keeps Repertoire 2 branding', async 
   expect(artwork).toContain('viewBox="0 0 992 305"');
 });
 
-test('Today practises warned repertoire moves before they are due without changing SRS cards', async ({ page }) => {
+test('Home and Today offer warned repertoire moves before they are due without changing SRS cards', async ({ page }) => {
   await start(page, { name: 'Scotch', pgn: SAMPLE });
-  await go(page, 'Train');
-  await expect(page.getByRole('button', { name: 'Practise frequent mistakes (0)' })).toBeDisabled();
+  await go(page, 'Overview');
+  const home = page.getByRole('region', { name: "Today's training" });
+  await expect(home.getByRole('button', { name: 'Practise frequent mistakes (0)' })).toBeDisabled();
 
   const savedCards = (seed: boolean) => page.evaluate(async (seed) => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -110,13 +111,15 @@ test('Today practises warned repertoire moves before they are due without changi
 
   const before = await savedCards(true);
   await page.reload();
-  await go(page, 'Train');
-  await expect(page.getByRole('button', { name: 'Review (0)' })).toBeDisabled();
-  await page.getByRole('button', { name: 'Practise frequent mistakes (1)' }).click();
+  await go(page, 'Overview');
+  await home.getByRole('button', { name: 'Practise frequent mistakes (1)' }).click();
   await expect(page.getByRole('button', { name: 'Hint' })).toBeEnabled();
   await move(page, 'e2', 'e4');
   await expect(page.getByRole('heading', { name: 'Frequent mistakes practised' })).toBeVisible();
   await page.getByRole('button', { name: 'Back to Today' }).click();
-  await expect(page.getByRole('button', { name: 'Practise frequent mistakes (1)' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Review (0)' })).toBeDisabled();
+  await page.getByRole('button', { name: 'Practise frequent mistakes (1)' }).click();
+  await expect(page.getByRole('button', { name: 'Hint' })).toBeEnabled();
+  await page.getByRole('button', { name: 'Stop' }).click();
   expect(await savedCards(false)).toEqual(before);
 });

@@ -152,6 +152,7 @@ export function HomeView() {
           if (plan.total > 0) useApp.getState().trainToday();
           else useApp.getState().setView('train');
         }}
+        onPractiseFrequent={() => useApp.getState().trainToday('frequent')}
         onLearnNew={() => {
           useApp.getState().setTrainDeck('today');
           useApp.getState().setView('train');
