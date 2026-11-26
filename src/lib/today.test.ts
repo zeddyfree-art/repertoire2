@@ -3,7 +3,7 @@ import { lineFromSans, START_KEY } from './chess';
 import { isOpeningCard, mistakeQueue, themeCounts, type MistakeCard } from './mistakes';
 import { addLine, newRepertoire, setPaused, type Repertoire } from './repertoire';
 import { gradeCard, newCard, Rating, State, syncCards } from './srs';
-import { describePlan, todayPlan, trainPrefs } from './today';
+import { describePlan, frequentMistakes, todayPlan, trainPrefs } from './today';
 
 const rep = (name: string, side: 'white' | 'black', ...lines: string[][]) => {
   let r = newRepertoire('p', name, side);
@@ -105,4 +105,24 @@ describe('mistake cards by priority', () => {
   it('counts the themes of a deck', () => {
     expect(themeCounts([]).size).toBe(0);
   });
+});
+
+it('ranks warned moves across active repertoires, regardless of due date and within training depth', () => {
+  const flagged = (r: Repertoire, lapses: number[]) => ({
+    ...r,
+    cards: Object.fromEntries(Object.entries(r.cards).map(([id, card], index) => [
+      id, { ...card, state: State.Review, due: later, lapses: lapses[index] },
+    ])),
+  });
+  const white = flagged(rep('White', 'white', ['e4', 'e5', 'Nf3', 'Nc6', 'Bb5']), [9, 8, 3]);
+  const black = flagged(rep('Black', 'black', ['e4', 'c5', 'Nf3', 'd6']), [4, 10]);
+  const paused = setPaused(flagged(rep('Paused', 'white', ['d4']), [12]), true);
+
+  const parts = frequentMistakes([white, { ...black, trainDepth: 1 }, paused]);
+  expect(parts.map(({ repId, items }) => [repId, items.map(({ san }) => san)])).toEqual([
+    [white.id, ['e4', 'Nf3']],
+    [black.id, ['c5']],
+  ]);
+  expect(frequentMistakes([white, black]).flatMap(({ items }) => items.map(({ san }) => san)))
+    .toEqual(['d6', 'e4', 'Nf3', 'c5']);
 });
