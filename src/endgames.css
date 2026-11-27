@@ -108,3 +108,45 @@
   .topbar .nav button .label { font-size: 10px; letter-spacing: -0.01em; }
   .studio-workspace-endgames .train .board-wrap { width: min(calc(100dvw - 48px), 560px); height: auto; aspect-ratio: 1; }
 }
+
+/* ---------- Skills: tabs, tactics, calculation ---------- */
+
+.tc-tabs { display: flex; gap: 6px; padding: 4px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); width: fit-content; max-width: 100%; overflow-x: auto; }
+.tc-tab { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); font-weight: 620; font-size: 14px; cursor: pointer; white-space: nowrap; }
+.tc-tab:hover { color: var(--text); }
+.tc-tab.active { background: var(--accent); color: #fff; }
+.tc-tab-badge { min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--due); color: #fff; font-size: 11px; display: inline-grid; place-items: center; }
+.tc-tab.active .tc-tab-badge { background: #fff; color: var(--accent); }
+
+.tc-spark { width: 100%; max-width: 360px; height: 40px; }
+.tc-steps { display: flex; flex-direction: column; gap: 12px; padding-top: 4px; }
+.tc-step { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+.tc-step-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.tc-motifs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tc-motif { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; }
+.tc-motif:hover { background: var(--surface-2); }
+.tc-motif.passed { border-color: color-mix(in srgb, var(--mine) 55%, var(--border)); background: var(--mine-soft); }
+
+.tc-moves { padding: 8px 10px; border-radius: var(--radius); background: var(--surface-2); line-height: 1.6; }
+.board-frozen { outline: 3px dashed color-mix(in srgb, var(--accent) 55%, transparent); outline-offset: 3px; border-radius: 4px; }
+
+.tc-ladder { display: flex; gap: 4px; }
+.tc-ladder i { flex: 1; height: 8px; border-radius: 3px; background: var(--border); }
+.tc-ladder i.ok { background: var(--mine); }
+.tc-ladder i.miss { background: var(--gap); }
+
+.tc-depths { display: flex; flex-wrap: wrap; gap: 6px; }
+.tc-depth { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-weight: 680; font-size: 13px; border: 1px solid var(--border); color: var(--muted); }
+.tc-depth.passed { background: var(--mine-soft); color: var(--mine); border-color: transparent; }
+.tc-depth.current { background: var(--accent); color: #fff; border-color: transparent; }
+
+.tc-indeterminate { overflow: hidden; }
+.tc-indeterminate > div { width: 35% !important; animation: tc-slide 1.2s ease-in-out infinite; }
+@keyframes tc-slide { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+
+.studio-workspace-skills .train .board-wrap { max-width: 100%; }
+@media (max-width: 600px) {
+  .studio-workspace-skills .train .board-wrap { width: min(calc(100dvw - 48px), 560px); height: auto; aspect-ratio: 1; }
+  .tc-tab { padding: 8px 12px; font-size: 13px; }
+}
+.link-button { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; }

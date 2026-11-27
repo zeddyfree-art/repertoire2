@@ -37,6 +37,8 @@ export interface Profile {
   trainPrefs?: Partial<import('./today').TrainPrefs>;
   /** Endgame drills and puzzle tests: scores and when each drill is due (see endgames/progress.ts). */
   endgames?: import('./endgames/progress').EndgameProgress;
+  /** Tactics path, puzzle reviews, own sets and the calculation ladders (see tactics/progress.ts). */
+  tactics?: import('./tactics/progress').TacticsProgress;
   updatedAt?: number;
 }
 
@@ -64,7 +66,8 @@ export interface CheckTour {
   index: number;
 }
 
-export type View = 'home' | 'build' | 'tree' | 'train' | 'play' | 'endgames' | 'audit' | 'games' | 'settings' | 'about';
+export type View = 'home' | 'build' | 'tree' | 'train' | 'play' | 'skills' | 'audit' | 'games' | 'settings' | 'about';
+export type SkillsTab = 'tactics' | 'calculation' | 'endgames';
 
 export interface Toast {
   id: number;
@@ -102,6 +105,8 @@ export interface AppState {
   trainDeck: TrainDeck;
   /** Set by "Train" on the Overview: the Train tab starts today's session at once (then clears it). */
   todayAutostart: 'review' | 'frequent' | null;
+  /** The tab open in Skills. */
+  skillsTab: SkillsTab;
   /** Going through the results of a check one by one, from the Build board. */
   checkTour: CheckTour | null;
   undo: UndoEntry[];
@@ -109,12 +114,17 @@ export interface AppState {
   toast: Toast | null;
 
   setView(view: View): void;
+  setSkillsTab(tab: SkillsTab): void;
+  /** Opens Skills on a tab. */
+  openSkills(tab: SkillsTab): void;
   setActiveProfile(id: string): void;
   setActiveRep(id: string | null): void;
   addProfile(p: Omit<Profile, 'id'>): Profile;
   updateProfile(id: string, patch: Partial<Profile>): void;
   /** Changes the active player's endgame progress. */
   updateEndgames(fn: (p: import('./endgames/progress').EndgameProgress) => import('./endgames/progress').EndgameProgress): void;
+  /** Changes the active player's tactics progress (undefined until a start rating is chosen). */
+  updateTactics(fn: (p: import('./tactics/progress').TacticsProgress | undefined) => import('./tactics/progress').TacticsProgress): void;
   deleteProfile(id: string): void;
   createRepertoire(name: string, side: Side): Repertoire;
   addRepertoire(rep: Repertoire): void;
@@ -201,6 +211,7 @@ export const useApp = create<AppState>()((set, get) => {
     line: [],
     ply: 0,
     trainScope: null,
+    skillsTab: 'tactics',
     playStart: [],
     playSetup: null,
     openGameId: null,
@@ -239,6 +250,13 @@ export const useApp = create<AppState>()((set, get) => {
       const profile = get().data.profiles.find((p) => p.id === id);
       if (!profile) return;
       get().updateProfile(profile.id, { endgames: fn(profile.endgames ?? { drills: {}, puzzles: {} }) });
+    },
+
+    updateTactics: (fn) => {
+      const id = get().data.activeProfileId;
+      const profile = get().data.profiles.find((p) => p.id === id);
+      if (!profile) return;
+      get().updateProfile(profile.id, { tactics: fn(profile.tactics) });
     },
 
     deleteProfile: (id) => {
@@ -391,6 +409,8 @@ export const useApp = create<AppState>()((set, get) => {
       set({ line, ply: line.length, view: 'build' });
     },
 
+    setSkillsTab: (tab) => set({ skillsTab: tab }),
+    openSkills: (tab) => set({ skillsTab: tab, view: 'skills' }),
     trainFrom: (key) => set({ trainScope: key && key !== ROOT ? key : null, view: 'train', trainDeck: 'repertoire' }),
 
     playFrom: (line, setup) => set({ playStart: line, playSetup: setup ?? null, view: 'play' }),
