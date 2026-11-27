@@ -169,3 +169,16 @@ describe.skipIf(!process.env.EG_TABLEBASE)('positions against the tablebase', ()
     }, 20_000);
   }
 });
+
+describe('supported-queen mate filter', () => {
+  it('accepts a protected queen mating next to the king', async () => {
+    const { isSupportedQueenMate } = await import('./puzzles');
+    expect(isSupportedQueenMate('6k1/5p1p/6p1/8/8/2Q5/1B6/6K1 w - - 0 1', 'c3g7')).toBe(true);
+  });
+  it('rejects a rook mate, an unprotected queen and a queen mate from afar', async () => {
+    const { isSupportedQueenMate } = await import('./puzzles');
+    expect(isSupportedQueenMate('6k1/5ppp/8/8/8/8/8/R5K1 w - - 0 1', 'a1a8')).toBe(false);
+    expect(isSupportedQueenMate('6k1/5ppp/8/8/8/8/8/Q5K1 w - - 0 1', 'a1a8')).toBe(false);
+    expect(isSupportedQueenMate('7k/6pp/8/8/8/8/8/Q5K1 w - - 0 1', 'a1a8')).toBe(false);
+  });
+});

@@ -42,7 +42,7 @@ export function PuzzleSession({ test, count, difficulty, onExit }: { test: Puzzl
     setNote(null);
     setShapes([]);
     try {
-      const p = await nextPuzzle(test.theme, difficulty);
+      const p = await nextPuzzle(test.theme, difficulty, undefined, test.filter);
       if (!st.current.alive) return;
       st.current = { ...st.current, step: 0, failed: false, recorded: false, fen: p.fen };
       setPuzzle(p);

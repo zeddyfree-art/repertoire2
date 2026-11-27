@@ -73,6 +73,8 @@ export interface PuzzleTest {
   size: number;
   /** One line on what the pattern is. */
   about: string;
+  /** Narrows the Lichess theme down to this pattern (see endgames/puzzles.ts). */
+  filter?: import('./puzzles').PuzzleFilter;
 }
 
 export interface PuzzleGroup {
@@ -892,7 +894,7 @@ export const PUZZLE_GROUPS: PuzzleGroup[] = [
     title: 'Mating patterns · L1',
     lead: 'See them at a glance. With every enemy king ask: which flight squares are gone, which of my pieces can join, which checks are there?',
     tests: [
-      { theme: 'mateIn1', title: 'Supported-queen mate (mate in 1)', level: 1, size: 20, about: 'The queen lands next to the king, protected, and takes every flight square.' },
+      { theme: 'mateIn1', filter: 'supportedQueenMate', title: 'Supported-queen mate', level: 1, size: 20, about: 'The queen lands next to the king, protected by another piece, and takes every flight square.' },
       { theme: 'backRankMate', title: 'Back-rank mate', level: 1, size: 20, about: 'A rook or queen mates on the back rank because the king is shut in by its own pawns.' },
       { theme: 'smotheredMate', title: 'Smothered mate', level: 1, size: 20, about: 'A knight mates a king walled in by its own pieces.' },
     ],
