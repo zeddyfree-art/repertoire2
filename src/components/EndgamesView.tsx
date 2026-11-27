@@ -48,7 +48,10 @@ export function EndgamesView() {
   const [difficulty, setDifficulty] = useState<PuzzleDifficulty>(savedDifficulty);
   const [open, setOpen] = useState<string | null>(null);
   // A session starts at the top of the page, with the board in view.
-  useEffect(() => window.scrollTo({ top: 0 }), [mode]);
+  // In braces: newer browsers return a promise from scrollTo, and React would take it for a cleanup function.
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [mode]);
 
   // Recomputed when the progress changes (the overview is shown again after every session).
   const sum = useMemo(() => summary(progress), [progress]);
