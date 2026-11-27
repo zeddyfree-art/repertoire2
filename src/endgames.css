@@ -1,0 +1,110 @@
+/* ---------- Endgames ---------- */
+
+.eg-hero { gap: 18px; }
+.eg-hero-top { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: flex-end; justify-content: space-between; }
+.eg-score { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.eg-score b { font-size: 40px; font-weight: 760; line-height: 1; color: var(--text); }
+.eg-progress { height: 8px; }
+.eg-stats { flex: 0 1 auto; }
+
+.eg-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.eg-section { gap: 10px; }
+.eg-section h3 { font-size: 15.5px; font-weight: 680; margin: 0 0 4px; }
+.eg-section.done { border-color: color-mix(in srgb, var(--mine) 45%, var(--border)); }
+.eg-pct { font-weight: 720; font-size: 15px; color: var(--muted); }
+.eg-section.done .eg-pct { color: var(--mine); }
+
+.badge.eg-level-1 { background: var(--mine-soft); color: var(--mine); }
+.badge.eg-level-2 { background: var(--accent-soft); color: var(--accent); }
+.badge.eg-level-3 { background: var(--due-soft); color: var(--due); }
+
+.eg-drills { display: flex; flex-direction: column; }
+.eg-drill-row {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto auto;
+  grid-template-areas: 'dot name boxes stars' 'dot state state state';
+  align-items: center;
+  gap: 2px 8px;
+  width: 100%;
+  padding: 8px 6px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.eg-drill-row:hover { background: var(--surface-2); }
+.eg-drill-row .eg-dot { grid-area: dot; }
+.eg-drill-name { grid-area: name; font-size: 13.5px; font-weight: 560; min-width: 0; }
+.eg-boxes { grid-area: boxes; display: inline-flex; gap: 3px; }
+.eg-boxes i { width: 9px; height: 9px; border-radius: 2px; background: var(--border); display: inline-block; }
+.eg-boxes i.on { background: var(--mine); }
+.eg-drill-row .eg-stars { grid-area: stars; }
+.eg-drill-state { grid-area: state; }
+
+.eg-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); display: inline-block; flex: none; }
+.eg-dot.learning { background: var(--accent); }
+.eg-dot.mastered { background: var(--mine); }
+.eg-dot.due { background: var(--due); }
+
+.eg-stars { display: inline-flex; gap: 1px; font-size: 13px; letter-spacing: 0; color: var(--border); line-height: 1; }
+.eg-stars .on { color: #d9a21b; }
+
+.eg-method { padding: 10px 12px; border-radius: var(--radius); background: var(--surface-2); line-height: 1.5; }
+.eg-method a { display: inline-flex; align-items: center; gap: 5px; }
+
+.eg-tests { display: flex; flex-direction: column; }
+.eg-test {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+}
+.eg-test-name { flex: 1; min-width: 0; font-size: 13.5px; }
+.eg-puzzle-groups { grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); }
+.eg-test-score { min-width: 54px; text-align: right; }
+
+.eg-weak { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+.eg-weak-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.eg-weak-item:hover { background: var(--surface-2); }
+.eg-weak-item > span:nth-child(2) { flex: 1; min-width: 0; }
+.eg-weak-item b { display: block; font-size: 13.5px; }
+.eg-weak-item small { display: block; color: var(--muted); font-size: 11.5px; }
+.eg-weak-item > svg { color: var(--accent); flex: none; }
+
+.eg-goal { display: flex; align-items: center; gap: 6px; font-weight: 640; }
+.eg-meters { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-variant-numeric: tabular-nums; font-size: 13.5px; }
+.eg-result-list { display: flex; flex-direction: column; gap: 6px; }
+.eg-howto summary { cursor: pointer; }
+.eg-howto p { margin: 0; line-height: 1.55; }
+
+@media (max-width: 900px) {
+  .eg-sections { grid-template-columns: minmax(0, 1fr); }
+  .eg-score b { font-size: 32px; }
+}
+
+/* Eight places in the phone's bottom bar: share the width evenly. */
+@media (max-width: 600px) {
+  .topbar .nav button:not(.studio-nav-settings) { flex: 1 1 0; padding-left: 1px; padding-right: 1px; }
+  .topbar .nav button .label { font-size: 10px; letter-spacing: -0.01em; }
+  .studio-workspace-endgames .train .board-wrap { width: min(calc(100dvw - 48px), 560px); height: auto; aspect-ratio: 1; }
+}
