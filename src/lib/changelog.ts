@@ -15,6 +15,17 @@ export interface ChangelogEntry {
 /** Newest first. */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.2.0',
+    date: '2026-11-27',
+    items: [
+      'Skills: tactics, calculation and endgames together, on one screen with tabs. Endgames moved here.',
+      'Tactics: a path of four modules (foundations, attacking the king, removing the defender, subtle moves). Each module goes Learn (one motif at a time, named) → Mix (shuffled; you name the motif afterwards) → Combine (several motifs at once) → three woodpecker cycles, each faster than the last.',
+      'Your own tactics rating: you set where you start, then it moves with every new puzzle. Sets are made around it. Missed puzzles come back after a night, then after 3, 7 and 14 days.',
+      'Own sets, as on Tacticspecker: pick motifs, a rating, a size and the number of cycles.',
+      'Calculation: the mate ladder (mate in 2 to 5) and ghost puzzles (the last moves play only as arrows, up to ten deep), both with a board that stays still while you calculate.',
+    ],
+  },
+  {
     version: '1.1.0',
     date: '2026-11-27',
     items: [

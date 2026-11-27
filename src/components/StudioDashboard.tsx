@@ -5,9 +5,11 @@ import { formatLine, uciToArrow } from '../lib/chess';
 import { ROOT, type Repertoire } from '../lib/repertoire';
 import { forStudioScope, mainlinePreview, recentlyPracticed, studioSummary, type StudioScope } from '../lib/studioDashboard';
 import { frequentMistakes, type TodayPlan } from '../lib/today';
-import type { View } from '../lib/store';
 import { useEndgameProgress } from './EndgamesView';
 import { nextSection, summary as endgameSummary } from '../lib/endgames/progress';
+import { useTactics } from './TacticsTab';
+import { dueReviews, moduleStep, nextModule } from '../lib/tactics/progress';
+import { useApp, type View } from '../lib/store';
 
 interface Props {
   repertoires: Repertoire[];
@@ -25,6 +27,14 @@ interface Props {
 export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, onNavigate, onTrainToday, onLearnNew, onPractiseFrequent, onNewRepertoire }: Props) {
   const endgames = useEndgameProgress();
   const eg = useMemo(() => ({ ...endgameSummary(endgames), next: nextSection(endgames) }), [endgames]);
+  const tactics = useTactics();
+  const tc = useMemo(() => {
+    if (!tactics) return null;
+    const mod = nextModule(tactics);
+    const step = mod ? moduleStep(mod, tactics.modules[mod.id]) : null;
+    return { due: dueReviews(tactics).length, rating: tactics.rating, next: mod ? `${mod.title.split(':')[0]} · ${step?.phase === 'learn' ? step.motif.name : step?.phase}` : null };
+  }, [tactics]);
+  const openSkills = useApp((s) => s.openSkills);
   const frequentCount = useMemo(() => frequentMistakes(repertoires).reduce((total, part) => total + part.items.length, 0), [repertoires]);
   const active = repertoires.find((rep) => rep.id === activeId) ?? repertoires[0] ?? null;
   const frames = useMemo(() => active ? mainlinePreview(active) : [{ key: ROOT }], [active]);
@@ -99,7 +109,10 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
               <button className="studio-training-secondary" disabled={!frequentCount} onClick={onPractiseFrequent}>
                 <Icon name="train" size={20}/> Practise frequent mistakes ({frequentCount})
               </button>
-              <button className="studio-training-secondary studio-endgame-button" onClick={() => onNavigate('endgames')}>
+              <button className="studio-training-secondary studio-endgame-button" onClick={() => openSkills('tactics')}>
+                <Icon name="target" size={20}/> {tc?.due ? `Tactics (${tc.due} to review)` : 'Tactics'}
+              </button>
+              <button className="studio-training-secondary studio-endgame-button" onClick={() => openSkills('endgames')}>
                 <Icon name="endgame" size={20}/> {eg.due > 0 ? `Endgames (${eg.due} due)` : 'Endgames'}
               </button>
             </div>
@@ -114,7 +127,21 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
             <span><b>Build repertoire</b><small>{active?.name ?? 'Create your first opening'}</small></span>
             <Icon name="next" size={19}/>
           </button>
-          <button className="studio-continue-item" onClick={() => onNavigate('endgames')}>
+          <button className="studio-continue-item" onClick={() => openSkills('tactics')}>
+            <span className="studio-action-icon"><Icon name="target" size={21}/></span>
+            <span><b>Tactics training</b><small>{tc
+              ? `Rating ${tc.rating}${tc.due ? ` · ${tc.due} to review` : ''}${tc.next ? ` · next: ${tc.next}` : ''}`
+              : 'Learn the motifs step by step, then woodpecker cycles'}</small></span>
+            <Icon name="next" size={19}/>
+          </button>
+          <button className="studio-continue-item" onClick={() => openSkills('calculation')}>
+            <span className="studio-action-icon"><Icon name="eye" size={21}/></span>
+            <span><b>Calculation</b><small>{tactics
+              ? `Mate ladder · ghost puzzles at depth ${tactics.calc.ghostDepth}`
+              : 'Mate in 2 to 5 and ghost puzzles, with a board that stays still'}</small></span>
+            <Icon name="next" size={19}/>
+          </button>
+          <button className="studio-continue-item" onClick={() => openSkills('endgames')}>
             <span className="studio-action-icon"><Icon name="endgame" size={21}/></span>
             <span><b>Endgame training</b><small>{eg.mastered + eg.learning === 0
               ? 'Basic mates, pawn and rook endings — start with the queen mate'
