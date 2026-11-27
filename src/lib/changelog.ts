@@ -15,6 +15,16 @@ export interface ChangelogEntry {
 /** Newest first. */
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '1.1.0',
+    date: '2026-11-27',
+    items: [
+      'Endgames: a study path from the basic mates through pawn, rook and minor-piece endings — 54 drills in 21 sections, each played out against perfect defence (the Lichess tablebase, or Stockfish without a connection). A move that throws the result away is taken back at once.',
+      'Every drill gets stars, and three passes in a row make it mastered; mastered drills come back for upkeep after a week, two weeks, a month. The basic mates have a time target, so they become automatic.',
+      'Puzzle tests from Lichess by theme: the named mates and pawn, rook, bishop, knight and queen endings. A test is passed when 80% of your last 20 or 30 puzzles were right at the first try.',
+      '“Still to train” lists the drills and tests that went wrong lately. Endgames is on Home and in the menu.',
+    ],
+  },
+  {
     version: '1.0.0',
     date: '2026-11-07',
     items: [

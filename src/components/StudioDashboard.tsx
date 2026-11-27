@@ -6,6 +6,8 @@ import { ROOT, type Repertoire } from '../lib/repertoire';
 import { forStudioScope, mainlinePreview, recentlyPracticed, studioSummary, type StudioScope } from '../lib/studioDashboard';
 import { frequentMistakes, type TodayPlan } from '../lib/today';
 import type { View } from '../lib/store';
+import { useEndgameProgress } from './EndgamesView';
+import { nextSection, summary as endgameSummary } from '../lib/endgames/progress';
 
 interface Props {
   repertoires: Repertoire[];
@@ -21,6 +23,8 @@ interface Props {
 }
 
 export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, onNavigate, onTrainToday, onLearnNew, onPractiseFrequent, onNewRepertoire }: Props) {
+  const endgames = useEndgameProgress();
+  const eg = useMemo(() => ({ ...endgameSummary(endgames), next: nextSection(endgames) }), [endgames]);
   const frequentCount = useMemo(() => frequentMistakes(repertoires).reduce((total, part) => total + part.items.length, 0), [repertoires]);
   const active = repertoires.find((rep) => rep.id === activeId) ?? repertoires[0] ?? null;
   const frames = useMemo(() => active ? mainlinePreview(active) : [{ key: ROOT }], [active]);
@@ -95,6 +99,9 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
               <button className="studio-training-secondary" disabled={!frequentCount} onClick={onPractiseFrequent}>
                 <Icon name="train" size={20}/> Practise frequent mistakes ({frequentCount})
               </button>
+              <button className="studio-training-secondary studio-endgame-button" onClick={() => onNavigate('endgames')}>
+                <Icon name="endgame" size={20}/> {eg.due > 0 ? `Endgames (${eg.due} due)` : 'Endgames'}
+              </button>
             </div>
             <div className="studio-leaf-motif" aria-hidden="true">❧</div>
           </section>
@@ -105,6 +112,13 @@ export function StudioDashboard({ repertoires, activeId, plan, onPick, onOpen, o
           <button className="studio-continue-item" onClick={() => active ? onOpen(active.id, 'build') : onNewRepertoire()}>
             <span className="studio-action-icon"><Icon name="board" size={21}/></span>
             <span><b>Build repertoire</b><small>{active?.name ?? 'Create your first opening'}</small></span>
+            <Icon name="next" size={19}/>
+          </button>
+          <button className="studio-continue-item" onClick={() => onNavigate('endgames')}>
+            <span className="studio-action-icon"><Icon name="endgame" size={21}/></span>
+            <span><b>Endgame training</b><small>{eg.mastered + eg.learning === 0
+              ? 'Basic mates, pawn and rook endings — start with the queen mate'
+              : `${Math.round(eg.mastery * 100)}% mastered${eg.due ? ` · ${eg.due} due` : ''}${eg.next ? ` · next: ${eg.next.title}` : ''}`}</small></span>
             <Icon name="next" size={19}/>
           </button>
           <button className="studio-continue-item" onClick={() => onNavigate('play')}>

@@ -5,7 +5,7 @@ import { counts } from '../lib/srs';
 import { orderedReps, useApp } from '../lib/store';
 import { useTodayPlan } from '../lib/today';
 
-export type StudioView = 'build' | 'train' | 'tree' | 'play' | 'games' | 'audit' | 'settings';
+export type StudioView = 'build' | 'train' | 'tree' | 'play' | 'endgames' | 'games' | 'audit' | 'settings';
 
 const DESCRIPTIONS: Record<StudioView, { eyebrow: string; title: string; lead: string; icon: IconName }> = {
   build: {
@@ -31,6 +31,12 @@ const DESCRIPTIONS: Record<StudioView, { eyebrow: string; title: string; lead: s
     title: 'Play against Maia',
     lead: 'Put your preparation to work against a human-like opponent.',
     icon: 'play',
+  },
+  endgames: {
+    eyebrow: 'ENDGAME STUDIO',
+    title: 'Know your endgames cold',
+    lead: 'Mates, pawn and rook endings: learn each one, then keep it automatic.',
+    icon: 'endgame',
   },
   games: {
     eyebrow: 'GAME JOURNAL',

@@ -10,6 +10,7 @@ import { WorkspaceHeader } from './components/WorkspaceHeader';
 import { LegacyImportPrompt } from './components/LegacyImport';
 import { Icon, type IconName } from './components/Icon';
 import { PlayView } from './components/PlayView';
+import { EndgamesView } from './components/EndgamesView';
 import { SaveIndicator, SyncBanner, UpdateBanner } from './components/SaveIndicator';
 import { WhatsNew } from './components/WhatsNew';
 import { markVersionSeen } from './lib/changelog';
@@ -29,6 +30,7 @@ const NAV: { view: View; label: string; icon: IconName; needsRep: boolean }[] = 
   { view: 'build', label: 'Build', icon: 'board', needsRep: true },
   { view: 'tree', label: 'Tree', icon: 'tree', needsRep: true },
   { view: 'play', label: 'Play', icon: 'play', needsRep: false },
+  { view: 'endgames', label: 'Endgames', icon: 'endgame', needsRep: false },
   { view: 'games', label: 'Games', icon: 'games', needsRep: false },
   { view: 'audit', label: 'Check', icon: 'audit', needsRep: true },
 ];
@@ -95,6 +97,7 @@ export function App() {
   else if (view === 'games') content = <GamesView />;
   else if (view === 'audit') content = <AuditView key={rep!.id} />;
   else if (view === 'play') content = <PlayView />;
+  else if (view === 'endgames') content = <EndgamesView />;
   else if (view === 'settings') content = <SettingsView />;
   else if (view === 'about') content = <AboutView />;
   else content = <HomeView />;
@@ -106,7 +109,7 @@ export function App() {
       <SyncBanner />
       <main>
         <ErrorBoundary key={view} onReset={() => useApp.getState().setView('home')}>
-          {(view === 'build' || view === 'train' || view === 'tree' || view === 'play' || view === 'games' || view === 'audit' || view === 'settings') ? (
+          {(view === 'build' || view === 'train' || view === 'tree' || view === 'play' || view === 'endgames' || view === 'games' || view === 'audit' || view === 'settings') ? (
             <div className={`studio-workspace studio-workspace-${view}`}>
               <WorkspaceHeader view={view} rep={rep} />
               {content}

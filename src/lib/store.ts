@@ -35,6 +35,8 @@ export interface Profile {
   repOrder?: string[];
   /** How the player trains (new moves and mistake cards per session, whole lines); see today.ts. */
   trainPrefs?: Partial<import('./today').TrainPrefs>;
+  /** Endgame drills and puzzle tests: scores and when each drill is due (see endgames/progress.ts). */
+  endgames?: import('./endgames/progress').EndgameProgress;
   updatedAt?: number;
 }
 
@@ -62,7 +64,7 @@ export interface CheckTour {
   index: number;
 }
 
-export type View = 'home' | 'build' | 'tree' | 'train' | 'play' | 'audit' | 'games' | 'settings' | 'about';
+export type View = 'home' | 'build' | 'tree' | 'train' | 'play' | 'endgames' | 'audit' | 'games' | 'settings' | 'about';
 
 export interface Toast {
   id: number;
@@ -111,6 +113,8 @@ export interface AppState {
   setActiveRep(id: string | null): void;
   addProfile(p: Omit<Profile, 'id'>): Profile;
   updateProfile(id: string, patch: Partial<Profile>): void;
+  /** Changes the active player's endgame progress. */
+  updateEndgames(fn: (p: import('./endgames/progress').EndgameProgress) => import('./endgames/progress').EndgameProgress): void;
   deleteProfile(id: string): void;
   createRepertoire(name: string, side: Side): Repertoire;
   addRepertoire(rep: Repertoire): void;
@@ -229,6 +233,13 @@ export const useApp = create<AppState>()((set, get) => {
 
     updateProfile: (id, patch) =>
       patchData({ profiles: get().data.profiles.map((p) => (p.id === id ? { ...p, ...patch, updatedAt: Date.now() } : p)) }),
+
+    updateEndgames: (fn) => {
+      const id = get().data.activeProfileId;
+      const profile = get().data.profiles.find((p) => p.id === id);
+      if (!profile) return;
+      get().updateProfile(profile.id, { endgames: fn(profile.endgames ?? { drills: {}, puzzles: {} }) });
+    },
 
     deleteProfile: (id) => {
       const { data } = get();

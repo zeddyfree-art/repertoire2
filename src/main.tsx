@@ -20,6 +20,7 @@ import './studio-finish.css';
 import './studio-migration.css';
 import './studio-round-a.css';
 import './studio-round-b.css';
+import './endgames.css';
 
 // Before anything else, so the browser's "can be installed" event is not missed.
 initInstall();
