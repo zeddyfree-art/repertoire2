@@ -222,8 +222,10 @@ function useBoardFit(ref: React.RefObject<HTMLDivElement | null>) {
     pad();
     const ro = typeof ResizeObserver !== 'undefined' && sticky ? new ResizeObserver(pad) : null;
     if (ro && sticky) ro.observe(sticky);
-    // Once, after the view has settled: bring the whole board into view with the smallest scroll.
-    const t = setTimeout(() => {
+    // Bring the whole board into view with the smallest scroll, at once (a smooth scroll would move the board under a
+    // finger that is already tapping). Checked again just after: a parent may scroll the page to the top on the same
+    // change.
+    const ensure = () => {
       apply();
       const r = el.getBoundingClientRect();
       const bottom = view() - 8;
@@ -233,8 +235,11 @@ function useBoardFit(ref: React.RefObject<HTMLDivElement | null>) {
       // A training session on a narrow screen: the board (and what sits above it) to the top, the panel right under it.
       const session = el.closest<HTMLElement>('.train > .board-area, .train > .board-col');
       if (session && window.matchMedia('(max-width: 900px)').matches) delta = session.getBoundingClientRect().top - topBar();
-      if (Math.abs(delta) > 2) window.scrollBy({ top: delta, behavior: 'smooth' });
-    }, 120);
+      if (Math.abs(delta) > 2) window.scrollBy({ top: delta, behavior: 'instant' as ScrollBehavior });
+    };
+    ensure();
+    const t0 = setTimeout(ensure, 0);
+    const t = setTimeout(ensure, 60);
     const onResize = () => {
       apply();
       pad();
@@ -244,6 +249,7 @@ function useBoardFit(ref: React.RefObject<HTMLDivElement | null>) {
     return () => {
       ro?.disconnect();
       root.style.scrollPaddingTop = '';
+      clearTimeout(t0);
       clearTimeout(t);
       window.removeEventListener('resize', onResize);
       window.removeEventListener('orientationchange', onResize);
