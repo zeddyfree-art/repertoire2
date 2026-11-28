@@ -113,16 +113,16 @@
 .studio-workspace-tree .tree-layout .legend { line-height: 1.5; }
 
 @media (min-width: 1101px) {
-  .studio-workspace-build { --board: clamp(330px, min(calc(100vh - 240px), calc(100vw - 248px - 550px)), 680px); }
+  .studio-workspace-build { --board: clamp(min(330px, var(--board-hmax, 330px)), min(var(--board-hmax, calc(100vh - 240px)), calc(100vw - 248px - 550px)), 680px); }
   .studio-workspace-build .build { grid-template-columns: minmax(0,var(--board)) minmax(335px,1fr); }
-  .studio-workspace-train { --board: clamp(335px, min(calc(100vh - 245px), calc(100vw - 248px - 515px)), 665px); }
+  .studio-workspace-train { --board: clamp(min(335px, var(--board-hmax, 335px)), min(var(--board-hmax, calc(100vh - 245px)), calc(100vw - 248px - 515px)), 665px); }
   .studio-workspace-tree .tree-layout { grid-template-columns: minmax(0,1fr) minmax(290px,320px); }
   .studio-workspace-tree .tree-scroll { height: clamp(480px,calc(100vh - 280px),830px); }
 }
 @media (min-width: 901px) and (max-width: 1100px) {
-  .studio-workspace-build { --board: min(calc(100vh - 245px),calc(100vw - 470px),560px); }
+  .studio-workspace-build { --board: min(var(--board-hmax, calc(100vh - 245px)),calc(100vw - 470px),560px); }
   .studio-workspace-build .build { grid-template-columns: minmax(0,var(--board)) minmax(300px,1fr); gap: 14px; }
-  .studio-workspace-train { --board: min(calc(100vh - 240px),calc(100vw - 500px),560px); }
+  .studio-workspace-train { --board: min(var(--board-hmax, calc(100vh - 240px)),calc(100vw - 500px),560px); }
 }
 @media (max-width: 900px) {
   .studio-workspace { gap: 16px; }

@@ -1,0 +1,27 @@
+/* ---------- The board stays in view ----------
+   Board sizes everywhere respect --board-hmax (set by Board.tsx from the window), so a whole board fits on any screen.
+   Side by side (wider than 900 px) the panel is as tall as the board and scrolls inside (styles.css), so nothing moves.
+   One column (phone, tablet upright): the board sticks to the top while you scroll to the text and buttons below it;
+   what scrolls up passes under it. */
+/* Side by side, Build's panel grows with the moves and the page scrolls: the board column stays put. */
+@media (min-width: 901px) {
+  .build > div:first-child { position: sticky; top: calc(var(--sticky-top, 0px) + 8px); }
+}
+
+@media (max-width: 900px) {
+  .train > .board-area,
+  .train > .board-col,
+  .build > div:first-child,
+  .review > .review-board {
+    position: sticky;
+    /* Right under the app's top bar, which stays on screen too. */
+    top: var(--sticky-top, 0px);
+    z-index: 6;
+    background: var(--bg);
+    /* Paint the page background beside and above the board, not below it. */
+    box-shadow: 0 0 0 100vmax var(--bg);
+    clip-path: inset(-100vmax -100vmax 0 -100vmax);
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}

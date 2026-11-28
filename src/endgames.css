@@ -106,7 +106,6 @@
 @media (max-width: 600px) {
   .topbar .nav button:not(.studio-nav-settings) { flex: 1 1 0; padding-left: 1px; padding-right: 1px; }
   .topbar .nav button .label { font-size: 10px; letter-spacing: -0.01em; }
-  .studio-workspace-endgames .train .board-wrap { width: min(calc(100dvw - 48px), 560px); height: auto; aspect-ratio: 1; }
 }
 
 /* ---------- Skills: tabs, tactics, calculation ---------- */
@@ -144,9 +143,29 @@
 .tc-indeterminate > div { width: 35% !important; animation: tc-slide 1.2s ease-in-out infinite; }
 @keyframes tc-slide { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
 
-.studio-workspace-skills .train .board-wrap { max-width: 100%; }
 @media (max-width: 600px) {
-  .studio-workspace-skills .train .board-wrap { width: min(calc(100dvw - 48px), 560px); height: auto; aspect-ratio: 1; }
+  .studio-workspace-skills .train .board-wrap { width: min(calc(100dvw - 48px), 560px, var(--board-hmax, 100vh)); height: auto; aspect-ratio: 1; }
   .tc-tab { padding: 8px 12px; font-size: 13px; }
 }
 .link-button { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; cursor: pointer; font: inherit; }
+
+/* What you need while solving: beside the board on wide screens, above it (and sticky with it) on narrow ones. */
+.eg-drill > .board-area { flex-direction: column; align-items: stretch; }
+.eg-strip { display: none; }
+@media (max-width: 900px) {
+  .eg-strip {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    /* Never wider than the board: it takes no width of its own, then fills the board's width. */
+    width: 0;
+    min-width: 100%;
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  .eg-strip-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+  .eg-strip-row .spacer { flex: 1; }
+  .eg-strip-prompt { font-weight: 640; color: var(--accent); }
+  .eg-strip-prompt.bad { color: var(--gap); }
+  .eg-wide-only { display: none !important; }
+}

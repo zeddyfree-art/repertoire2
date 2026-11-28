@@ -419,6 +419,24 @@ function DrillPlayer({ drill, position, retry, onFinished, onNext, onExit }: Pla
   return (
     <div className="train eg-drill">
       <div className="board-area">
+        <div className="eg-strip">
+          <div className="eg-strip-row">
+            <b>{drill.title}</b>
+            <span className="spacer" />
+            {phase !== 'verdict' && phase !== 'done' && <span>⏱ {formatMs(elapsed)}{drill.targetSec ? ` / ${formatMs(drill.targetSec * 1000)}` : ''}</span>}
+          </div>
+          <div className="small">{phase === 'verdict' ? drill.task : `${goalText(drill.goal, drill.side, drill.hold)}. ${drill.task}`}</div>
+          {message && phase !== 'done' && <div className={`eg-strip-prompt ${message.tone === 'bad' ? 'bad' : ''}`}>{message.text}</div>}
+          <div className="eg-strip-prompt">
+            {phase === 'verdict'
+              ? 'Win or draw? Answer below the board.'
+              : phase === 'done'
+                ? result && result.stars >= PASS_STARS
+                  ? 'Solved ✓'
+                  : 'Not solved'
+                : (status ?? '') + (drill.goal === 'draw' ? ` · ${st.current.userMoves} of ${drill.hold ?? 12} moves` : '')}
+          </div>
+        </div>
         <Board position={fenKey(fen)} orientation={phase === 'verdict' ? stronger(fen) : drill.side} movable={movable} lastMove={lastMove} shapes={shapes} onMove={onMove} />
       </div>
       <div className="stack train-panel">
@@ -429,16 +447,16 @@ function DrillPlayer({ drill, position, retry, onFinished, onNext, onExit }: Pla
             <span className="spacer" />
             {section && <span className={`badge eg-level-${section.level}`}>{LEVEL_LABEL[section.level]}</span>}
           </div>
-          <div>
+          <div className="eg-wide-only">
             <div className="small muted">{section?.title}</div>
             <h2 style={{ fontSize: 20, margin: '2px 0 0' }}>{drill.title}</h2>
           </div>
           {phase !== 'verdict' && (
-            <div className="eg-goal">
+            <div className="eg-goal eg-wide-only">
               <Icon name="target" size={16} /> {goalText(drill.goal, drill.side, drill.hold)}
             </div>
           )}
-          <div className="muted">{drill.task}</div>
+          <div className="muted eg-wide-only">{drill.task}</div>
 
           {phase === 'verdict' && (
             <div className="stack eg-verdict" style={{ gap: 10 }}>
@@ -469,7 +487,7 @@ function DrillPlayer({ drill, position, retry, onFinished, onNext, onExit }: Pla
           )}
 
           {phase !== 'verdict' && phase !== 'done' && (
-            <div className="eg-meters">
+            <div className="eg-meters eg-wide-only">
               <span title="Time">⏱ {formatMs(elapsed)}{drill.targetSec ? ` / ${formatMs(drill.targetSec * 1000)}` : ''}</span>
               <span title="Your moves">
                 {st.current.userMoves} {st.current.userMoves === 1 ? 'move' : 'moves'}
@@ -480,7 +498,7 @@ function DrillPlayer({ drill, position, retry, onFinished, onNext, onExit }: Pla
             </div>
           )}
 
-          {status && phase !== 'done' && <div className="small muted">{status}</div>}
+          {status && phase !== 'done' && <div className="small muted eg-wide-only">{status}</div>}
           {message && <div className={`feedback ${message.tone}`}>{message.text}</div>}
 
           {phase === 'done' && result && (

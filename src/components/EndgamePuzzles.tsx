@@ -192,6 +192,25 @@ export function PuzzleSession({ test, count, difficulty, onExit }: { test: Puzzl
   return (
     <div className="train eg-drill">
       <div className="board-area">
+        <div className="eg-strip">
+          <div className="eg-strip-row">
+            <b>{test.title}</b>
+            <span className="muted">{count - n} to go</span>
+            <span className="spacer" />
+            {puzzle && <span className="muted">{puzzle.rating}</span>}
+          </div>
+          <div className="eg-strip-prompt">
+            {phase === 'loading'
+              ? 'Fetching a puzzle…'
+              : phase === 'play' || phase === 'opponent'
+                ? `${sideToMove(side)} to move: find the best move`
+                : phase === 'solved'
+                  ? 'Solved ✓'
+                  : phase === 'failed'
+                    ? 'Not at the first try'
+                    : ''}
+          </div>
+        </div>
         <Board position={fenKey(fen)} orientation={side} movable={phase === 'play' ? side : null} lastMove={lastMove} shapes={shapes} onMove={onMove} />
       </div>
       <div className="stack train-panel">
@@ -206,14 +225,14 @@ export function PuzzleSession({ test, count, difficulty, onExit }: { test: Puzzl
           <div className="progress">
             <div style={{ width: `${(n / count) * 100}%` }} />
           </div>
-          <div>
+          <div className="eg-wide-only">
             <div className="small muted">
               Puzzle test · {LEVEL_LABEL[test.level]}
               {puzzle ? ` · rated ${puzzle.rating}` : ''}
             </div>
             <h2 style={{ fontSize: 20, margin: '2px 0 0' }}>{test.title}</h2>
           </div>
-          <div className="muted">{test.about}</div>
+          <div className="muted eg-wide-only">{test.about}</div>
           {phase === 'loading' && <div className="small muted">Fetching a puzzle from Lichess…</div>}
           {phase === 'error' && (
             <div className="feedback bad stack" style={{ gap: 8 }}>
@@ -226,7 +245,7 @@ export function PuzzleSession({ test, count, difficulty, onExit }: { test: Puzzl
             </div>
           )}
           {(phase === 'play' || phase === 'opponent') && (
-            <div className="feedback info">{sideToMove(side)} to move: find the best move.</div>
+            <div className="feedback info eg-wide-only">{sideToMove(side)} to move: find the best move.</div>
           )}
           {note && <div className={`feedback ${st.current.failed ? 'bad' : 'info'}`}>{note}</div>}
           {phase === 'solved' && <div className="feedback good">Solved at the first try.</div>}

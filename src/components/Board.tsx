@@ -167,9 +167,88 @@ export function Board({ position, orientation, movable, lastMove, shapes, drawn,
     api.current?.setShapes(drawn ?? []);
   }, [drawn, position]);
 
+  const wrap = useRef<HTMLDivElement>(null);
+  useBoardFit(wrap);
+
   return (
-    <div className={`board-wrap ${className ?? ''}`}>
+    <div ref={wrap} className={`board-wrap ${className ?? ''}`}>
       <div ref={el} className="cg-wrap" />
     </div>
   );
+}
+
+/** Boards that are pictures inside a card (the tree's preview, Home's preview) keep their own size. */
+const NOT_FITTED = '.mini-board, .studio-preview-stage';
+
+/** The height a playing board may take: the window from the board's top down to the bottom (minus the phone's bottom
+ *  bar), so the whole board is in view. If that leaves too little (much above the board), the board takes most of the
+ *  window and the page scrolls to it once. Kept in --board-hmax, which every board size in the CSS respects. */
+function useBoardFit(ref: React.RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || el.closest(NOT_FITTED)) return;
+    const root = document.documentElement;
+    const bottomBar = () => {
+      const nav = document.querySelector<HTMLElement>('.topbar .nav');
+      if (!nav || getComputedStyle(nav).position !== 'fixed') return 0;
+      const r = nav.getBoundingClientRect();
+      // Only a bar along the bottom (phone) takes height; the laptop's sidebar does not.
+      return r.top > window.innerHeight / 2 ? r.height : 0;
+    };
+    // The bar at the top stays on screen (sticky): nothing under it is in view.
+    const topBar = () => {
+      const bar = document.querySelector<HTMLElement>('.topbar');
+      if (!bar || !['sticky', 'fixed'].includes(getComputedStyle(bar).position)) return 0;
+      return Math.max(0, bar.getBoundingClientRect().bottom);
+    };
+    const view = () => window.innerHeight - bottomBar();
+    const apply = () => {
+      const tb = topBar();
+      root.style.setProperty('--sticky-top', `${Math.round(tb)}px`);
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      const room = view() - top - 12;
+      const full = view() - tb - 16;
+      const h = Math.max(220, Math.min(full, Math.max(room, Math.round(full * 0.75))));
+      root.style.setProperty('--board-hmax', `${h}px`);
+    };
+    apply();
+    // Narrow screens: the board sticks to the top, so whatever the page scrolls to (a focused button, a message) must
+    // land under it, not behind it.
+    const sticky = el.closest<HTMLElement>('.train > .board-area, .train > .board-col, .build > div:first-child, .review > .review-board');
+    const pad = () => {
+      const on = !!sticky && window.matchMedia('(max-width: 900px)').matches && getComputedStyle(sticky).position === 'sticky';
+      root.style.scrollPaddingTop = on ? `${Math.round(topBar() + sticky!.getBoundingClientRect().height + 8)}px` : '';
+    };
+    pad();
+    const ro = typeof ResizeObserver !== 'undefined' && sticky ? new ResizeObserver(pad) : null;
+    if (ro && sticky) ro.observe(sticky);
+    // Once, after the view has settled: bring the whole board into view with the smallest scroll.
+    const t = setTimeout(() => {
+      apply();
+      const r = el.getBoundingClientRect();
+      const bottom = view() - 8;
+      const ceiling = topBar() + 8;
+      let delta = r.bottom > bottom ? r.bottom - bottom : r.top < ceiling ? r.top - ceiling : 0;
+      if (r.top - delta < ceiling) delta = r.top - ceiling;
+      // A training session on a narrow screen: the board (and what sits above it) to the top, the panel right under it.
+      const session = el.closest<HTMLElement>('.train > .board-area, .train > .board-col');
+      if (session && window.matchMedia('(max-width: 900px)').matches) delta = session.getBoundingClientRect().top - topBar();
+      if (Math.abs(delta) > 2) window.scrollBy({ top: delta, behavior: 'smooth' });
+    }, 120);
+    const onResize = () => {
+      apply();
+      pad();
+    };
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    return () => {
+      ro?.disconnect();
+      root.style.scrollPaddingTop = '';
+      clearTimeout(t);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+      root.style.removeProperty('--board-hmax');
+      root.style.removeProperty('--sticky-top');
+    };
+  }, [ref]);
 }
