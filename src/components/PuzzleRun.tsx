@@ -68,6 +68,8 @@ export function PuzzleRun(props: Props) {
       key={`${index}-${p.id}`}
       puzzle={p}
       opts={props}
+      title={title}
+      toGo={puzzles.length - index}
       header={
         <>
           <div className="row wrap" style={{ gap: 8 }}>
@@ -98,6 +100,8 @@ export function PuzzleRun(props: Props) {
 
 interface OneProps {
   puzzle: TPuzzle;
+  title: string;
+  toGo: number;
   opts: RunOptions;
   header: React.ReactNode;
   runMs: number;
@@ -108,7 +112,7 @@ interface OneProps {
   onExit: () => void;
 }
 
-function OnePuzzle({ puzzle, opts, header, runMs, timeTarget, last, onFinished, onNext, onExit }: OneProps) {
+function OnePuzzle({ puzzle, title, toGo, opts, header, runMs, timeTarget, last, onFinished, onNext, onExit }: OneProps) {
   const line = useMemo(() => gameLine(puzzle), [puzzle]);
   const depth = Math.max(0, Math.min(opts.ghostDepth?.(puzzle) ?? 0, (line?.length ?? 1) - 1));
   const frozen = !!opts.frozen || depth > 0;
@@ -342,6 +346,34 @@ function OnePuzzle({ puzzle, opts, header, runMs, timeTarget, last, onFinished, 
   return (
     <div className="train eg-drill">
       <div className="board-area">
+        {/* Narrow screens: what you need while solving sits above the board, and stays with it. */}
+        <div className="eg-strip">
+          <div className="eg-strip-row">
+            <b>{title}</b>
+            <span className="muted">{toGo} to go</span>
+            <span className="spacer" />
+            <span>⏱ {fmt(clock)}</span>
+            <span className="muted">· {puzzle.rating}</span>
+          </div>
+          {opts.showMotif && (
+            <div className="small">
+              <b>{opts.showMotif.name}:</b> {opts.showMotif.lookFor}
+            </div>
+          )}
+          <div className={`eg-strip-prompt ${note?.tone === 'bad' ? 'bad' : ''}`}>
+            {note && (phase === 'play' || phase === 'reply' || note.tone === 'bad')
+              ? note.text
+              : phase === 'ghosts'
+              ? `Watch the last ${ghosts.length === 1 ? 'move' : `${ghosts.length} moves`} — the board will not show ${ghosts.length === 1 ? 'it' : 'them'}.`
+              : phase === 'play' || phase === 'reply'
+                ? `${sideName(side)} to move${frozen ? ' · the board stays still: tap a piece, then its square' : ': find the best move'}`
+                : phase === 'solved'
+                  ? 'Solved ✓'
+                  : phase === 'failed'
+                    ? 'Not at the first try'
+                    : 'Which motif was it?'}
+          </div>
+        </div>
         <Board
           position={boardKey}
           orientation={side}
@@ -355,8 +387,8 @@ function OnePuzzle({ puzzle, opts, header, runMs, timeTarget, last, onFinished, 
       </div>
       <div className="stack train-panel">
         <div className="card card-pad stack">
-          {header}
-          <div className="eg-meters">
+          <div className="eg-wide-only stack" style={{ gap: 12 }}>{header}</div>
+          <div className="eg-meters eg-wide-only">
             <span title="Time for this run">
               ⏱ {fmt(clock)}
               {timeTarget ? ` / target ${fmt(timeTarget)}` : ''}
@@ -365,14 +397,14 @@ function OnePuzzle({ puzzle, opts, header, runMs, timeTarget, last, onFinished, 
           </div>
 
           {opts.showMotif && (
-            <div className="feedback info">
+            <div className="feedback info eg-wide-only">
               <b>{opts.showMotif.name}.</b> {opts.showMotif.lookFor}
             </div>
           )}
 
-          {phase === 'ghosts' && <div className="feedback info">Watch the last {ghosts.length === 1 ? 'move' : `${ghosts.length} moves`}: the board will not show {ghosts.length === 1 ? 'it' : 'them'}.</div>}
+          {phase === 'ghosts' && <div className="feedback info eg-wide-only">Watch the last {ghosts.length === 1 ? 'move' : `${ghosts.length} moves`}: the board will not show {ghosts.length === 1 ? 'it' : 'them'}.</div>}
           {(phase === 'play' || phase === 'reply') && (
-            <div className="feedback info">
+            <div className="feedback info eg-wide-only">
               {sideName(side)} to move: find the best move.
               {frozen && ' The board stays as it is: click a piece, then its square.'}
             </div>

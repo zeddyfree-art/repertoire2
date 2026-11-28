@@ -27,7 +27,7 @@
   --edge: #cbc6b9;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.05);
   --radius: 10px;
-  --board: min(calc(100vh - 190px), calc(100vw - 560px), 720px);
+  --board: min(var(--board-hmax, calc(100vh - 190px)), calc(100vw - 560px), 720px);
   color-scheme: light;
 }
 
@@ -1443,7 +1443,7 @@ a {
 
 @media (max-width: 900px) {
   :root {
-    --board: min(calc(100vw - 58px), 560px);
+    --board: min(calc(100vw - 58px), 560px, var(--board-hmax, 100vh));
   }
   main {
     padding: 12px;
@@ -1930,7 +1930,8 @@ a.btn {
 /* Review of one game: board with the graph under it, panels on the right. The board is a little smaller than
    elsewhere so the graph fits under it on a laptop screen. */
 .review {
-  --board: min(calc(100vh - 330px), calc(100vw - 560px), 640px);
+  /* With the graph (about 150 px) under the board. */
+  --board: min(calc(100vh - 330px), calc(var(--board-hmax, 100vh) - 150px), calc(100vw - 560px), 640px);
   display: grid;
   grid-template-columns: auto minmax(320px, 460px);
   grid-template-rows: auto 1fr;
@@ -2194,7 +2195,7 @@ a.btn {
 
 @media (max-width: 900px) {
   .review {
-    --board: min(calc(100vw - 24px), 560px);
+    --board: min(calc(100vw - 24px), 560px, var(--board-hmax, 100vh));
     grid-template-columns: 1fr;
     grid-template-rows: none;
     justify-items: center;
@@ -2720,7 +2721,7 @@ a.btn {
 
 .board-col.with-bars {
   /* As big as the window allows, with a clock bar above and below it (measured: the board starts 117 px down). */
-  --board: min(calc(100vh - 180px), calc(100vw - 560px), 760px);
+  --board: min(calc(var(--board-hmax, calc(100vh - 124px)) - 56px), calc(100vw - 560px), 760px);
 }
 
 .clock-bar {
@@ -2779,7 +2780,7 @@ a.btn {
 
 @media (max-width: 900px) {
   .board-col.with-bars {
-    --board: min(calc(100vw - 58px), 560px);
+    --board: min(calc(100vw - 58px), 560px, calc(var(--board-hmax, 100vh) - 56px));
   }
 }
 

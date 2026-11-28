@@ -10,12 +10,12 @@ test('endgames: from Home to a drill, a mistake is taken back', async ({ page })
   await expect(page.getByRole('button', { name: /Continue: King and queen against king/ })).toBeVisible();
 
   await page.locator('.eg-drill-row', { hasText: 'King on the sixth' }).first().click();
-  await expect(page.getByText('Queen the pawn. Only two moves win here.')).toBeVisible();
-  await expect(page.getByText('Your move (White)')).toBeVisible({ timeout: 30_000 });
+  await expect(page.locator(':text("Only two moves win here."):visible').first()).toBeVisible();
+  await expect(page.locator(':text("Your move (White)"):visible')).toBeVisible({ timeout: 30_000 });
   // Kd5 lets Black take the opposition: a draw, so it is taken back.
   await move(page, 'e6', 'd5');
   await expect(page.locator('.feedback.bad')).toContainText('Kd5?', { timeout: 30_000 });
-  await expect(page.getByText('Your move (White)')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator(':text("Your move (White)"):visible')).toBeVisible({ timeout: 10_000 });
   // Stopping after a mistake counts as a miss: the drill is due again, and listed under "Still to train".
   await page.getByRole('button', { name: 'Stop' }).click();
   await expect(page.locator('.eg-drill-row', { hasText: 'King on the sixth' }).first()).toContainText('practise again');
